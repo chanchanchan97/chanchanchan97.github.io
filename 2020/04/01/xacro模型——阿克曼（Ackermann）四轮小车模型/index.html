@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Github链接：https:&#x2F;&#x2F;github.com&#x2F;chanchanchan97&#x2F;ROS 1.模型描述本项目的目的是创建一个基于阿克曼转向机构（Ackermann steering）的自动驾驶小车模型，该模型在之前URDF模型的基础上修改了前轮转向轴的形状与位置，修改了前端摄像头的位置和尺寸，并且添加了激光雷达和树莓派的简易模型。 2.xacro模型与URDF模型的区别2.1URDF模型存在的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xacro模型——阿克曼（Ackermann）四轮小车模型">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;01&#x2F;xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="Github链接：https:&#x2F;&#x2F;github.com&#x2F;chanchanchan97&#x2F;ROS 1.模型描述本项目的目的是创建一个基于阿克曼转向机构（Ackermann steering）的自动驾驶小车模型，该模型在之前URDF模型的基础上修改了前轮转向轴的形状与位置，修改了前端摄像头的位置和尺寸，并且添加了激光雷达和树莓派的简易模型。 2.xacro模型与URDF模型的区别2.1URDF模型存在的">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;01&#x2F;xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;xacro1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;01&#x2F;xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;xacro2.jpg">
+<meta property="article:published_time" content="2020-04-01T14:35:58.270Z">
+<meta property="article:modified_time" content="2020-04-02T13:46:55.906Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;01&#x2F;xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;xacro1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/04/01/xacro模型——阿克曼（Ackermann）四轮小车模型/"/>
+
+
+
+
+
+  <title>xacro模型——阿克曼（Ackermann）四轮小车模型 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">xacro模型——阿克曼（Ackermann）四轮小车模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-01T22:35:58+08:00">
+                2020-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Github链接：<a href="https://github.com/chanchanchan97/ROS" target="_blank" rel="noopener">https://github.com/chanchanchan97/ROS</a></p>
+<h2 id="1-模型描述"><a href="#1-模型描述" class="headerlink" title="1.模型描述"></a>1.模型描述</h2><p>本项目的目的是创建一个基于阿克曼转向机构（Ackermann steering）的自动驾驶小车模型，该模型在之前URDF模型的基础上修改了前轮转向轴的形状与位置，修改了前端摄像头的位置和尺寸，并且添加了激光雷达和树莓派的简易模型。</p>
+<h2 id="2-xacro模型与URDF模型的区别"><a href="#2-xacro模型与URDF模型的区别" class="headerlink" title="2.xacro模型与URDF模型的区别"></a>2.xacro模型与URDF模型的区别</h2><h3 id="2-1URDF模型存在的问题"><a href="#2-1URDF模型存在的问题" class="headerlink" title="2.1URDF模型存在的问题"></a>2.1URDF模型存在的问题</h3><p>●模型冗长，重复内容过多；<br>●参数修改麻烦，不便于二次开发；<br>●没有参数计算功能。</p>
+<h3 id="2-2xacro模型的特点"><a href="#2-2xacro模型的特点" class="headerlink" title="2.2xacro模型的特点"></a>2.2xacro模型的特点</h3><p>●精简模型代码<br>（1）创建宏定义<br>（2）文件包含<br>●提供可编程接口<br>（1）常量<br>（2）变量<br>（3）数学计算<br>（4）条件语句  </p>
+<h2 id="3-xacro优化方法"><a href="#3-xacro优化方法" class="headerlink" title="3.xacro优化方法"></a>3.xacro优化方法</h2><h3 id="3-1常量定义"><a href="#3-1常量定义" class="headerlink" title="3.1常量定义"></a>3.1常量定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:property name&#x3D;&quot;M_PI&quot; value&#x3D;&quot;3.14159&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>定义标签：xacro:property后面跟两个参数属性：<br>（1）name所定义的常量名；<br>（2）value常量名对应的常量值。  </p>
+<h3 id="3-2常量使用"><a href="#3-2常量使用" class="headerlink" title="3.2常量使用"></a>3.2常量使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;origin xyz&#x3D;&quot;0 0 0&quot; rpy&#x3D;&quot;$&#123;M_PI&#x2F;2&#125; 0 0&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>定义标签：${ }在括号里使用常量，也可以进行数学运算（所有数学运算都会转换成浮点数进行，以保证运算精度）。</p>
+<h3 id="3-3宏定义"><a href="#3-3宏定义" class="headerlink" title="3.3宏定义"></a>3.3宏定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:macro name&#x3D;&quot;cylinder_inertial_matrix&quot; params&#x3D;&quot;m r h&quot;&gt;</span><br><span class="line">       &lt;inertial&gt;</span><br><span class="line">           &lt;mass value&#x3D;&quot;$&#123;m&#125;&quot; &#x2F;&gt;</span><br><span class="line">           &lt;inertia ixx&#x3D;&quot;$&#123;m*(3*r*r+h*h)&#x2F;12&#125;&quot; ixy &#x3D; &quot;0&quot; ixz &#x3D; &quot;0&quot;</span><br><span class="line">               iyy&#x3D;&quot;$&#123;m*(3*r*r+h*h)&#x2F;12&#125;&quot; iyz &#x3D; &quot;0&quot;</span><br><span class="line">               izz&#x3D;&quot;$&#123;m*r*r&#x2F;2&#125;&quot; &#x2F;&gt; </span><br><span class="line">       &lt;&#x2F;inertial&gt;</span><br><span class="line">   &lt;&#x2F;xacro:macro&gt;</span><br></pre></td></tr></table></figure>
+<p>定义标签：xacro:macro 后面跟两个参数属性：<br>（1）name宏定义的名字类似函数名；<br>（2）params类似函数参数，也可以是字符串。  </p>
+<h3 id="3-4宏调用"><a href="#3-4宏调用" class="headerlink" title="3.4宏调用"></a>3.4宏调用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cylinder_inertial_matrix m&#x3D;&quot;1&quot; r&#x3D;&quot;0.025&quot; h&#x3D;&quot;0.02&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>定义标签：首先调用宏定义的名字，然后为参数赋值。</p>
+<h3 id="3-5文件包含"><a href="#3-5文件包含" class="headerlink" title="3.5文件包含"></a>3.5文件包含</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:include filename&#x3D;&quot;$(find smartcar_description)&#x2F;urdf&#x2F;xacro&#x2F;smartcar_sim.xacro&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>定义标签：xacro:include $(find+功能包)=包的具体路径</p>
+<h2 id="4-创建xacro文件"><a href="#4-创建xacro文件" class="headerlink" title="4.创建xacro文件"></a>4.创建xacro文件</h2><p>在urdf文件夹下创建一个新的文件夹xacro，并且在xacro文件夹中创建一个.xacro文件。</p>
+<h2 id="5-xacro模型显示"><a href="#5-xacro模型显示" class="headerlink" title="5.xacro模型显示"></a>5.xacro模型显示</h2><h3 id="5-1将xacro文件转化成URDF文件"><a href="#5-1将xacro文件转化成URDF文件" class="headerlink" title="5.1将xacro文件转化成URDF文件"></a>5.1将xacro文件转化成URDF文件</h3><p>在xacro文件夹中打开一个新的终端，输入以下指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun xacro xacro.py smartcar.xacro &gt; smartcar.urdf</span><br></pre></td></tr></table></figure><br>此时xacro文件夹下会生成一个.urdf文件。<br><img src="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/xacro1.jpg" class=""></p>
+<h3 id="5-2直接调用xacro文件解析器"><a href="#5-2直接调用xacro文件解析器" class="headerlink" title="5.2直接调用xacro文件解析器"></a>5.2直接调用xacro文件解析器</h3><p>这种方法更为常见，在launch文件中加入如下代码，从而实现.xacro文件的转换。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;urdf_file&quot; default&#x3D;&quot;$(find xacro)&#x2F;xacro --inorder &#39;$(find smartcar_description)&#x2F;urdf&#x2F;xacro&#x2F;smartcar.xacro&#39;&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;param name&#x3D;&quot;robot_description&quot; command&#x3D;&quot;$(arg urdf_file)&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-3启动Rviz"><a href="#5-3启动Rviz" class="headerlink" title="5.3启动Rviz"></a>5.3启动Rviz</h3><p>打开一个新的终端，输入以下指令，启动Rviz，查看所创建的模型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roslaunch smartcar_description smartcar_rviz.launch</span><br></pre></td></tr></table></figure><br><img src="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/xacro2.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" rel="next" title="URDF模型——阿克曼（Ackermann）四轮小车模型">
+                <i class="fa fa-chevron-left"></i> URDF模型——阿克曼（Ackermann）四轮小车模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/" rel="prev" title="ros_control和arbotix_ros简介">
+                ros_control和arbotix_ros简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-模型描述"><span class="nav-text">1.模型描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-xacro模型与URDF模型的区别"><span class="nav-text">2.xacro模型与URDF模型的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1URDF模型存在的问题"><span class="nav-text">2.1URDF模型存在的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2xacro模型的特点"><span class="nav-text">2.2xacro模型的特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-xacro优化方法"><span class="nav-text">3.xacro优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1常量定义"><span class="nav-text">3.1常量定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2常量使用"><span class="nav-text">3.2常量使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3宏定义"><span class="nav-text">3.3宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4宏调用"><span class="nav-text">3.4宏调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5文件包含"><span class="nav-text">3.5文件包含</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-创建xacro文件"><span class="nav-text">4.创建xacro文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-xacro模型显示"><span class="nav-text">5.xacro模型显示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1将xacro文件转化成URDF文件"><span class="nav-text">5.1将xacro文件转化成URDF文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2直接调用xacro文件解析器"><span class="nav-text">5.2直接调用xacro文件解析器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3启动Rviz"><span class="nav-text">5.3启动Rviz</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

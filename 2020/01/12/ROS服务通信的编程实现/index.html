@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为communication_pkg，并编译完成。 2.节点编程与服务数据定义2.1案例说明定义一个客户端Client，通过自定义的服务请求Request将两个整数发送给服务器Server，同时服务器Server将两个整数相加后，再通过自定义的服务应答Response将两个整数的和反馈到客户端Client。 2.2服">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS服务通信的编程实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为communication_pkg，并编译完成。 2.节点编程与服务数据定义2.1案例说明定义一个客户端Client，通过自定义的服务请求Request将两个整数发送给服务器Server，同时服务器Server将两个整数相加后，再通过自定义的服务应答Response将两个整数的和反馈到客户端Client。 2.2服">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service12.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service13.jpg">
+<meta property="article:published_time" content="2020-01-11T16:23:31.251Z">
+<meta property="article:modified_time" content="2020-01-12T06:52:42.681Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;01&#x2F;12&#x2F;ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;service1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/01/12/ROS服务通信的编程实现/"/>
+
+
+
+
+
+  <title>ROS服务通信的编程实现 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS服务通信的编程实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-12T00:23:31+08:00">
+                2020-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-创建功能包"><a href="#1-创建功能包" class="headerlink" title="1.创建功能包"></a>1.创建功能包</h2><p>在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为communication_pkg，并编译完成。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service1.jpg" class=""></p>
+<h2 id="2-节点编程与服务数据定义"><a href="#2-节点编程与服务数据定义" class="headerlink" title="2.节点编程与服务数据定义"></a>2.节点编程与服务数据定义</h2><h3 id="2-1案例说明"><a href="#2-1案例说明" class="headerlink" title="2.1案例说明"></a>2.1案例说明</h3><p>定义一个客户端Client，通过自定义的服务请求Request将两个整数发送给服务器Server，同时服务器Server将两个整数相加后，再通过自定义的服务应答Response将两个整数的和反馈到客户端Client。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service2.jpg" class=""></p>
+<h3 id="2-2服务数据的定义"><a href="#2-2服务数据的定义" class="headerlink" title="2.2服务数据的定义"></a>2.2服务数据的定义</h3><p>在功能包目录下创建一个新的文件夹，命名为srv，并在此文件夹中创建一个空文件AddTwoInts.srv。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service3.jpg" class=""><br>在AddTwoInts.srv文件中输入以下代码，定义服务消息内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int64 a</span><br><span class="line">int64 b</span><br><span class="line">---</span><br><span class="line">int64 sum</span><br></pre></td></tr></table></figure><br>说明：<br>使用“—-”作为分隔符，“—-”上面代表服务请求的消息内容，“—-”下面代表服务应答的消息内容。<br>相关资料：<a href="https://wiki.ros.org/srv" target="_blank" rel="noopener">https://wiki.ros.org/srv</a></p>
+<h3 id="2-3创建-cpp文件"><a href="#2-3创建-cpp文件" class="headerlink" title="2.3创建.cpp文件"></a>2.3创建.cpp文件</h3><p>在功能包下面的src文件夹目录下创建一个空文件client.cpp。</p>
+<h3 id="2-4客户端编程"><a href="#2-4客户端编程" class="headerlink" title="2.4客户端编程"></a>2.4客户端编程</h3><p>打开上面所创建的文件client.cpp，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;cstdlib&gt;</span><br><span class="line">#include &quot;ros&#x2F;ros.h&quot;</span><br><span class="line">#include &quot;communication_pkg&#x2F;AddTwoInts.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F;初始化ROS节点</span><br><span class="line">	ros::init(argc, argv, &quot;add_two_ints_client&quot;);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;从终端获取数据</span><br><span class="line">	if(argc !&#x3D; 3)</span><br><span class="line">	&#123;</span><br><span class="line">		ROS_INFO(&quot;usage: add_two_ints_client X Y&quot;);</span><br><span class="line">		return 1;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;创建句柄</span><br><span class="line">	ros::NodeHandle n;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;创建一个客户端，定义服务请求数据类型communication_pkg::AddTwoInts</span><br><span class="line">	ros::ServiceClient client &#x3D; n.serviceClient&lt;communication_pkg::AddTwoInts&gt;(&quot;add_two_ints&quot;);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;定义服务消息内容</span><br><span class="line">	communication_pkg::AddTwoInts srv;</span><br><span class="line">	srv.request.a &#x3D; atoll(argv[1]);</span><br><span class="line">	srv.request.b &#x3D; atoll(argv[2]);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;发布服务请求，等待应答结果</span><br><span class="line">	if(client.call(srv))</span><br><span class="line">	&#123;</span><br><span class="line">		ROS_INFO(&quot;Sum: %ld&quot;, (long int)srv.response.sum);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		ROS_ERROR(&quot;Failed to call service add_two_ints&quot;);</span><br><span class="line">		return 1;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆头文件cstdlib.h是C++里面的一个常用函数库，等价于C中的stdlib.h，可以提供一些函数与符号常量。<br>◆头文件ros/ros.h包含了标准ROS类的声明，在每一个ROS程序中都需要包含它。<br>◆头文件communication_pkg/AddTwoInts.h是由AddTwoInts.srv编译扩展得到，包含了针对C++类的定义等，它存放在工作空间的devel/include路径下的communication_pkg文件夹中。<br>◆int main(int argc, char &#42;&#42;argv)是main函数的一种定义形式，其参数argc和argv用于运行时,把命令行参数传入主程序，其中arg是指arguments，即参数。<br>(1)int argc：英文名为arguments count（参数计数），表示运行程序传送给main函数的命令行参数总个数,包括可执行程序名,其中当argc=1时表示只有一个程序名称,此时存储在argv[0]中。<br>(2) char &#42;&#42;argv：英文名为arguments value/vector（参数值），用来存放指向字符串参数的指针数组，每个元素指向一个参数，空格分隔参数，其长度为argc。数组下标从0开始，argv[argc]=NULL。argv[0]指向程序运行时的全路名；argv[1]指向程序在DOS命令中执行程序名后的第一个字符串；argv[2]指向执行程序名后的第二个字符串。<br>◆ros::init(argc, argv, “add_two_ints_client”)的作用是初始化ROS节点，第三个参数表示节点名称，这个节点名是唯一的。<br>◆if(argc != 3){…}表示当终端命令行输入的参数数量不等于3，则执行这段代码。<br>◆ros::NodeHandle n;的作用是创建句柄，启动ROS节点。<br>◆ros::ServiceClient client = n.serviceClient<communication_pkg::AddTwoInts>(“add_two_ints”);这是用户调用ROS服务的其中一种方法。它创建了一个客户端，其返回的ros::ServiceClient类的对象client之后将用于向ROS网络中名为add_two_ints的节点发送服务请求，服务请求的数据类型为communication_pkg::AddTwoInts。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">communication_pkg::AddTwoInts srv;</span><br><span class="line">srv.request.a &#x3D; atoll(argv[1]);</span><br><span class="line">srv.request.b &#x3D; atoll(argv[2]);</span><br></pre></td></tr></table></figure><br>◆这是创建服务请求和服务应答的其中一种方法。它定义了一个service_example::AddTwoInts类型的对象，该对象中的成员正是srv文件中定义的a、b、sum，将终端命令行输入的两个数填充到数据成员a、b中。atoll()函数的作用是将字符串转换成长长整型数(long long int)，即srv.request.a = atoll(argv[1])是将命令行输入的字符串中的第一个数转换成长长整型数，并赋值给成员a，srv.request.b = atoll(argv[2])则同理。<br>◆if(client.call(srv)){…}表示向ROS网络发起服务请求。由于服务请求处于阻塞状态，需要等待请求发起完成后才能返回值。如果服务调用成功，则call()将返回true，并且srv.response中的值将有效。如果调用失败，则call()将返回false，并且srv.response中的值将无效。<br>◆ROS_INFO()和ROS_ERROR()用于输出日志信息，日志消息分为五个不同的严重级别，按照严重性程度递增，分别为DEBUG、INFO、WARN、ERROR、FATAL。<br>综上所述，实现一个客户端的步骤大致可分为以下几点：<br>(1)初始化ROS节点；<br>(2)创建client实例；<br>(3)发布服务请求数据；<br>(4)等待Server处理之后的应答结果。  </p>
+<h3 id="2-5服务器编程"><a href="#2-5服务器编程" class="headerlink" title="2.5服务器编程"></a>2.5服务器编程</h3><p>在src文件夹下再创建一个空文件server.cpp，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;ros&#x2F;ros.h&quot;</span><br><span class="line">#include &quot;communication_pkg&#x2F;AddTwoInts.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;服务回调函数，输入为服务请求Req，输出为服务应答Res</span><br><span class="line">bool add(communication_pkg::AddTwoInts::Request  &amp;req,</span><br><span class="line">	 communication_pkg::AddTwoInts::Response &amp;res)</span><br><span class="line">&#123;</span><br><span class="line">&#x2F;&#x2F;将两个数相加，并将结果存放在变量sum中</span><br><span class="line">res.sum &#x3D; req.a + req.b;</span><br><span class="line">ROS_INFO(&quot;request: x&#x3D;%ld, y&#x3D;%ld&quot;, (long int)req.a, (long int)req.b);</span><br><span class="line">ROS_INFO(&quot;sending back response: [%ld]&quot;, (long int)res.sum);</span><br><span class="line"></span><br><span class="line">return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F;初始化ROS节点</span><br><span class="line">	ros::init(argc, argv, &quot;add_two_ints_server&quot;);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;创建句柄</span><br><span class="line">	ros::NodeHandle n;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;创建服务器，登记回调函数</span><br><span class="line">	ros::ServiceServer service &#x3D; n.advertiseService(&quot;add_two_ints&quot;, add);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;循环等待</span><br><span class="line">	ROS_INFO(&quot;Ready to add two ints.&quot;);</span><br><span class="line">	ros::spin();</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆main函数中一开始都是类似的，初始化ROS节点，创建句柄，从而启动ROS节点。<br>◆ros::ServiceServer service = n.advertiseService(“add_two_ints”, add);的作用是创建服务，并将服务加入到ROS网络中。这个服务在ROS网络中以add_two_ints命名，并且作为唯一标识，以便于其他节点通过服务名称进行请求。当接收到服务请求后，则调用add()回调函数。<br>◆ros::spin()的作用是让程序进入自循环的挂起状态，从而让程序以最好的效率接收客户端的请求并调用回调函数。<br>◆服务回调函数的表示形式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bool callback(MReq &amp;request, MRes &amp;response)</span><br></pre></td></tr></table></figure><br>其中MReq和MRes与提供给advertiseService()的请求/应答的数据类型相匹配。回调函数的返回值若为true，则表示服务请求成功，并且服务应答已填充必要的数据。若返回值为false则表示服务请求失败，并且服务应答将不会发送给客户端。<br>◆回调函数add(communication_pkg::AddTwoInts::Request  &amp;req, communication_pkg::AddTwoInts::Response &amp;res)的作用是实现两个int型整数求和的服务，两个整数从request获取，求和结果填充到response里，request与response的具体数据类型在srv文件中被定义。<br>综上所述，实现一个服务器的步骤大致可分为以下几点：<br>(1)初始化ROS节点；<br>(2)创建Server实例；<br>(3)循环等待服务请求，进入回调函数；<br>(4)在回调函数中完成服务功能的处理，并反馈应答数据。<br>附相关资料：<br>(1)<a href="http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29" target="_blank" rel="noopener">http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29</a><br>(2)<a href="http://wiki.ros.org/roscpp/Overview/Services" target="_blank" rel="noopener">http://wiki.ros.org/roscpp/Overview/Services</a></p>
+<h2 id="3-配置与编译"><a href="#3-配置与编译" class="headerlink" title="3.配置与编译"></a>3.配置与编译</h2><h3 id="3-1在CMaKeLists-txt中添加编译选项"><a href="#3-1在CMaKeLists-txt中添加编译选项" class="headerlink" title="3.1在CMaKeLists.txt中添加编译选项"></a>3.1在CMaKeLists.txt中添加编译选项</h3><p>打开功能包中的CMaKeLists.txt文件，在如下位置的find_package中添加功能包，以便于（节点）调用它们生成消息。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service4.jpg" class=""><br>在如下位置添加相关的.srv文件，确保了CMake在重新配置时知道这些新添加的.srv文件，同时添加.srv文件在生成消息时的所有依赖项（功能包）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_service_files(FILES AddTwoInts.srv)</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service5.jpg" class=""><br>将如下位置中CATLIN_DEPENDS前面的“#”去掉。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service6.jpg" class=""><br>在如下位置进行配置，add_executable(client src/client.cpp)的作用是将src文件夹下的client.cpp文件编译成名为client的可执行文件。target_link_libraries(client ${catkin_LIBRARIES})的作用是将client可执行文件与ROS相关的库链接。add_dependencies(client ${PROJECT_NAME}_gencpp)的作用是将client可执行文件与一些动态生成的文件链接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">add_executable(server src&#x2F;server.cpp)</span><br><span class="line">target_link_libraries(server $&#123;catkin_LIBRARIES&#125;)</span><br><span class="line">add_dependencies(server $&#123;PROJECT_NAME&#125;_gencpp)</span><br><span class="line"></span><br><span class="line">add_executable(client src&#x2F;client.cpp)</span><br><span class="line">target_link_libraries(client $&#123;catkin_LIBRARIES&#125;)</span><br><span class="line">add_dependencies(client $&#123;PROJECT_NAME&#125;_gencpp)</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service7.jpg" class=""></p>
+<h3 id="3-2在package-xml中添加功能包依赖"><a href="#3-2在package-xml中添加功能包依赖" class="headerlink" title="3.2在package.xml中添加功能包依赖"></a>3.2在package.xml中添加功能包依赖</h3><p>打开功能包中的package.xml文件，在如下位置添加功能包依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;build_depend&gt;message_generation&lt;&#x2F;build_depend&gt;</span><br><span class="line">&lt;exec_depend&gt;message_runtime&lt;&#x2F;exec_depend&gt;</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service8.jpg" class=""><br>说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;buildtool_depend&gt;catkin&lt;&#x2F;buildtool_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示需要依赖catkin工具包用于使用catkin_make指令进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;build_export_depend&gt;roscpp&lt;&#x2F;build_export_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示编译后导出相关文件需要依赖roscpp功能包。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;build_depend&gt;message_generation&lt;&#x2F;build_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示在编译时会依赖一个动态产生message的功能包。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;exec_depend&gt;message_runtime&lt;&#x2F;exec_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示在运行时会依赖message_runtime的功能包。</p>
+<h3 id="3-3编译文件"><a href="#3-3编译文件" class="headerlink" title="3.3编译文件"></a>3.3编译文件</h3><p>在/ROS_ws文件夹路径下打开一个新的终端，输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service9.jpg" class=""><br>编译完成后，输入以下代码运行主节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roscore</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service10.jpg" class=""><br>打开一个新的终端，配置环境变量后，输入以下代码运行节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun communication_pkg client 整数1 整数2</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service11.jpg" class=""><br>如果rosrun指令后面缺少需要相加的两个数，则会报如下错误。<br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service12.jpg" class=""><br>打开一个新的终端，配置环境变量后，输入以下代码运行节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun communication_pkg server</span><br></pre></td></tr></table></figure><br><img src="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/service13.jpg" class=""><br>若想停止运行，关闭终端，使用快捷键Ctrl+c即可</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="next" title="ROS话题通信的编程实现">
+                <i class="fa fa-chevron-left"></i> ROS话题通信的编程实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/23/ROS%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="prev" title="ROS动作通信的编程实现">
+                ROS动作通信的编程实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建功能包"><span class="nav-text">1.创建功能包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-节点编程与服务数据定义"><span class="nav-text">2.节点编程与服务数据定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1案例说明"><span class="nav-text">2.1案例说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2服务数据的定义"><span class="nav-text">2.2服务数据的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3创建-cpp文件"><span class="nav-text">2.3创建.cpp文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4客户端编程"><span class="nav-text">2.4客户端编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5服务器编程"><span class="nav-text">2.5服务器编程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-配置与编译"><span class="nav-text">3.配置与编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1在CMaKeLists-txt中添加编译选项"><span class="nav-text">3.1在CMaKeLists.txt中添加编译选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2在package-xml中添加功能包依赖"><span class="nav-text">3.2在package.xml中添加功能包依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3编译文件"><span class="nav-text">3.3编译文件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

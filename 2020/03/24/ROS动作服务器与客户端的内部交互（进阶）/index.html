@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接：http:&#x2F;&#x2F;wiki.ros.org&#x2F;actionlib&#x2F;DetailedDescription   1．动作服务器goal由action客户端发出，一旦action服务器接收到goal，就会创建一个状态机来跟踪goal的状态，如下图。 1.1服务器状态◆Pending - 该目标尚未由动作服务器处理；◆Active - 该目标当前正在由操作服务器处理；◆Recalling - 目标尚">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS动作服务器与客户端的内部交互（进阶）">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="原文链接：http:&#x2F;&#x2F;wiki.ros.org&#x2F;actionlib&#x2F;DetailedDescription   1．动作服务器goal由action客户端发出，一旦action服务器接收到goal，就会创建一个状态机来跟踪goal的状态，如下图。 1.1服务器状态◆Pending - 该目标尚未由动作服务器处理；◆Active - 该目标当前正在由操作服务器处理；◆Recalling - 目标尚">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act7.jpg">
+<meta property="article:published_time" content="2020-03-24T14:52:40.119Z">
+<meta property="article:modified_time" content="2020-03-24T14:52:40.232Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;24&#x2F;ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89&#x2F;act1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/03/24/ROS动作服务器与客户端的内部交互（进阶）/"/>
+
+
+
+
+
+  <title>ROS动作服务器与客户端的内部交互（进阶） | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS动作服务器与客户端的内部交互（进阶）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-24T22:52:40+08:00">
+                2020-03-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文链接：<a href="http://wiki.ros.org/actionlib/DetailedDescription" target="_blank" rel="noopener">http://wiki.ros.org/actionlib/DetailedDescription</a>  </p>
+<h2 id="1．动作服务器"><a href="#1．动作服务器" class="headerlink" title="1．动作服务器"></a>1．动作服务器</h2><p>goal由action客户端发出，一旦action服务器接收到goal，就会创建一个状态机来跟踪goal的状态，如下图。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act1.jpg" class=""></p>
+<h3 id="1-1服务器状态"><a href="#1-1服务器状态" class="headerlink" title="1.1服务器状态"></a>1.1服务器状态</h3><p>◆Pending - 该目标尚未由动作服务器处理；<br>◆Active - 该目标当前正在由操作服务器处理；<br>◆Recalling - 目标尚未处理，并且已从动作客户端收到取消请求，但是动作服务器尚未确认目标已取消；<br>◆Preempting - 正在处理目标，并且已从操作客户端收到取消请求，但是操作服务器尚未确认目标已取消；<br>◆Rejected - 该目标已被动作服务器拒绝，未经处理，也没有动作客户端请求取消；<br>◆Succeeded - 动作服务器成功完成目标；<br>◆Aborted - 该目标已由动作服务器中止，而没有来自动作客户端的外部请求取消；<br>◆Recalled - 在动作服务器开始处理目标之前，该目标已被另一个目标或取消请求而取消；<br>◆Preempted - 目标的处理被另一个目标，或已发送到动作服务器的取消请求取消；</p>
+<h3 id="1-2状态转换命令"><a href="#1-2状态转换命令" class="headerlink" title="1.2状态转换命令"></a>1.2状态转换命令</h3><p>◆setAccepted - 检查目标后，决定开始处理它；<br>◆setRejected - 检查目标之后，决定不对其进行处理，因为它是无效的请求（超出范围，资源不可用，无效等）；<br>◆setSucceeded – 通知目标已成功处理；<br>◆setAborted - 通知该目标在处理过程中遇到错误，必须中止；<br>◆setCanceled - 通知由于取消请求，而不再处理目标；<br>◆CancelRequest - 客户端通知动作服务器希望服务器停止处理目标。</p>
+<h2 id="2．动作客户端"><a href="#2．动作客户端" class="headerlink" title="2．动作客户端"></a>2．动作客户端</h2><p>在actionlib中，我们将服务器状态机视为主状态机，然后将客户端状态机视为试图跟踪服务器状态的辅助状态机，如下图。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act2.jpg" class=""></p>
+<h3 id="2-1服务器触发转换"><a href="#2-1服务器触发转换" class="headerlink" title="2.1服务器触发转换"></a>2.1服务器触发转换</h3><p>◆Reported [State]：由于客户端尝试跟踪服务器的状态，因此大多数状态的转换都是由服务器向动作客户端报告其状态来触发的；<br>◆Receive Result Message：在这种情况下，服务器将result发送给客户端。接收到result预示着跟踪目标的结束。</p>
+<h3 id="2-2客户端触发转换"><a href="#2-2客户端触发转换" class="headerlink" title="2.2客户端触发转换"></a>2.2客户端触发转换</h3><p>◆Cancel Goal：请求服务器停止处理此目标。</p>
+<h3 id="2-3“跳过”状态"><a href="#2-3“跳过”状态" class="headerlink" title="2.3“跳过”状态"></a>2.3“跳过”状态</h3><p>◆给定我们基于ROS的传输层，客户端可能无法从服务器接收所有状态更新。因此，我们必须允许客户端状态机“跳过”服务器触发的状态。<br>示例：如果客户端处于[WAITING FOR GOAL ACK]中，并且从服务器接收到[PREEMPTED]状态更新，则客户端状态可以跳过[ACTIVE]并直接转换为[WAITING FOR RESULT]。<br>◆由于多个动作客户端可以连接到单个动作服务器，因此第二个客户端可以取消第一个客户端发送的目标。因此，如果从服务器接收到[RECALLING]状态，则客户端从[PENDING]转换为[RECALLING]是有效的。</p>
+<h2 id="3-动作接口及传输层"><a href="#3-动作接口及传输层" class="headerlink" title="3.动作接口及传输层"></a>3.动作接口及传输层</h2><p>Action客户端和服务器使用预定义的动作协议(action protocol)相互进行通信。 此动作协议依靠指定的ROS命名空间中的ROS话题来传输消息。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act3.jpg" class=""><br>ROS消息：<br>◆goal – 用于发送新的目标（goal）给服务器。<br>◆cancel – 用于发送取消请求给服务器。<br>◆status – 用于将系统中每个目标（goal）的当前状态通知给客户端。<br>◆feedback - 用于定期向客户端发送目标（goal）的辅助信息。<br>◆result - 用于在目标（goal）完成后向客户发送一次辅助信息。</p>
+<h3 id="3-1数据关联与Goal-ID"><a href="#3-1数据关联与Goal-ID" class="headerlink" title="3.1数据关联与Goal ID"></a>3.1数据关联与Goal ID</h3><p>Goal ID是action message中一个字符串字段，这为动作服务器和客户端提供了一种可靠的方式，可以将通过ROS传输的消息与正在处理的特定goal相关联。 目标ID通常由节点名称，计数器和时间戳组成。<br>注意：goal ID的格式仍然不稳定，因此用户切勿解析goal ID或依赖其格式。</p>
+<h3 id="3-2消息"><a href="#3-2消息" class="headerlink" title="3.2消息"></a>3.2消息</h3><h4 id="3-2-1goal-topic-Sending-Goals"><a href="#3-2-1goal-topic-Sending-Goals" class="headerlink" title="3.2.1goal topic: Sending Goals"></a>3.2.1goal topic: Sending Goals</h4><p>Goal topic使用自动生成的ActionGoal消息（例如：actionlib/TestActionGoal），用于将新目标发送到动作服务器。ActionGoal消息将目标消息打包，并将其与目标ID捆绑在一起。<br>发送目标时，动作客户端通常会生成唯一的goal ID和时间戳，但是客户端也可能会将它们留空，此时动作服务器将会填充它们。<br>◆Empty stamp：一旦动作服务器接收到，时间戳将设置为now()。<br>◆Empty id：一旦动作服务器接收到，ID自动随机创建。不过这个ID由于动作客户端无法知道其对应的goal，所以意义不大。</p>
+<h4 id="3-2-2cancel-topic-Cancelling-Goals"><a href="#3-2-2cancel-topic-Cancelling-Goals" class="headerlink" title="3.2.2cancel topic: Cancelling Goals"></a>3.2.2cancel topic: Cancelling Goals</h4><p>Cancel topic使用actionlib_msgs/GoalID消息，并允许动作客户端将取消请求发送给动作服务器。每个取消请求消息都带有一个时间戳和goal ID，并且如何填充这些消息字段将会影响到要取消的目标，下图是取消请求的处理策略。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act4.jpg" class=""></p>
+<h4 id="3-2-3status-topic-Server-goal-state-updates"><a href="#3-2-3status-topic-Server-goal-state-updates" class="headerlink" title="3.2.3status topic: Server goal state updates"></a>3.2.3status topic: Server goal state updates</h4><p>Status topic使用actionlib_msgs / GoalStatusArray，并提供给动作客户端有关服务器当前正在追踪的每个目标的状态信息。这是由服务器以某个固定速率（通常为10Hz）发送的，并且还可以在任何服务器目标状态转换时异步发送。<br>动作服务器会追踪目标，直到达到终端状态为止。 但是为了提高通信的健壮性，服务器在达到终端状态后，会再次发布此目标的状态几秒钟。</p>
+<h4 id="3-2-4feedback-topic-Asynchronous-goal-information"><a href="#3-2-4feedback-topic-Asynchronous-goal-information" class="headerlink" title="3.2.4feedback topic: Asynchronous goal information"></a>3.2.4feedback topic: Asynchronous goal information</h4><p>Feedback topic使用自动生成的ActionFeedback消息（例如：todo），并为服务器提供了一种在处理目标期间向动作客户端定期发布更新的方法。由于ActionFeedback具有goal ID，因此动作客户端可以决定它是否使用还是丢弃所收到的反馈消息，因此发送反馈完全是可选的。</p>
+<h4 id="3-2-5-result-topic-Goal-information-upon-completion"><a href="#3-2-5-result-topic-Goal-information-upon-completion" class="headerlink" title="3.2.5 result topic: Goal information upon completion"></a>3.2.5 result topic: Goal information upon completion</h4><p>Result topic使用自动生成的ActionResult消息（例如：actionlib/TestActionResult），并为服务器实现者提供了一种在目标完成后向操作客户端发送信息的方法。由于ActionResult具有goal ID，因此动作客户端可以决定它是否使用还是丢弃result消息。尽管reslt可能是空消息，但它是action接口的必需部分，并且必须始终在目标完成后发送，因此必须在转换到终端状态（Rejected, Recalled, Preempted, Aborted, Succeeded）时发送结果。</p>
+<h2 id="4机制"><a href="#4机制" class="headerlink" title="4机制"></a>4机制</h2><h3 id="4-1-Simple-Action-Client"><a href="#4-1-Simple-Action-Client" class="headerlink" title="4.1 Simple Action Client"></a>4.1 Simple Action Client</h3><p>通常，高层次的应用工程师和管理人员仅仅关心的是，目标是否正在处理或目标是否完成，他们很少关心所有中间状态。Simple action client将原始的客户端状态机分为三个状态：Pending，Active和Done。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act5.jpg" class=""></p>
+<h4 id="4-1-1客户端状态歧义"><a href="#4-1-1客户端状态歧义" class="headerlink" title="4.1.1客户端状态歧义"></a>4.1.1客户端状态歧义</h4><p>仅客户端状态不足以确定Simple client状态，但是，这可以通过查看客户端状态转换轻松解决。如果客户端状态转换未在任何Simple client状态之间交叉，则不会更新Simple client状态。<br>示例：如果客户端从RECALLING转换为WAITING FOR RESULT，则简单客户端状态仍将保持PENDING状态。</p>
+<h4 id="4-1-2多目标策略"><a href="#4-1-2多目标策略" class="headerlink" title="4.1.2多目标策略"></a>4.1.2多目标策略</h4><p>为简单起见，Simple Action Client一次仅跟踪一个目标。当用户通过Simple client发送目标时，它会禁用与先前目标相关的所有回调函数，并且还会停止跟踪其状态，但是它不会取消先前的目标。</p>
+<h4 id="4-1-3线程模型（C-）"><a href="#4-1-3线程模型（C-）" class="headerlink" title="4.1.3线程模型（C++）"></a>4.1.3线程模型（C++）</h4><p>在构造Simple Action Client时，用户可决定是否扩展额外的线程。<br>◆无多余的线程（推荐）<br>动作客户端中的所有订阅者都向全局回调队列注册。从ros::spin()内部调用用户的action回调,因此阻止用户的action回调将阻止为全局回调队列提供服务。<br>◆扩展线程<br>在动作客户端中的所有订阅者都注册有一个回调队列，该队列与全局回调队列分开，并且由扩展的线程进行服务。<br>从所扩展的线程中调用用户的action回调，尽管阻止action回调不会阻止其他ROS消息得到服务，但这仍然不是一个好主意，因为该服务的status，feedback和result消息无法得到服务。<br>扩展额外线程的好处是，用户可以避免在其应用程序中调用ros::spin()。</p>
+<h3 id="4-2Simple-Action-Server"><a href="#4-2Simple-Action-Server" class="headerlink" title="4.2Simple Action Server"></a>4.2Simple Action Server</h3><p>很多动作服务器都遵循类似的模式，一次只能激活一个目标，而每个新目标都将优先于前一个目标。Simple Action Server是基于动作服务器的包装，旨在为执行目标而实施此简化策略。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act6.jpg" class=""><br>在接收到从动作客户端发出的新目标后，Simple Action Server将该目标挂起。如果一个目标已经占用了挂起位置，则Simple Action Server将这个已占用的目标设置为取消，并将其替换为通过网络传入的目标。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act7.jpg" class=""><br>一旦Simple Action Server接收到一个新目标并将其挂起，就会向Simple Action Server的用户通知有一个新目标可用。如以下目标通知一节所述，此通知以两种方式中的其中一种方式发生。在接收到通知后，用户可以接收使被挂起的目标移动到当前目标的目标，并允许用户修改与新接收的目标相关联的状态机。</p>
+<h4 id="4-2-1目标通知"><a href="#4-2-1目标通知" class="headerlink" title="4.2.1目标通知"></a>4.2.1目标通知</h4><p>用户可以通过两种方式去接收Simple Action Server已接收到新目标的通知。<br>◆回调通知(Callback Notification)：用户在构造中向Simple Action Server注册了一个回调，当新目标被Simple Action Server挂起时，将调用该回调函数。用户可以在回调中接收新目标，或者在准备就绪时通知另一个线程接收目标。<br>◆轮询通知(Polling Notification)：用户明确询问Simple Action Server是否有新的目标可用。Simple Action Server根据从上一次进行新目标查询以来是否有新的目标被挂起，从而对此查询进行回应。</p>
+<h4 id="4-2-2线程模型（C-）"><a href="#4-2-2线程模型（C-）" class="headerlink" title="4.2.2线程模型（C++）"></a>4.2.2线程模型（C++）</h4><p>在构造Simple Action Server时，用户决定是否增加一个额外的线程以允许在目标回调函数中执行长时间运行的动作。<br>◆无多余的线程（推荐）<br>在为接收新目标的回调中进行的任何操作都不应长期运行，用户可以通知另一个线程进行工作，但不应阻塞。用户也可以使用轮询来检查新目标的有效性，并完全可以避免回调。<br>◆扩展线程<br>创建一个独立的线程以允许用户当新目标有效时，能够在接收到的回调函数中执行长时间的运行或被阻止的动作。在此回调中，用户还可以轮询Simple Action Server以检查是否有新目标。<br>Simple Action Server为用户扩展线程的好处是，用户不必处理用于管理另一个线程的开销。但是对于用户而言，重要的是要意识到此线程的存在，以便它们遵循诸如锁定之类的标准线程安全规定。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/23/ROS%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="next" title="ROS动作通信的编程实现">
+                <i class="fa fa-chevron-left"></i> ROS动作通信的编程实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="prev" title="TF坐标系变换的编程实现">
+                TF坐标系变换的编程实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1．动作服务器"><span class="nav-text">1．动作服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1服务器状态"><span class="nav-text">1.1服务器状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2状态转换命令"><span class="nav-text">1.2状态转换命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2．动作客户端"><span class="nav-text">2．动作客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1服务器触发转换"><span class="nav-text">2.1服务器触发转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2客户端触发转换"><span class="nav-text">2.2客户端触发转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3“跳过”状态"><span class="nav-text">2.3“跳过”状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-动作接口及传输层"><span class="nav-text">3.动作接口及传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1数据关联与Goal-ID"><span class="nav-text">3.1数据关联与Goal ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2消息"><span class="nav-text">3.2消息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1goal-topic-Sending-Goals"><span class="nav-text">3.2.1goal topic: Sending Goals</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2cancel-topic-Cancelling-Goals"><span class="nav-text">3.2.2cancel topic: Cancelling Goals</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3status-topic-Server-goal-state-updates"><span class="nav-text">3.2.3status topic: Server goal state updates</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-4feedback-topic-Asynchronous-goal-information"><span class="nav-text">3.2.4feedback topic: Asynchronous goal information</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-5-result-topic-Goal-information-upon-completion"><span class="nav-text">3.2.5 result topic: Goal information upon completion</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4机制"><span class="nav-text">4机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Simple-Action-Client"><span class="nav-text">4.1 Simple Action Client</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1客户端状态歧义"><span class="nav-text">4.1.1客户端状态歧义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2多目标策略"><span class="nav-text">4.1.2多目标策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-3线程模型（C-）"><span class="nav-text">4.1.3线程模型（C++）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2Simple-Action-Server"><span class="nav-text">4.2Simple Action Server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1目标通知"><span class="nav-text">4.2.1目标通知</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2线程模型（C-）"><span class="nav-text">4.2.2线程模型（C++）</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

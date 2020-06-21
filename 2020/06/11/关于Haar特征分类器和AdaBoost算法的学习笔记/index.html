@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="参考链接：(1) https:&#x2F;&#x2F;blog.csdn.net&#x2F;JasonDing1354&#x2F;article&#x2F;details&#x2F;37558287(2) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zouxy09&#x2F;article&#x2F;details&#x2F;7922923(3) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zouxy09&#x2F;article&#x2F;details&#x2F;7929570   1.前言我们要探讨的Haar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Haar特征分类器和AdaBoost算法的学习笔记">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="参考链接：(1) https:&#x2F;&#x2F;blog.csdn.net&#x2F;JasonDing1354&#x2F;article&#x2F;details&#x2F;37558287(2) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zouxy09&#x2F;article&#x2F;details&#x2F;7922923(3) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zouxy09&#x2F;article&#x2F;details&#x2F;7929570   1.前言我们要探讨的Haar">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar12.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar13.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar14.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar15.jpg">
+<meta property="article:published_time" content="2020-06-11T12:11:07.535Z">
+<meta property="article:modified_time" content="2020-06-11T15:27:45.488Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;11&#x2F;%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0&#x2F;haar1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/06/11/关于Haar特征分类器和AdaBoost算法的学习笔记/"/>
+
+
+
+
+
+  <title>关于Haar特征分类器和AdaBoost算法的学习笔记 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Haar特征分类器和AdaBoost算法的学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-11T20:11:07+08:00">
+                2020-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考链接：<br>(1) <a href="https://blog.csdn.net/JasonDing1354/article/details/37558287" target="_blank" rel="noopener">https://blog.csdn.net/JasonDing1354/article/details/37558287</a><br>(2) <a href="https://blog.csdn.net/zouxy09/article/details/7922923" target="_blank" rel="noopener">https://blog.csdn.net/zouxy09/article/details/7922923</a><br>(3) <a href="https://blog.csdn.net/zouxy09/article/details/7929570" target="_blank" rel="noopener">https://blog.csdn.net/zouxy09/article/details/7929570</a>  </p>
+<h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h2><p>我们要探讨的Haar分类器实际上是Boosting算法的一个应用，Haar分类器用到了Boosting算法中的AdaBoost算法，只是把AdaBoost算法训练出的强分类器进行了级联，并且在底层的特征提取中采用了高效率的矩形特征和积分图方法，这里涉及到的几个名词接下来会具体讨论。<br>而AdaBoost算法是Freund和Schapire在1995年提出的算法，是对传统Boosting算法的一大提升。Boosting算法的核心思想，是将弱学习方法提升成强学习算法。<br>Haar分类器算法的要点如下：<br>①使用Haar-like特征做检测。<br>②使用积分图（Integral Image）对Haar-like特征求值进行加速。<br>③使用AdaBoost算法训练区分人脸和非人脸的强分类器。<br>④使用筛选式级联把强分类器级联到一起，提高准确率。<br>即Haar分类器 = Haar-like特征 + 积分图方法 + AdaBoost + 级联</p>
+<h2 id="2-Haar-like特征"><a href="#2-Haar-like特征" class="headerlink" title="2.Haar-like特征"></a>2.Haar-like特征</h2><p>最原始的Haar-like特征在2002年的《A general framework for object detection》提出，它定义了四个基本特征结构，如下A，B，C，D所示，可以将它们理解成为一个窗口，这个窗口将在图像中做步长为1的滑动，最终遍历整个图像。<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar1.jpg" class=""><br>比较特殊的一点是，当一次遍历结束后，窗口将在宽度或长度上成比例的放大，再重复之前遍历的步骤，直到放大到最后一个比例后结束。<br>那么可以放大的比例系数如何确定呢？设在宽度上可以放大的最大倍数为Kw，高度上可以放大的最大倍数为Kh，计算公式如下：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar2.jpg" class=""><br>其中wI和hI是整个图像的宽高，wwin和hwin是Haar窗口的初始宽、高，可以放大的倍数为Kw⋅Kh。<br>Haar-like特征提取过程就是利用上面定义的窗口在图像中滑动，滑动到一个位置的时候，将窗口覆盖住的区域中的白色位置对应的像素值的和减去黑色位置对应的像素值的和，得到的一个数值就是Haar特征中一个维度。<br>其中对于窗口C，黑色区域的像素值加和要乘以2，是为了像素点个数相同而增加的权重。<br>在基本的四个haar特征基础上，文章《An extended set of Haar-like features for rapid object detection》对其做了扩展，将原来的4个扩展为14个。这些扩展特征主要增加了旋转性，能够提取到更丰富的边缘信息。<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar3.jpg" class=""><br>如何理解特征呢？以人脸识别为例，我们将上面的任意一个矩形放到人脸区域上，然后将白色区域的像素和减去黑色区域的像素和，得到的值我们暂且称之为人脸特征值，如果你把这个矩形放到一个非人脸区域，那么计算出的特征值应该和人脸特征值是不一样的，而且越不一样越好，所以这些方块的目的就是把人脸特征量化，以区分人脸和非人脸。<br>为了增加区分度，可以对多个矩形特征计算得到一个区分度更大的特征值，那么什么样的矩形特征怎么样的组合到一块可以更好的区分出人脸和非人脸呢，这就是AdaBoost算法要做的事了。</p>
+<h2 id="3-AdaBoost算法"><a href="#3-AdaBoost算法" class="headerlink" title="3.AdaBoost算法"></a>3.AdaBoost算法</h2><p>AdaBoost算法的老祖宗可以说是机器学习的一个模型，它的名字叫PAC(Probably Approximately Correct)。<br>PAC模型是计算学习理论中常用的模型，由Leslie Valiant在1984年提出，他认为“学习”是模式明显清晰或模式不存在时仍能获取知识的一种“过程”，并给出了一个从计算角度来获得这种“过程”的方法，这种方法包括：<br>①适当信息收集机制的选择；<br>②学习的协定；<br>③对能在合理步骤内完成学习的概念的分类。<br>PAC学习的实质就是在样本训练的基础上，使算法的输出以概率接近未知的目标概念。PAC学习模型是考虑样本复杂度（指学习器收敛到成功假设时至少所需的训练样本数）和计算复杂度（指学习器收敛到成功假设时所需的计算量）的一个基本框架，成功的学习被定义为形式化的概率理论。简单说来，PAC学习模型不要求你每次都正确，只要能在多项式样本和多项式时间内得到满足需求的正确率，就算是一个成功的学习。<br>基于PAC学习模型的理论分析，Valiant提出了Boosting算法。Boosting算法涉及到两个重要的概念就是弱学习和强学习，所谓的弱学习，就是指一个学习算法对一组概念的识别率只比随机识别好一点，所谓强学习，就是指一个学习算法对一组概率的识别率很高。Kearns和Valiant提出了弱学习和强学习等价的问题，并证明了只要有足够的数据，弱学习算法就能通过集成的方式生成任意高精度的强学习方法。<br>针对Boosting的若干缺陷，Freund和Schapire于1996年前后提出了一个实际可用的自适应Boosting算法AdaBoost，AdaBoost目前已发展出了大概四种形式的算法，Discrete AdaBoost、Real AdaBoost、LogitBoost、gentle AdaBoost。</p>
+<h3 id="3-1弱分类器"><a href="#3-1弱分类器" class="headerlink" title="3.1弱分类器"></a>3.1弱分类器</h3><p>最初的弱分类器可能只是一个最基本的Haar-like特征，计算输入图像的Haar-like特征值，和最初的弱分类器的特征值比较，以此来判断输入图像是不是人脸，然而这个弱分类器太简陋了，可能并不比随机判断的效果好，对弱分类器的孵化就是训练弱分类器成为最优弱分类器，注意这里的最优不是指强分类器，只是一个误差相对稍低的弱分类器，训练弱分类器实际上是为分类器进行设置的过程。我们首先分别看下弱分类器的数学结构和代码结构。<br>数学结构：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar4.jpg" class=""><br>其中，hj(x)为弱分类器的判断值，值为1则说明图片为人脸，否则非人脸；x表示输入的图片子窗口，fj(x)为x图像上第j个特征的值；θj为分类器阈值；pj为不等号方向，若分类结果大于阈值，则为−1，否则为+1，以保证不等号&lt;方向不变。<br>注意：输入x为一幅数字图像，特征fj与弱分类器hj(x)是一一对应的关系；一个弱分类器的训练就是找到最优阈值θj的过程，一轮分类器的训练过程就是找到分类效果最好的弱分类器的过程。<br>代码结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;*</span><br><span class="line"></span><br><span class="line">  * CART classifier</span><br><span class="line"></span><br><span class="line">  *&#x2F;</span><br><span class="line"></span><br><span class="line"> typedef struct CvCARTHaarClassifier</span><br><span class="line"></span><br><span class="line"> &#123;</span><br><span class="line"></span><br><span class="line">     CV_INT_HAAR_CLASSIFIER_FIELDS()</span><br><span class="line"></span><br><span class="line">     int count;</span><br><span class="line"></span><br><span class="line">     int* compidx;</span><br><span class="line"></span><br><span class="line">     CvTHaarFeature* feature;</span><br><span class="line"></span><br><span class="line">     CvFastHaarFeature* fastfeature;</span><br><span class="line"></span><br><span class="line">     float* threshold;</span><br><span class="line"></span><br><span class="line">     int* left;</span><br><span class="line"></span><br><span class="line">     int* right;</span><br><span class="line"></span><br><span class="line">     float* val;</span><br><span class="line"></span><br><span class="line"> &#125; CvCARTHaarClassifier;</span><br></pre></td></tr></table></figure><br>代码结构中的threshold即代表数学结构中的θ阈值。<br>这个阈值究竟是干什么的？我们先了解下CvCARTHaarClassifier这个结构，注意CART这个词，它是一种二叉决策树，它的提出者Leo Breiman等称其为“分类和回归树（CART）”。<br>机器学习中，决策树是一个预测模型；他代表的是对象属性与对象值之间的一种映射关系。树中每个节点表示某个对象，而每个分叉路径则代表的某个可能的属性值，而每个叶结点则对应从根节点到该叶节点所经历的路径所表示的对象的值。决策树仅有单一输出，若欲有复数输出，可以建立独立的决策树以处理不同输出。从数据产生决策树的机器学习技术叫做决策树学习,通俗说就是决策树。<br>决策树用途很广可以分析因素对事件结果的影响，同时也是很常用的分类方法，我举个最简单的决策树例子，假设我们使用三个Haar-like特征f1，f2，f3来判断输入数据是否为人脸，可以建立如下决策树：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar5.jpg" class=""><br>可以看出，在分类的应用中，每个非叶子节点都表示一种判断，每个路径代表一种判断的输出，每个叶子节点代表一种类别，并作为最终判断的结果。<br>一个弱分类器就是一个基本和上图类似的决策树，最基本的弱分类器只包含一个Haar-like特征，也就是它的决策树只有一层，被称为树桩（stump）。</p>
+<h3 id="3-2弱分类器的训练"><a href="#3-2弱分类器的训练" class="headerlink" title="3.2弱分类器的训练"></a>3.2弱分类器的训练</h3><p>最重要的是如何决定每个节点判断的输出，要比较输入图片的特征值和弱分类器中特征，一定需要一个阈值，当输入图片的特征值大于该阈值时才判定其为人脸。训练最优弱分类器的过程实际上就是在寻找合适的分类器阈值，使该分类器对所有样本的判读误差最低。<br>具体操作过程如下：<br>①对于每个特征f，计算所有训练样本的特征值，并根据特征值大小对特征升序排序；<br>②扫描一遍排好序的特征值，对排好序的表中的每个元素，计算下面四个值：<br>●全部人脸样本的权重的和T1；<br>●全部非人脸样本的权重的和T0；<br>●在此元素之前的人脸样本的权重的和S1；<br>●在此元素之前的非人脸样本的权重的和S0；<br>③选取当前元素特征值fi(x)，和它前面的一个特征值fi-1(x)之间的值作为阈值，该阈值的分类误差为：e = min( (S1+(T0-S0) ,(S0+(T1-S1))<br>通过把这个排序的表从头到尾扫描一遍可以为弱分类器选择使分类误差最小的阈值（即最优阈值），也就是得到一个最佳弱分类器。</p>
+<h3 id="3-3强分类器"><a href="#3-3强分类器" class="headerlink" title="3.3强分类器"></a>3.3强分类器</h3><p>AdaBoost训练出来的强分类器一般具有较小的误识率，但检测率并不很高，一般情况下，高检测率会导致高误识率，这是强分类阈值的划分导致的，要提高强分类器的检测率要降低阈值，要降低强分类器的误识率就要提高阈值，这是个矛盾的事情。增加分类器个数可以在提高强分类器检测率的同时降低误识率，所以级联分类器在训练时要考虑如下平衡，一是弱分类器的个数和计算时间的平衡，二是强分类器检测率和误识率之间的平衡。<br>首先看一下强分类器的代码结构:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;* internal stage classifier *&#x2F;</span><br><span class="line"></span><br><span class="line"> typedef struct CvStageHaarClassifier</span><br><span class="line"></span><br><span class="line"> &#123;</span><br><span class="line"></span><br><span class="line">     CV_INT_HAAR_CLASSIFIER_FIELDS()</span><br><span class="line"></span><br><span class="line">     int count;</span><br><span class="line"></span><br><span class="line">     float threshold;</span><br><span class="line"></span><br><span class="line">     CvIntHaarClassifier** classifier;</span><br><span class="line"></span><br><span class="line"> &#125;CvStageHaarClassifier;</span><br><span class="line"></span><br><span class="line">&#x2F;* internal weak classifier*&#x2F;</span><br><span class="line"></span><br><span class="line">typedef struct CvIntHaarClassifier</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">CV_INT_HAAR_CLASSIFIER_FIELDS()</span><br><span class="line"></span><br><span class="line">&#125; CvIntHaarClassifier;</span><br></pre></td></tr></table></figure><br>这里要提到的是CvIntHaarClassifier结构：它就相当于一个接口类，当然是用C语言模拟的面向对象思想，利用CV_INT_HAAR_CLASSIFIER_FIELDS()这个宏让弱分类器CvCARTHaarClassifier和强分类器CvStageHaarClassifier继承于CvIntHaarClassifier。<br>强分类器的诞生需要T轮的迭代，具体操作如下：<br>①给定训练样本集S，共N（N=X+Y）个样本，其中X和Y分别对应于正样本和负样本的数量，T为训练的最大循环次数；<br>②初始化样本权重为1/N，即为训练样本的初始概率分布；  　　<br>③第一次迭代训练N个样本，得到第一个最优弱分类器；<br>④提高上一轮中被误判的样本的权重；<br>⑤将新的样本和上次区分错误的样本放在一起进行新一轮的训练；<br>⑥循环执行4-5步骤，T轮后得到T个最优弱分类器；<br>⑦组合T个最优弱分类器得到强分类器，组合方式如下：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar6.jpg" class=""><br>其中，ht(x)为第t个弱分类器的输出值，αt为弱分类器的权重，它的数学公式为αt=[log((1-et)/et)]，et为弱分类器对训练样本集的错误率。<br>下图是强分类器的逻辑结构：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar7.jpg" class=""><br>在OpenCV中，强分类器是由多个弱分类器“并列”构成，即强分类器中的弱分类器是两两相互独立的。在检测目标时，每个弱分类器独立运行并输出值cascadeLeaves[leafOfs - idx]，然后把当前强分类器中每一个弱分类器的输出值相加求和。因此强分类器的决策相当于让所有弱分类器投票，再对投票结果按照弱分类器的错误率加权求和，将投票加权求和的结果与平均投票结果比较得出最终的结果。</p>
+<h3 id="3-4强分类器的级联"><a href="#3-4强分类器的级联" class="headerlink" title="3.4强分类器的级联"></a>3.4强分类器的级联</h3><p>我们通过AdaBoost算法训练出了强分类器，然而在现实的人脸检测中，只靠一个强分类器还是难以保证检测的正确率，这个时候，需要一个豪华的阵容，来训练出多个强分类器将它们强强联手，最终形成正确率很高的级联分类器这就是我们最终的目标Haar分类器。<br>在一个级联分类系统中，对于每一个输入图片，对图片进行多区域，多尺度的检测，所谓多区域，是要对图片划分多块，对每个块进行检测，由于训练的时候用的照片一般都是20*20左右的小图片，所以对于大的人脸，还需要进行多尺度的检测，多尺度检测机制一般有两种策略，一种是不改变搜索窗口的大小，而不断缩放图片，这种方法显然需要对每个缩放后的图片进行区域特征值的运算，效率不高。而另一种方法，是不断初始化搜索窗口size为训练时的图片大小，不断扩大搜索窗口，进行搜索，解决了第一种方法的弱势。在区域放大的过程中会出现同一个人脸被多次检测，这需要进行区域的合并，这里不作探讨。<br>无论哪一种搜索方法，都会为输入图片输出大量的子窗口图像，这些子窗口图像经过筛选式级联分类器会不断地被每一个节点筛选，抛弃或通过。<br>另外前面的强分类器相对简单，其包含的弱分类器也相对较少，后面的强分类器逐级复杂，只有通过前面的强分类检测后的图片才能送入后面的强分类器检测，比较靠前的几级分类器可以过滤掉大部分的不合格图片，只有通过了所有强分类器检测的图片区域才是有效的人脸区域。<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar8.jpg" class=""></p>
+<h2 id="4-积分图"><a href="#4-积分图" class="headerlink" title="4.积分图"></a>4.积分图</h2><p>在上面Haar-like特征这节说到，将模板的特征值定义为白色矩形像素和减去黑色矩形像素和。而积分图就是只遍历一次图像就可以求出图像中所有区域像素和的快速算法，大大的提高了图像特征值计算的效率。<br>积分图的构造方式是位置（i,j）处的值ii(i,j)是原图像(i,j)左上角方向所有像素的和：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar9.jpg" class=""><br>积分图构建算法：<br>①用s(i,j)表示行方向的累加和，初始化s(i,-1)=0；<br>②用ii(i,j)表示一个积分图像，初始化ii(-1,i)=0；<br>③逐行扫描图像，递归计算每个像素f(i,j)行方向的累加和s(i,j)和积分图像ii(i,j)的值；<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar10.jpg" class=""><br>④扫描图像一遍，当到达图像右下角像素时，积分图像ii就构造好了。<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar11.jpg" class=""><br>上面这幅图中有四个区域，A，B，C，D。我们将左上角的点记为0，区域A的所有点像素值的和记为sumA，点0与点1之间的积分图记为integral0,1，那么根据积分图的定义：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar12.jpg" class=""><br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar13.jpg" class=""><br>区域D的像素值和sumD就应该为integral1,4，但是注意，积分图中是没有从点1到点4的概念的，它所有的起点都应该是点0，所以：<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar14.jpg" class=""><br>转化一下就是<br><img src="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/haar15.jpg" class=""><br>上面的内容就是积分图，比如说我们要求sumDsumD，并不需要从点1到点4做行列的遍历，因为这个遍历过程的时间复杂度是O(mn)的。我们只需要先存在下来从0到点1，2，3，4的积分图，然后做一个简单的加减法就好了，这个时间复杂度仅仅为O(1)。当然了，存储的过程是消耗空间复杂度的，这是很典型的空间换时间的套路。这就是上面提到的积分图加速计算的过程。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/" rel="next" title="路径跟踪——Pure Persuit（纯跟踪）算法">
+                <i class="fa fa-chevron-left"></i> 路径跟踪——Pure Persuit（纯跟踪）算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-前言"><span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Haar-like特征"><span class="nav-text">2.Haar-like特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-AdaBoost算法"><span class="nav-text">3.AdaBoost算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1弱分类器"><span class="nav-text">3.1弱分类器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2弱分类器的训练"><span class="nav-text">3.2弱分类器的训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3强分类器"><span class="nav-text">3.3强分类器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4强分类器的级联"><span class="nav-text">3.4强分类器的级联</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-积分图"><span class="nav-text">4.积分图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

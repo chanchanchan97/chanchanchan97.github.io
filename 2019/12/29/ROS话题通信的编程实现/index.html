@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为test_pkg，并编译完成。 2.节点编程与消息定义2.1案例说明定义一个发布者Publisher，通过自定义的消息Person将消息数据name、sex及age等发送到订阅者Subscriber，同时订阅者将消息内容打印到终端界面。 2.2话题消息的定义在功能包目录下创建一个新的文件夹，命名为msg，并在此文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS话题通信的编程实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为test_pkg，并编译完成。 2.节点编程与消息定义2.1案例说明定义一个发布者Publisher，通过自定义的消息Person将消息数据name、sex及age等发送到订阅者Subscriber，同时订阅者将消息内容打印到终端界面。 2.2话题消息的定义在功能包目录下创建一个新的文件夹，命名为msg，并在此文件">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic12.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic13.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic14.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic15.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic16.jpg">
+<meta property="article:published_time" content="2019-12-29T09:16:11.772Z">
+<meta property="article:modified_time" content="2020-01-11T16:58:16.854Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;topic1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2019/12/29/ROS话题通信的编程实现/"/>
+
+
+
+
+
+  <title>ROS话题通信的编程实现 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS话题通信的编程实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-29T17:16:11+08:00">
+                2019-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-创建功能包"><a href="#1-创建功能包" class="headerlink" title="1.创建功能包"></a>1.创建功能包</h2><p>在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为test_pkg，并编译完成。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic1.jpg" class=""></p>
+<h2 id="2-节点编程与消息定义"><a href="#2-节点编程与消息定义" class="headerlink" title="2.节点编程与消息定义"></a>2.节点编程与消息定义</h2><h3 id="2-1案例说明"><a href="#2-1案例说明" class="headerlink" title="2.1案例说明"></a>2.1案例说明</h3><p>定义一个发布者Publisher，通过自定义的消息Person将消息数据name、sex及age等发送到订阅者Subscriber，同时订阅者将消息内容打印到终端界面。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic2.jpg" class=""></p>
+<h3 id="2-2话题消息的定义"><a href="#2-2话题消息的定义" class="headerlink" title="2.2话题消息的定义"></a>2.2话题消息的定义</h3><p>在功能包目录下创建一个新的文件夹，命名为msg，并在此文件夹中创建一个空文件Person.msg。可以使用鼠标右键New Document&gt;Empty Document，或在src路径下通过终端命令符touch创建空文件。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic3.jpg" class=""><br>在Person.msg文件中输入以下代码，定义话题消息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">string name</span><br><span class="line">uint8 sex</span><br><span class="line">uint8 age  </span><br><span class="line"></span><br><span class="line">uint8 unknown &#x3D; 0</span><br><span class="line">uint8 male    &#x3D; 1</span><br><span class="line">uint8 female  &#x3D; 2</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-3创建-cpp文件"><a href="#2-3创建-cpp文件" class="headerlink" title="2.3创建.cpp文件"></a>2.3创建.cpp文件</h3><p>在功能包下面的src文件夹目录下创建一个空文件Publisher_test.cpp。</p>
+<h3 id="2-4话题发布者编程"><a href="#2-4话题发布者编程" class="headerlink" title="2.4话题发布者编程"></a>2.4话题发布者编程</h3><p>打开上述创建的文件Publisher_test，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;ros&#x2F;ros.h&quot;</span><br><span class="line">#include &quot;test_pkg&#x2F;Person.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F;初始化ROS节点</span><br><span class="line">    ros::init(argc, argv, &quot;Publisher_test&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;创建句柄</span><br><span class="line">    ros::NodeHandle n;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;创建一个发布者Publisher，发布名为&#x2F;person_info的topic，消息类型为test_pkg::Person，队列长度为10</span><br><span class="line">    ros::Publisher person_info_pub &#x3D; n.advertise&lt;test_pkg::Person&gt;(&quot;&#x2F;person_info&quot;, 10);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;设置消息发布频率</span><br><span class="line">    ros::Rate loop_rate(1);</span><br><span class="line"></span><br><span class="line">    int count &#x3D; 0;</span><br><span class="line">    while(ros::ok())</span><br><span class="line">    &#123;</span><br><span class="line">	&#x2F;&#x2F;初始化消息内容</span><br><span class="line">	test_pkg::Person person_msg;</span><br><span class="line">	person_msg.name &#x3D; &quot;Tom&quot;;</span><br><span class="line">	person_msg.age  &#x3D; 18;</span><br><span class="line">	person_msg.sex  &#x3D; test_pkg::Person::male;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;发布消息</span><br><span class="line">	person_info_pub.publish(person_msg);</span><br><span class="line">	</span><br><span class="line">	ROS_INFO(&quot;Publish Person Info: name:%s  age:%d  sex:%d&quot;,</span><br><span class="line">		  person_msg.name.c_str(), person_msg.age, person_msg.sex);</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;按照设置的频率延时</span><br><span class="line">	loop_rate.sleep();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆头文件ros/ros.h包含了标准ROS类的声明，在每一个ROS程序中都需要包含它。<br>◆头文件test_pkg/Person.h是由Person.msg编译扩展得到，包含了针对C++类的定义等，它存放在工作空间的devel文件夹中。<br>◆main函数中ros::init(argc, argv, “Publisher_test”)的作用是初始化ROS节点，第三个参数表示节点名称，这个节点名是唯一的。<br>◆ros::NodeHandle n;的作用是创建句柄，启动ROS节点。<br>◆ros::Publisher person_info_pub = n.advertise<test_pkg::Person>(“/person_info”, 10);使用ros::Publisher类定义了一个发布者对象person_info_pub，发布的消息的数据类型为test_pkg::Person，用&lt;&gt;表示。/person_info表示发布消息数据的话题名，必须要与订阅者订阅的话题名相同。advertise()的第二个参数表示用于发布消息的消息队列长度，如果发布消息的速度快于底层响应的速度，则此处的数字指定在丢弃一些消息之前要缓冲多少条最新的消息。调用advertise()函数后，主节点（ROS Master）将通知任何试图订阅此话题名的节点，然后他们将与此节点协商对接。同时advertise()将返回一个Publisher对象，该对象使您可以通过调用publish()来发布有关该主题的消息。<br>◆ros::Rate loop_rate(1);的作用是设置消息发布频率为1Hz。<br>◆int count = 0;表明我们已发送多少条消息，用于为每个消息创建一个唯一的字符串。<br>◆若ros::ok()返回false，则可能发生了以下事件：<br>(1)SIGINT被触发(Ctrl-C)；<br>(2)被另一同名节点踢出 ROS 网络；<br>(3)ros::shutdown()被程序的另一部分调用；<br>(4)节点中的所有ros::NodeHandles 都已经被销毁。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test_pkg::Person person_msg;</span><br><span class="line">person_msg.name &#x3D; &quot;Tom&quot;;</span><br><span class="line">person_msg.age  &#x3D; 18;</span><br><span class="line">person_msg.sex  &#x3D; test_pkg::Person::male;</span><br></pre></td></tr></table></figure><br>◆这部分的作用是对消息内容初始化，首先创建一个test_pkg::Person类的对象，之后设置这个对象中的name、age和sex。<br>◆person_info_pub.publish(person_msg);的作用是发布消息person_msg。<br>◆ROS_INFO()类似于C语言中的printf()函数，将内容打印在终端界面显示。<br>◆loop_rate.sleep();的作用是延时，以保证消息能够按照之前设置的发布频率发布出去。<br>综上所述，实现一个话题发布者的步骤大致可分为以下几点：<br>(1)初始化ROS节点；<br>(2)向ROS Master注册节点信息，包括发布的话题名和话题中的消息类型；<br>(3)按照一定频率循环发送消息。</p>
+<h3 id="2-5话题订阅者编程"><a href="#2-5话题订阅者编程" class="headerlink" title="2.5话题订阅者编程"></a>2.5话题订阅者编程</h3><p>在src文件夹下再创建一个空文件Subscriber_test.cpp，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;ros&#x2F;ros.h&quot;</span><br><span class="line">#include &quot;test_pkg&#x2F;Person.h&quot;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;收到消息时进入回调函数</span><br><span class="line">void personInfoCallback(const test_pkg::Person::ConstPtr&amp; msg)</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F;打印消息</span><br><span class="line">    ROS_INFO(&quot;Subscribe Person Info: name:%s  age:%d  sex:%d&quot;,</span><br><span class="line">	      msg-&gt;name.c_str(), msg-&gt;age, msg-&gt;sex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char **argv)</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;&#x2F;初始化ROS节点</span><br><span class="line">    ros::init(argc, argv, &quot;Subscriber_test&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;创建句柄</span><br><span class="line">    ros::NodeHandle n;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;创建一个订阅者Subscriber</span><br><span class="line">    ros::Subscriber person_info_sub &#x3D; n.subscribe(&quot;&#x2F;person_info&quot;, 10, personInfoCallback);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;循环接收消息</span><br><span class="line">    ros::spin();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆personInfoCallback(const test_pkg::Person::ConstPtr&amp; msg)是一个回调函数，一旦订阅者接收到消息，则执行该回调函数。在该回调函数中，打印消息内容name、age和sex。<br>◆main函数中一开始跟发布者一样，初始化ROS节点，创建句柄。<br>◆ros::Subscriber person_info_sub = n.subscribe(“/person_info”, 10, personInfoCallback);使用ros::Subscriber类定义一个订阅者对象person_info_sub。subscribe()函数中的第一个参数表示需要订阅的话题名，第二个参数表示消息队列的长度，如果消息到达的速度快于处理速度，则开始丢弃最旧的消息之前将被缓冲的消息数。subscribe()函数的第三个参数是回调函数名，消息被传递到回调函数。<br>◆ros::spin()在调用后不会再返回，也就是主程序到这儿就不往下执行了，一般放在main函数最后，而不放在while()循环里。<br>综上所述，实现一个话题订阅者的步骤大致可分为以下几点：<br>(1)初始化ROS节点；<br>(2)订阅需要的话题；<br>(3)循环等待话题消息，接收到消息后进入回调函数；<br>(4)在回调函数中完成消息处理。<br>附相关资料：<br>(1) <a href="http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#Publisher.publish.28.29" target="_blank" rel="noopener">http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers#Publisher.publish.28.29</a><br>(2) <a href="http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29" target="_blank" rel="noopener">http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29</a></p>
+<h2 id="3-配置与编译"><a href="#3-配置与编译" class="headerlink" title="3.配置与编译"></a>3.配置与编译</h2><h3 id="3-1在CMaKeLists-txt中添加编译选项"><a href="#3-1在CMaKeLists-txt中添加编译选项" class="headerlink" title="3.1在CMaKeLists.txt中添加编译选项"></a>3.1在CMaKeLists.txt中添加编译选项</h3><p>打开功能包中的CMaKeLists.txt文件。在如下位置的find_package中添加message_generation功能包，以便于（节点）调用它们生成消息。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic4.jpg" class=""><br>在如下位置添加相关的.msg文件，确保了CMake在重新配置时知道这些新添加的.msg文件，同时添加 .msg文件在生成消息时的所有依赖项（功能包）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">add_message_files(FILES Person.msg)</span><br><span class="line">generate_messages(DEPENDENCIES std_msgs)</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic5.jpg" class=""><br>将如下位置中CATLIN_DEPENDS前面的“#”去掉。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic6.jpg" class=""><br>在如下位置进行配置，add_executable(Publisher_test src/Publisher_test.cpp)的作用是将src文件夹下的Publisher_test.cpp文件编译成名为Publisher_test的可执行文件。target_link_libraries(Publisher_test ${catkin_LIBRARIES})的作用是将Publisher_test可执行文件与ROS相关的库链接。add_dependencies(Publisher_test ${PROJECT_NAME}_generate_messages_cpp)的作用是将Publisher_test可执行文件与一些动态生成的文件链接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">add_executable(Publisher_test src&#x2F;Publisher_test.cpp)</span><br><span class="line">target_link_libraries(Publisher_test $&#123;catkin_LIBRARIES&#125;)</span><br><span class="line">add_dependencies(Publisher_test $&#123;PROJECT_NAME&#125;_generate_messages_cpp)</span><br><span class="line"></span><br><span class="line">add_executable(Subscriber_test src&#x2F;Subscriber_test.cpp)</span><br><span class="line">target_link_libraries(Subscriber_test $&#123;catkin_LIBRARIES&#125;)</span><br><span class="line">add_dependencies(Subscriber_test $&#123;PROJECT_NAME&#125;_generate_messages_cpp)</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic7.jpg" class=""></p>
+<h3 id="3-2在package-xml中添加功能包依赖"><a href="#3-2在package-xml中添加功能包依赖" class="headerlink" title="3.2在package.xml中添加功能包依赖"></a>3.2在package.xml中添加功能包依赖</h3><p>打开功能包中的package.xml文件，在如下位置添加功能包依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;build_depend&gt;message_generation&lt;&#x2F;build_depend&gt;</span><br><span class="line">&lt;exec_depend&gt;message_runtime&lt;&#x2F;exec_depend&gt;</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic8.jpg" class=""><br>说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;build_depend&gt;message_generation&lt;&#x2F;build_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示在编译时会依赖一个动态产生message的功能包。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;exec_depend&gt;message_runtime&lt;&#x2F;exec_depend&gt;</span><br></pre></td></tr></table></figure><br>这条语句表示在运行时会依赖message_runtime的功能包。</p>
+<h3 id="3-3编译文件"><a href="#3-3编译文件" class="headerlink" title="3.3编译文件"></a>3.3编译文件</h3><p>在/ROS_ws文件夹路径下打开一个新的终端，输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic9.jpg" class=""><br>编译完成后，输入以下代码运行主节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roscore</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic10.jpg" class=""><br>打开一个新的终端，首先配置环境变量，然后输入以下代码运行节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun test_pkg Publisher_test</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic11.jpg" class=""><br>打开一个新的终端，首先配置环境变量，然后输入以下代码运行节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun test_pkg Subscriber_test</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic12.jpg" class=""><br>若想停止运行，关闭终端，使用快捷键Ctrl+c即可。</p>
+<h2 id="4-话题可视化"><a href="#4-话题可视化" class="headerlink" title="4.话题可视化"></a>4.话题可视化</h2><p>打开一个新的终端，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rqt_graph</span><br></pre></td></tr></table></figure><br>由此可以得到如下的基于Qt的GUI界面，直观地看到话题通信的发布订阅节点和消息。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic13.jpg" class=""></p>
+<h2 id="5-rostopic命令的使用"><a href="#5-rostopic命令的使用" class="headerlink" title="5.rostopic命令的使用"></a>5.rostopic命令的使用</h2><h3 id="5-1"><a href="#5-1" class="headerlink" title="5.1"></a>5.1</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rostopic list</span><br></pre></td></tr></table></figure>
+<p>使用上述指令能够列出所有当前正在订阅和发布的话题，效果如下图。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic14.jpg" class=""></p>
+<h3 id="5-2"><a href="#5-2" class="headerlink" title="5.2"></a>5.2</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rostopic list -v</span><br></pre></td></tr></table></figure>
+<p>使用上述指令能够得到当前正在订阅和发布的话题的详细内容介绍，效果如下图。<br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic15.jpg" class=""></p>
+<h3 id="5-3"><a href="#5-3" class="headerlink" title="5.3"></a>5.3</h3><p>更多关于rostopic指令的使用，可以通过以下代码获取。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rostopic --help</span><br></pre></td></tr></table></figure><br><img src="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/topic16.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/" rel="next" title="ROS工作空间及功能包的创建">
+                <i class="fa fa-chevron-left"></i> ROS工作空间及功能包的创建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/12/ROS%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="prev" title="ROS服务通信的编程实现">
+                ROS服务通信的编程实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建功能包"><span class="nav-text">1.创建功能包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-节点编程与消息定义"><span class="nav-text">2.节点编程与消息定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1案例说明"><span class="nav-text">2.1案例说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2话题消息的定义"><span class="nav-text">2.2话题消息的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3创建-cpp文件"><span class="nav-text">2.3创建.cpp文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4话题发布者编程"><span class="nav-text">2.4话题发布者编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5话题订阅者编程"><span class="nav-text">2.5话题订阅者编程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-配置与编译"><span class="nav-text">3.配置与编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1在CMaKeLists-txt中添加编译选项"><span class="nav-text">3.1在CMaKeLists.txt中添加编译选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2在package-xml中添加功能包依赖"><span class="nav-text">3.2在package.xml中添加功能包依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3编译文件"><span class="nav-text">3.3编译文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-话题可视化"><span class="nav-text">4.话题可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-rostopic命令的使用"><span class="nav-text">5.rostopic命令的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1"><span class="nav-text">5.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2"><span class="nav-text">5.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3"><span class="nav-text">5.3</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

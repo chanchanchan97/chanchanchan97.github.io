@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Github链接：https:&#x2F;&#x2F;github.com&#x2F;chanchanchan97&#x2F;ROS 1.仿真描述本项目的目的是在Gazebo仿真环境下显示一个基于阿克曼转向（Ackermann steering）的自动驾驶小车模型，在之前xacro模型的基础上添加Gazebo标签等，使小车模型具有重力、惯性和摩擦力等物理状态。 2.Gazebo简介Gazebo是一款3D动态模拟器，能够在复杂的室内和室外">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gazebo仿真——阿克曼（Ackermann）四轮小车模型">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="Github链接：https:&#x2F;&#x2F;github.com&#x2F;chanchanchan97&#x2F;ROS 1.仿真描述本项目的目的是在Gazebo仿真环境下显示一个基于阿克曼转向（Ackermann steering）的自动驾驶小车模型，在之前xacro模型的基础上添加Gazebo标签等，使小车模型具有重力、惯性和摩擦力等物理状态。 2.Gazebo简介Gazebo是一款3D动态模拟器，能够在复杂的室内和室外">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo12.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo13.jpg">
+<meta property="article:published_time" content="2020-04-26T13:45:55.738Z">
+<meta property="article:modified_time" content="2020-04-26T13:48:07.508Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;26&#x2F;Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B&#x2F;gazebo1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/04/26/Gazebo仿真——阿克曼（Ackermann）四轮小车模型/"/>
+
+
+
+
+
+  <title>Gazebo仿真——阿克曼（Ackermann）四轮小车模型 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Gazebo仿真——阿克曼（Ackermann）四轮小车模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-26T21:45:55+08:00">
+                2020-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Github链接：<a href="https://github.com/chanchanchan97/ROS" target="_blank" rel="noopener">https://github.com/chanchanchan97/ROS</a></p>
+<h2 id="1-仿真描述"><a href="#1-仿真描述" class="headerlink" title="1.仿真描述"></a>1.仿真描述</h2><p>本项目的目的是在Gazebo仿真环境下显示一个基于阿克曼转向（Ackermann steering）的自动驾驶小车模型，在之前xacro模型的基础上添加Gazebo标签等，使小车模型具有重力、惯性和摩擦力等物理状态。</p>
+<h2 id="2-Gazebo简介"><a href="#2-Gazebo简介" class="headerlink" title="2.Gazebo简介"></a>2.Gazebo简介</h2><p>Gazebo是一款3D动态模拟器，能够在复杂的室内和室外环境中准确有效地模拟机器人群。与游戏引擎提供高保真度的视觉模拟类似，Gazebo提供高保真度的物理模拟，其提供一整套传感器模型，以及对用户和程序非常友好的交互方式。</p>
+<h3 id="2-1Gazebo的典型用途"><a href="#2-1Gazebo的典型用途" class="headerlink" title="2.1Gazebo的典型用途"></a>2.1Gazebo的典型用途</h3><p>（1）测试机器人算法；<br>（2）设计机器人；<br>（3）用现实场景进行回归测试。  </p>
+<h3 id="2-2Gazebo的主要特点"><a href="#2-2Gazebo的主要特点" class="headerlink" title="2.2Gazebo的主要特点"></a>2.2Gazebo的主要特点</h3><p>（1）包含多个物理引擎；<br>（2）包含丰富的机器人模型和环境库；<br>（3）包含各种各样的传感器；<br>（4）程序设计方便和具有简单的图形界面。  </p>
+<h2 id="3-ros-control"><a href="#3-ros-control" class="headerlink" title="3.ros_control"></a>3.ros_control</h2><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo1.jpg" class="">
+<p>如上图所示，ros_control为Gazebo仿真提供了一系列控制器接口、传动装置接口、硬件接口、控制器工具箱等。通过向URDF模型文件中添加Gazebo插件，从而将Gazebo仿真模型与ros_control建立起联系。controller可以实现对URDF模型中每个joint的控制，并且提供了PID控制器，Controller Manager则提供了一种通用接口，负责管理不同的controller。</p>
+<h2 id="4-配置物理仿真模型"><a href="#4-配置物理仿真模型" class="headerlink" title="4.配置物理仿真模型"></a>4.配置物理仿真模型</h2><h3 id="4-1为link添加惯性参数和碰撞属性"><a href="#4-1为link添加惯性参数和碰撞属性" class="headerlink" title="4.1为link添加惯性参数和碰撞属性"></a>4.1为link添加惯性参数和碰撞属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;collision&gt;</span><br><span class="line">	&lt;origin rpy&#x3D;&quot;0 0 0&quot; xyz&#x3D;&quot;0 0 0&quot;&#x2F;&gt;</span><br><span class="line">	&lt;geometry&gt;</span><br><span class="line">		&lt;cylinder length&#x3D;&quot;.02&quot; radius&#x3D;&quot;0.025&quot;&#x2F;&gt;</span><br><span class="line">	&lt;&#x2F;geometry&gt;</span><br><span class="line">&lt;&#x2F;collision&gt;</span><br><span class="line"></span><br><span class="line">&lt;inertial&gt;</span><br><span class="line">	&lt;origin xyz&#x3D;&quot;0 0 0.055&quot;&#x2F;&gt;</span><br><span class="line">	&lt;mass value&#x3D;&quot;1.0&quot; &#x2F;&gt;</span><br><span class="line">	&lt;inertia ixx&#x3D;&quot;$&#123;1*(0.16*0.16+0.02*0.02)&#x2F;12&#125;&quot; ixy&#x3D;&quot;0.0&quot; ixz&#x3D;&quot;0.0&quot; iyy&#x3D;&quot;$&#123;1*(0.25*0.25+0.02*0.02)&#x2F;12&#125;&quot; iyz&#x3D;&quot;0.0&quot; izz&#x3D;&quot;$&#123;1*(0.16*0.16+0.25*0.25)&#x2F;12&#125;&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;inertial&gt;</span><br></pre></td></tr></table></figure>
+<p>如果模型仅需要在Rviz中显示，则上述<collision>标签和<inertial>标签可以不添加。在为模型添加了collision碰撞属性后，该link的collision属性与link的visual属性在形状大小和位置角度上都应当保证重合，可在Gazebo菜单栏中添加collision属性的显示，即如下图所示。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo2.jpg" class=""><br>若如下图所示，某个link的collision属性与link的visual属性没有重合，则小车无法正常运动。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo3.jpg" class=""><br>同样的在为模型添加了inertial惯性参数后，每个link都会显示一个带有绿色轴的紫色框，每个框的中心应当与其link的指定重心对齐，可在Gazebo菜单栏中添加inertial属性的显示，即如下图所示。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo4.jpg" class=""><br>关于惯性矩阵的公式推导和计算可自行上网搜寻，以下为资料链接的分享：<br><a href="https://wenku.baidu.com/view/8444fe93aa00b52acfc7cae5.html" target="_blank" rel="noopener">https://wenku.baidu.com/view/8444fe93aa00b52acfc7cae5.html</a></p>
+<h3 id="4-2为link添加Gazebo标签"><a href="#4-2为link添加Gazebo标签" class="headerlink" title="4.2为link添加Gazebo标签"></a>4.2为link添加Gazebo标签</h3><h4 id="4-2-1颜色"><a href="#4-2-1颜色" class="headerlink" title="4.2.1颜色"></a>4.2.1颜色</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo reference&#x3D;&quot;base_link&quot;&gt;  </span><br><span class="line">	&lt;material&gt;Gazebo&#x2F;Blue&lt;&#x2F;material&gt;  </span><br><span class="line">&lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>该标签的作用是定义某个link在Gazebo中显示的颜色。虽然在<visual>标签中已经对link的颜色进行了定义，但只是定义了模型在Rviz中显示的颜色，而Gazebo所能够提供的颜色标签可参考：<br><a href="http://wiki.ros.org/simulator_gazebo/Tutorials/ListOfMaterials" target="_blank" rel="noopener">http://wiki.ros.org/simulator_gazebo/Tutorials/ListOfMaterials</a></p>
+<h4 id="4-2-2重力"><a href="#4-2-2重力" class="headerlink" title="4.2.2重力"></a>4.2.2重力</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo reference&#x3D;&quot;base_footprint&quot;&gt;</span><br><span class="line">       &lt;turnGravityOff&gt;false&lt;&#x2F;turnGravityOff&gt;</span><br><span class="line">   &lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>base_footprint这个link是作为小车本体在地面上的映射，本身并没有任何物理意义，因此通过<turnGravityOff>标签将该link的重力属性关闭。</p>
+<h3 id="4-3为joint添加传动装置"><a href="#4-3为joint添加传动装置" class="headerlink" title="4.3为joint添加传动装置"></a>4.3为joint添加传动装置</h3><p>Gazebo中的仿真都是基于物理引擎的，因此要想让一个模型运动，从本质上讲，必须要有力施加在模型上，就实际而言，我们必须在模型上加上执行器（通常情况下就是电机了），让模型运动起来。  </p>
+<p><transmission>标签主要的针对对象是joint（因为一般两个link连接处的地方如果是非固定的，那么一定会存在一个执行装置来改变两个link的相对位置），<transmission>标签的作用就是给某个joint与某类执行器相结合，有了执行器的作用，Gazebo就可以在物理层面上对模型进行驱动了。<br>这里以前轮转向机构为例进行说明，具体代码如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Transmission is important to link the joints and the controller --&gt;</span><br><span class="line">&lt;transmission name&#x3D;&quot;right_bridge_joint_trans&quot;&gt;</span><br><span class="line">	&lt;type&gt;transmission_interface&#x2F;SimpleTransmission&lt;&#x2F;type&gt;</span><br><span class="line">	&lt;joint name&#x3D;&quot;right_bridge_to_bridge&quot; &gt;</span><br><span class="line">&lt;hardwareInterface&gt;hardware_interface&#x2F;EffortJointInterface&lt;&#x2F;hardwareInterface&gt;</span><br><span class="line">	&lt;&#x2F;joint&gt;</span><br><span class="line">	&lt;actuator name&#x3D;&quot;right_bridge_joint_motor&quot;&gt;		&lt;hardwareInterface&gt;hardware_interface&#x2F;EffortJointInterface&lt;&#x2F;hardwareInterface&gt;</span><br><span class="line">	&lt;mechanicalReduction&gt;1&lt;&#x2F;mechanicalReduction&gt;</span><br><span class="line">	&lt;motorTorqueConstant&gt;100&lt;&#x2F;motorTorqueConstant&gt;</span><br><span class="line">	&lt;&#x2F;actuator&gt;</span><br><span class="line">&lt;&#x2F;transmission&gt;</span><br></pre></td></tr></table></figure><br>（1）<transmission>标签唯一指定了一个传动的标签，name可以自己定义，也可以与joint名相同。<br>（2）<type>标签指定了传动的类型，选择transmission_interface/SimpleTransmission即可。<br>（3）<joint>标签（可定义一个或多个）指定这个传动所依赖的关节，拥有如下标签<hardwareInterface>。<br>◆<hardwareInterface>（在joint下，可定义一个或多个）指定支持的硬件接口空间。用于结合控制器使用硬件接口来向硬件接口发送和接受指令，请注意：<br>●当在RobotHW中加载此transmission时，此标签的值应为hardware_interface / XXX。<br>●在Gazebo中加载此transmission时，此标记的值应为XXX。<br>（4）<actuator>标签（定义一个或多个）指定了与joint传动连接的执行器，名字可以随意定义，拥有如下标签<mechanicalReduction>、<hardwareInterface>及<motorTorqueConstant>。<br>●<mechanicalReduction>（可选）定义了电机／关节减速比。<br>●<hardwareInterface>（可选，只有Indigo及以前版本的在这里指定，目前版本已经移到joint标签下）定义了支持的硬件接口。<br>●<motorTorqueConstant>（可选）定义了电机的转矩参数。  </p>
+<h3 id="4-4为部分link添加阻尼系数和摩擦系数（可选）"><a href="#4-4为部分link添加阻尼系数和摩擦系数（可选）" class="headerlink" title="4.4为部分link添加阻尼系数和摩擦系数（可选）"></a>4.4为部分link添加阻尼系数和摩擦系数（可选）</h3><p>这里以车轮为例，具体代码如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo reference&#x3D;&quot;right_back_wheel&quot;&gt;</span><br><span class="line">	&lt;mu1&gt;100000000&lt;&#x2F;mu1&gt;</span><br><span class="line">	&lt;mu2&gt;100000000&lt;&#x2F;mu2&gt;</span><br><span class="line">	&lt;kp&gt;100000000&lt;&#x2F;kp&gt;</span><br><span class="line">	&lt;kd&gt;1&lt;&#x2F;kd&gt;</span><br><span class="line">	&lt;minDepth&gt;0.01&lt;&#x2F;minDepth&gt;</span><br><span class="line">	&lt;maxVel&gt;100&lt;&#x2F;maxVel&gt;  </span><br><span class="line">&lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure><br>（1）<mu1>和<mu2>表示沿接触表面的两个不同接触方向的摩擦系数μ，其中<mu1>表示库仑摩擦系数，它的范围必须在0到无限大之间，0表示无摩擦接触，而无限大表示永不打滑的接触。请注意，无摩擦接触比具有摩擦的接触要花费更少的时间，并且无限摩擦的接触要比具有有限摩擦的接触损耗更大。这个值必须始终被设置。而<mu2>如果未设置，则在两个摩擦方向上都使用<mu1>。 如果设置，则将<mu1>用作摩擦方向1，将<mu2>用作摩擦方向2。<br>（2）<kp>和<kd>表示由Open Dynamics Engine (ODE)定义的刚体接触的接触刚度k_p和阻尼k_d（ODE使用erp和cfm，但是erp/cfm与刚度k_p/阻尼k_d之间存在映射关系）。<br>（3）<minDepth>表示施加接触校正脉冲之前的最小允许深度。<br>（4）<maxVel>表示最大接触修正速度截断项。<br>●附Gazebo官网相关链接：<br><a href="http://gazebosim.org/tutorials?tut=ros_urdf&amp;cat=connect_ros" target="_blank" rel="noopener">http://gazebosim.org/tutorials?tut=ros_urdf&amp;cat=connect_ros</a></p>
+<h3 id="4-5添加ros-control插件"><a href="#4-5添加ros-control插件" class="headerlink" title="4.5添加ros_control插件"></a>4.5添加ros_control插件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo&gt;</span><br><span class="line">	&lt;plugin name&#x3D;&quot;gazebo_ros_control&quot; filename&#x3D;&quot;libgazebo_ros_control.so&quot;&gt;</span><br><span class="line">		&lt;robotNamespace&gt;&lt;&#x2F;robotNamespace&gt;</span><br><span class="line">		&lt;robotParam&gt;robot_description&lt;&#x2F;robotParam&gt;</span><br><span class="line">		&lt;robotSimType&gt;gazebo_ros_control&#x2F;DefaultRobotHWSim&lt;&#x2F;robotSimType&gt;</span><br><span class="line">		&lt;legacyModeNS&gt;true&lt;&#x2F;legacyModeNS&gt;</span><br><span class="line">	&lt;&#x2F;plugin&gt;</span><br><span class="line">&lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>gazebo_ros_control是Gazebo的一个插件用来根据设定装载合适的硬件接口和控制器。这个实现非常简单，由于Gazebo的插件系统具有很强的扩展性， 使得一些高级玩家可以在ros_control和Gazebo之间创建自己的机器人硬件接口。<br>这里我们没有为标签<gazebo>添加属性reference，这样它就是对整个机器人<robot>的描述。  gazebo_ros_control的<plugin>标签还可以通过如下的子标签指定一些参数：<br>（1）<robotNamespace>用来定义插件其对象的ROS命名空间，默认是URDF或者SDF对应的机器人名称。<br>（2）<contolPeriod>用来定义控制器的更新周期，单位为秒，默认使用Gazebo的周期。<br>（3）<robotParam>用来定义ROS参数服务器上的机器人描述(URDF)路径，默认是”/robot_description”。<br>（4）<robotSimType>用来定义机器人仿真接口所使用的插件库名称，默认是”DefaultRobotHWSim”。<br>（5）<legacyModeNS>用来兼容之前ROS版本的配置。  </p>
+<h2 id="5-配置ros-control控制器"><a href="#5-配置ros-control控制器" class="headerlink" title="5.配置ros_control控制器"></a>5.配置ros_control控制器</h2><p>在config文件夹目录下创建smartcar_joint.yaml，并输入如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">joint_state_controller:</span><br><span class="line">  type: &quot;joint_state_controller&#x2F;JointStateController&quot;</span><br><span class="line">  publish_rate: 50  </span><br><span class="line"></span><br><span class="line">rear_right_velocity_controller:</span><br><span class="line">  type: &quot;velocity_controllers&#x2F;JointVelocityController&quot;</span><br><span class="line">  joint: right_back_wheel_joint</span><br><span class="line">  pid: &#123;p: 100.0, i: 0.01, d: 10.0&#125;</span><br><span class="line">rear_left_velocity_controller:</span><br><span class="line">  type: &quot;velocity_controllers&#x2F;JointVelocityController&quot;</span><br><span class="line">  joint: left_back_wheel_joint</span><br><span class="line">  pid: &#123;p: 100.0, i: 0.01, d: 10.0&#125;</span><br><span class="line">right_bridge_position_controller:</span><br><span class="line">  type: &quot;effort_controllers&#x2F;JointPositionController&quot;</span><br><span class="line">  joint: right_bridge_to_bridge</span><br><span class="line">  pid: &#123;p: 40.0, i: 0.0, d: 1.0&#125;</span><br><span class="line">left_bridge_position_controller:</span><br><span class="line">  type: &quot;effort_controllers&#x2F;JointPositionController&quot;</span><br><span class="line">  joint: left_bridge_to_bridge</span><br><span class="line">  pid: &#123;p: 40.0, i: 0.0, d: 1.0&#125;</span><br></pre></td></tr></table></figure><br>用.yaml文件创建一个配置文件用来配置控制器类型和保存各个关节的PID参数，这些参数将通过launch文件加载到参数服务器上。</p>
+<h2 id="6-在Gazebo中添加传感器插件"><a href="#6-在Gazebo中添加传感器插件" class="headerlink" title="6.在Gazebo中添加传感器插件"></a>6.在Gazebo中添加传感器插件</h2><h3 id="6-1摄像头"><a href="#6-1摄像头" class="headerlink" title="6.1摄像头"></a>6.1摄像头</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- camera --&gt;</span><br><span class="line"> 	&lt;gazebo reference&#x3D;&quot;camera_link&quot;&gt;</span><br><span class="line">	&lt;sensor type&#x3D;&quot;camera&quot; name&#x3D;&quot;camera1&quot;&gt;</span><br><span class="line">		&lt;update_rate&gt;30.0&lt;&#x2F;update_rate&gt;</span><br><span class="line">		&lt;camera name&#x3D;&quot;head&quot;&gt;</span><br><span class="line">			&lt;horizontal_fov&gt;1.3962634&lt;&#x2F;horizontal_fov&gt;</span><br><span class="line">			&lt;image&gt;</span><br><span class="line">				&lt;width&gt;800&lt;&#x2F;width&gt;</span><br><span class="line">				&lt;height&gt;800&lt;&#x2F;height&gt;</span><br><span class="line">				&lt;format&gt;R8G8B8&lt;&#x2F;format&gt;</span><br><span class="line">			&lt;&#x2F;image&gt;</span><br><span class="line">			&lt;clip&gt;</span><br><span class="line">				&lt;near&gt;0.02&lt;&#x2F;near&gt;</span><br><span class="line">				&lt;far&gt;300&lt;&#x2F;far&gt;</span><br><span class="line">			&lt;&#x2F;clip&gt;</span><br><span class="line">			&lt;noise&gt;</span><br><span class="line">				&lt;type&gt;gaussian&lt;&#x2F;type&gt;</span><br><span class="line">				&lt;!-- Noise is sampled independently per pixel on each frame.</span><br><span class="line">					That pixel&#39;s noise value is added to each of its color</span><br><span class="line">					channels, which at that point lie in the range [0,1]. --&gt;</span><br><span class="line">				&lt;mean&gt;0.0&lt;&#x2F;mean&gt;</span><br><span class="line">				&lt;stddev&gt;0.007&lt;&#x2F;stddev&gt;</span><br><span class="line">			&lt;&#x2F;noise&gt;</span><br><span class="line">		&lt;&#x2F;camera&gt;</span><br><span class="line">		&lt;plugin name&#x3D;&quot;camera_controller&quot; filename&#x3D;&quot;libgazebo_ros_camera.so&quot;&gt;</span><br><span class="line">			&lt;alwaysOn&gt;true&lt;&#x2F;alwaysOn&gt;</span><br><span class="line">			&lt;updateRate&gt;0.0&lt;&#x2F;updateRate&gt;</span><br><span class="line">			&lt;cameraName&gt;camera&lt;&#x2F;cameraName&gt;</span><br><span class="line">			&lt;imageTopicName&gt;image_raw&lt;&#x2F;imageTopicName&gt;</span><br><span class="line">			&lt;cameraInfoTopicName&gt;camera_info&lt;&#x2F;cameraInfoTopicName&gt;</span><br><span class="line">			&lt;frameName&gt;camera_link&lt;&#x2F;frameName&gt;</span><br><span class="line">			&lt;hackBaseline&gt;0.07&lt;&#x2F;hackBaseline&gt;</span><br><span class="line">			&lt;distortionK1&gt;0.0&lt;&#x2F;distortionK1&gt;</span><br><span class="line">			&lt;distortionK2&gt;0.0&lt;&#x2F;distortionK2&gt;</span><br><span class="line">			&lt;distortionK3&gt;0.0&lt;&#x2F;distortionK3&gt;</span><br><span class="line">			&lt;distortionT1&gt;0.0&lt;&#x2F;distortionT1&gt;</span><br><span class="line">			&lt;distortionT2&gt;0.0&lt;&#x2F;distortionT2&gt;</span><br><span class="line">		&lt;&#x2F;plugin&gt;</span><br><span class="line">	&lt;&#x2F;sensor&gt;</span><br><span class="line">&lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo reference&#x3D;&quot;camera_link&quot;&gt;</span><br></pre></td></tr></table></figure><br>插件是用来描述link、joint的，其本身是一种虚无的属性描述，因此需要关联相应的实体。我们通过<reference>来定义关联的link或者joint,这里关联的是camera_link。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;sensor type&#x3D;&quot;camera&quot; name&#x3D;&quot;camera1&quot;&gt;</span><br></pre></td></tr></table></figure><br>声明插件的类型，并为该插件取一个唯一的名称。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;update_rate&gt;30.0&lt;&#x2F;update_rate&gt;</span><br></pre></td></tr></table></figure><br>设置摄像头数据更新的最大频率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;horizontal_fov&gt;1.3962634&lt;&#x2F;horizontal_fov&gt;</span><br></pre></td></tr></table></figure><br>horizontal_fov是指horizontal field of view（水平方向上的视场），此处设置视场大小。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;image&gt;</span><br><span class="line">	&lt;width&gt;800&lt;&#x2F;width&gt;</span><br><span class="line">	&lt;height&gt;800&lt;&#x2F;height&gt;</span><br><span class="line">	&lt;format&gt;R8G8B8&lt;&#x2F;format&gt;</span><br><span class="line">&lt;&#x2F;image&gt;</span><br></pre></td></tr></table></figure><br>设置图像的分辨率和色彩格式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;clip&gt;</span><br><span class="line">	&lt;near&gt;0.02&lt;&#x2F;near&gt;</span><br><span class="line">	&lt;far&gt;300&lt;&#x2F;far&gt;</span><br><span class="line">&lt;&#x2F;clip&gt;</span><br></pre></td></tr></table></figure><br>设置摄像头可视的最短距离和最远距离。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;noise&gt;</span><br><span class="line">	&lt;type&gt;gaussian&lt;&#x2F;type&gt;</span><br><span class="line">	&lt;!-- Noise is sampled independently per pixel on each frame.</span><br><span class="line">	That pixel&#39;s noise value is added to each of its color</span><br><span class="line">	channels, which at that point lie in the range [0,1]. --&gt;</span><br><span class="line">	&lt;mean&gt;0.0&lt;&#x2F;mean&gt;</span><br><span class="line">	&lt;stddev&gt;0.007&lt;&#x2F;stddev&gt;</span><br><span class="line">&lt;&#x2F;noise&gt;</span><br></pre></td></tr></table></figure><br>此处为图像添加噪声，噪声类型为高斯噪声，设置高斯噪声的均值和标准差。噪声是在每个帧的每个像素上独立采样的，该像素的噪声值会添加到其每个颜色通道中，范围在[0,1]内。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin name&#x3D;&quot;camera_controller&quot; filename&#x3D;&quot;libgazebo_ros_camera.so&quot;&gt;</span><br></pre></td></tr></table></figure><br>关联摄像头插件，该插件已经在Gazebo中实现，所以直接关联即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cameraName&gt;camera&lt;&#x2F;cameraName&gt;</span><br></pre></td></tr></table></figure><br>设置摄像头消息的命名空间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;imageTopicName&gt;image_raw&lt;&#x2F;imageTopicName&gt;</span><br></pre></td></tr></table></figure><br>设置发布的摄像头图像话题名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cameraInfoTopicName&gt;camera_info&lt;&#x2F;cameraInfoTopicName&gt;</span><br></pre></td></tr></table></figure><br>设置发布的摄像头信息话题名。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;frameName&gt;camera_link&lt;&#x2F;frameName&gt;</span><br></pre></td></tr></table></figure><br>设置摄像头数据所在的参考系。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;hackBaseline&gt;0.07&lt;&#x2F;hackBaseline&gt;</span><br></pre></td></tr></table></figure><br>此处在ros.wiki上的解释是Hack for right stereo camera，默认为0。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;distortionK1&gt;0.0&lt;&#x2F;distortionK1&gt;</span><br><span class="line">&lt;distortionK2&gt;0.0&lt;&#x2F;distortionK2&gt;</span><br><span class="line">&lt;distortionK3&gt;0.0&lt;&#x2F;distortionK3&gt;</span><br><span class="line">&lt;distortionT1&gt;0.0&lt;&#x2F;distortionT1&gt;</span><br><span class="line">&lt;distortionT2&gt;0.0&lt;&#x2F;distortionT2&gt;</span><br></pre></td></tr></table></figure><br>设置摄像头图像的畸变参数，默认为0。</p>
+<h3 id="6-2激光雷达"><a href="#6-2激光雷达" class="headerlink" title="6.2激光雷达"></a>6.2激光雷达</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;gazebo reference&#x3D;&quot;laser_link&quot;&gt;</span><br><span class="line">	&lt;sensor type&#x3D;&quot;ray&quot; name&#x3D;&quot;head_hokuyo_sensor&quot;&gt;</span><br><span class="line">		&lt;pose&gt;0 0 0 0 0 0&lt;&#x2F;pose&gt;</span><br><span class="line">		&lt;visualize&gt;false&lt;&#x2F;visualize&gt;</span><br><span class="line">		&lt;update_rate&gt;40&lt;&#x2F;update_rate&gt;</span><br><span class="line">		&lt;ray&gt;</span><br><span class="line">			&lt;scan&gt;</span><br><span class="line">				&lt;horizontal&gt;</span><br><span class="line">					&lt;samples&gt;720&lt;&#x2F;samples&gt;</span><br><span class="line">					&lt;resolution&gt;1&lt;&#x2F;resolution&gt;</span><br><span class="line">					&lt;min_angle&gt;-1.570796&lt;&#x2F;min_angle&gt;</span><br><span class="line">					&lt;max_angle&gt;1.570796&lt;&#x2F;max_angle&gt;</span><br><span class="line">				&lt;&#x2F;horizontal&gt;</span><br><span class="line">			&lt;&#x2F;scan&gt;</span><br><span class="line">			&lt;range&gt;</span><br><span class="line">				&lt;min&gt;0.10&lt;&#x2F;min&gt;</span><br><span class="line">				&lt;max&gt;30.0&lt;&#x2F;max&gt;</span><br><span class="line">				&lt;resolution&gt;0.01&lt;&#x2F;resolution&gt;</span><br><span class="line">			&lt;&#x2F;range&gt;</span><br><span class="line">			&lt;noise&gt;</span><br><span class="line">				&lt;type&gt;gaussian&lt;&#x2F;type&gt;</span><br><span class="line">				&lt;!-- Noise parameters based on published spec for Hokuyo laser</span><br><span class="line">					achieving &quot;+-30mm&quot; accuracy at range &lt; 10m.  A mean of 0.0m and</span><br><span class="line">					stddev of 0.01m will put 99.7% of samples within 0.03m of the true</span><br><span class="line">					reading. --&gt;</span><br><span class="line">				&lt;mean&gt;0.0&lt;&#x2F;mean&gt;</span><br><span class="line">				&lt;stddev&gt;0.01&lt;&#x2F;stddev&gt;</span><br><span class="line">			&lt;&#x2F;noise&gt;</span><br><span class="line">		&lt;&#x2F;ray&gt;</span><br><span class="line">		&lt;plugin name&#x3D;&quot;gazebo_ros_head_hokuyo_controller&quot; filename&#x3D;&quot;libgazebo_ros_laser.so&quot;&gt;</span><br><span class="line">			&lt;topicName&gt;laser&#x2F;scan&lt;&#x2F;topicName&gt;</span><br><span class="line">			&lt;frameName&gt;laser_link&lt;&#x2F;frameName&gt;</span><br><span class="line">		&lt;&#x2F;plugin&gt;</span><br><span class="line">	&lt;&#x2F;sensor&gt;</span><br><span class="line">&lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>激光雷达的插件与摄像头相似，不再做详细说明。</p>
+<h3 id="6-3IMU"><a href="#6-3IMU" class="headerlink" title="6.3IMU"></a>6.3IMU</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- IMU sensor --&gt;</span><br><span class="line">   &lt;gazebo reference&#x3D;&quot;imu_link&quot;&gt;</span><br><span class="line">       &lt;gravity&gt;true&lt;&#x2F;gravity&gt;</span><br><span class="line">       &lt;sensor name&#x3D;&quot;imu_sensor&quot; type&#x3D;&quot;imu&quot;&gt;</span><br><span class="line">           &lt;always_on&gt;true&lt;&#x2F;always_on&gt;</span><br><span class="line">           &lt;update_rate&gt;100&lt;&#x2F;update_rate&gt;</span><br><span class="line">           &lt;visualize&gt;true&lt;&#x2F;visualize&gt;</span><br><span class="line">           &lt;topic&gt;__default_topic__&lt;&#x2F;topic&gt;</span><br><span class="line">           &lt;plugin filename&#x3D;&quot;libgazebo_ros_imu_sensor.so&quot; name&#x3D;&quot;imu_plugin&quot;&gt;</span><br><span class="line">               &lt;topicName&gt;imu&lt;&#x2F;topicName&gt;</span><br><span class="line">               &lt;bodyName&gt;imu_link&lt;&#x2F;bodyName&gt;</span><br><span class="line">               &lt;updateRateHZ&gt;100.0&lt;&#x2F;updateRateHZ&gt;</span><br><span class="line">               &lt;gaussianNoise&gt;0.0&lt;&#x2F;gaussianNoise&gt;</span><br><span class="line">               &lt;xyzOffset&gt;0 0 0&lt;&#x2F;xyzOffset&gt;</span><br><span class="line">               &lt;rpyOffset&gt;0 0 0&lt;&#x2F;rpyOffset&gt;</span><br><span class="line">               &lt;frameName&gt;imu_link&lt;&#x2F;frameName&gt;</span><br><span class="line">           &lt;&#x2F;plugin&gt;</span><br><span class="line">           &lt;pose&gt;0 0 0 0 0 0&lt;&#x2F;pose&gt;</span><br><span class="line">       &lt;&#x2F;sensor&gt;</span><br><span class="line">   &lt;&#x2F;gazebo&gt;</span><br></pre></td></tr></table></figure>
+<p>IMU的插件与摄像头相似，不再做详细说明。</p>
+<h3 id="6-4检查传感器插件"><a href="#6-4检查传感器插件" class="headerlink" title="6.4检查传感器插件"></a>6.4检查传感器插件</h3><p>打开一个新的终端，输入如下指令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rostopic list</span><br></pre></td></tr></table></figure><br>终端界面将会打印出目前所有的topic话题。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo5.jpg" class=""><br>其中/camera、/imu和/laser分别对应摄像头、IMU和激光雷达的消息话题。</p>
+<h3 id="6-5传感器消息可视化"><a href="#6-5传感器消息可视化" class="headerlink" title="6.5传感器消息可视化"></a>6.5传感器消息可视化</h3><h4 id="6-5-1摄像头图像的显示"><a href="#6-5-1摄像头图像的显示" class="headerlink" title="6.5.1摄像头图像的显示"></a>6.5.1摄像头图像的显示</h4><p>输入如下指令，打开Rviz。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun rviz rviz</span><br></pre></td></tr></table></figure><br>在Rviz的左菜单栏中添加Camera的可视化插件，并在Topic中选择摄像头图像的消息话题/camera/image_raw。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo6.jpg" class=""><br>注意：在虚拟机中运行摄像头仿真图像，会出现如上图所示的图像显示问题，建议使用双系统。</p>
+<h4 id="6-5-2激光雷达点云的显示"><a href="#6-5-2激光雷达点云的显示" class="headerlink" title="6.5.2激光雷达点云的显示"></a>6.5.2激光雷达点云的显示</h4><p>在Gazebo仿真环境中添加一些已有的模型，将模型放在小车周围合适的范围内。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo7.jpg" class=""><br>打开一个新的终端，输入如下指令，打开Rviz。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun rviz rviz</span><br></pre></td></tr></table></figure><br>在Rviz工具的左菜单栏中添加如下所示LaserScan的可视化插件。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo8.jpg" class=""><br>同时在LaserScan中的Topic选择激光雷达的消息话题/laser/scan，即如下图所示，Rviz能够显示出小车周围障碍物的点云信息。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo9.jpg" class=""></p>
+<h4 id="6-5-3IMU姿态的显示"><a href="#6-5-3IMU姿态的显示" class="headerlink" title="6.5.3IMU姿态的显示"></a>6.5.3IMU姿态的显示</h4><p>在Gazebo菜单栏的Window中选择Topic Visualization，跳出如下界面。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo10.jpg" class=""><br>选择gazebo.msgs.IMU，跳出如下界面。如下图所示，IMU消息可分成三个部分，分别为以四元数表示的姿态信息、角速度和线性加速度在xyz三轴上的分量。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo11.jpg" class=""></p>
+<h3 id="6-6搭建Gazebo仿真环境"><a href="#6-6搭建Gazebo仿真环境" class="headerlink" title="6.6搭建Gazebo仿真环境"></a>6.6搭建Gazebo仿真环境</h3><p>在Gazebo上方的菜单栏中选择Edit-Building Editor，出现如下界面。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo12.jpg" class=""><br>在左边的工具栏中选择Walls，将小车仿真环境的轮廓画出来，然后再选择Features添加门、窗和楼梯等。双击门窗会打开一个Inspector窗口，可以修改位置和尺寸。另外在工具栏中还可以选择修饰墙的颜色和纹理等细节。<br><img src="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/gazebo13.jpg" class=""><br>完成仿真环境的绘制后，在Gazebo上方的菜单栏中选择File-Save as保存文件。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/" rel="next" title="ros_control和arbotix_ros简介">
+                <i class="fa fa-chevron-left"></i> ros_control和arbotix_ros简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/" rel="prev" title="全局路径与局部路径">
+                全局路径与局部路径 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-仿真描述"><span class="nav-text">1.仿真描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Gazebo简介"><span class="nav-text">2.Gazebo简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1Gazebo的典型用途"><span class="nav-text">2.1Gazebo的典型用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2Gazebo的主要特点"><span class="nav-text">2.2Gazebo的主要特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ros-control"><span class="nav-text">3.ros_control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-配置物理仿真模型"><span class="nav-text">4.配置物理仿真模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1为link添加惯性参数和碰撞属性"><span class="nav-text">4.1为link添加惯性参数和碰撞属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2为link添加Gazebo标签"><span class="nav-text">4.2为link添加Gazebo标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1颜色"><span class="nav-text">4.2.1颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2重力"><span class="nav-text">4.2.2重力</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3为joint添加传动装置"><span class="nav-text">4.3为joint添加传动装置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4为部分link添加阻尼系数和摩擦系数（可选）"><span class="nav-text">4.4为部分link添加阻尼系数和摩擦系数（可选）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5添加ros-control插件"><span class="nav-text">4.5添加ros_control插件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-配置ros-control控制器"><span class="nav-text">5.配置ros_control控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-在Gazebo中添加传感器插件"><span class="nav-text">6.在Gazebo中添加传感器插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1摄像头"><span class="nav-text">6.1摄像头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2激光雷达"><span class="nav-text">6.2激光雷达</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3IMU"><span class="nav-text">6.3IMU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4检查传感器插件"><span class="nav-text">6.4检查传感器插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5传感器消息可视化"><span class="nav-text">6.5传感器消息可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-1摄像头图像的显示"><span class="nav-text">6.5.1摄像头图像的显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-2激光雷达点云的显示"><span class="nav-text">6.5.2激光雷达点云的显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-3IMU姿态的显示"><span class="nav-text">6.5.3IMU姿态的显示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6搭建Gazebo仿真环境"><span class="nav-text">6.6搭建Gazebo仿真环境</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

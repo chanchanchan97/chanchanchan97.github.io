@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.launch文件功能之前运行ROS节点都需要先使用roscore命令启动ROS Master，并且单独rosrun命令启动各个ROS节点，而使用launch文件可以大大地简化这些步骤，只需要一个roslaunch命令，就可以同时启动ROS Master和多个节点程序。 2.launch文件语法2.1&amp;#60;launch&amp;#62;标签&amp;#60;launch&amp;#62;是launch文件的文件标签">
+<meta property="og:type" content="article">
+<meta property="og:title" content="launch启动文件的使用">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.launch文件功能之前运行ROS节点都需要先使用roscore命令启动ROS Master，并且单独rosrun命令启动各个ROS节点，而使用launch文件可以大大地简化这些步骤，只需要一个roslaunch命令，就可以同时启动ROS Master和多个节点程序。 2.launch文件语法2.1&amp;#60;launch&amp;#62;标签&amp;#60;launch&amp;#62;是launch文件的文件标签">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch5.jpg">
+<meta property="article:published_time" content="2020-03-27T13:06:58.625Z">
+<meta property="article:modified_time" content="2020-03-27T13:16:01.990Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;27&#x2F;launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8&#x2F;launch1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/03/27/launch启动文件的使用/"/>
+
+
+
+
+
+  <title>launch启动文件的使用 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">launch启动文件的使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-27T21:06:58+08:00">
+                2020-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-launch文件功能"><a href="#1-launch文件功能" class="headerlink" title="1.launch文件功能"></a>1.launch文件功能</h2><p>之前运行ROS节点都需要先使用roscore命令启动ROS Master，并且单独rosrun命令启动各个ROS节点，而使用launch文件可以大大地简化这些步骤，只需要一个roslaunch命令，就可以同时启动ROS Master和多个节点程序。</p>
+<h2 id="2-launch文件语法"><a href="#2-launch文件语法" class="headerlink" title="2.launch文件语法"></a>2.launch文件语法</h2><h3 id="2-1-60-launch-62-标签"><a href="#2-1-60-launch-62-标签" class="headerlink" title="2.1&#60;launch&#62;标签"></a>2.1&#60;launch&#62;标签</h3><p>&#60;launch&#62;是launch文件的文件标签，是必须要有的。其中&#60;launch&#62;表示文件的起始，&#60;/launch&gt;表示文件的结束。<br>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;launch&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;turtlesim&quot; type&#x3D;&quot;turtlesim_node&quot; name&#x3D;&quot;sim&quot;&#x2F;&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;turtlesim&quot; type&#x3D;&quot;turtle_teleop_key&quot; name&#x3D;&quot;teleop&quot; output&#x3D;&quot;screen&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;launch&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2-60-node-62-标签"><a href="#2-2-60-node-62-标签" class="headerlink" title="2.2&#60;node&#62;标签"></a>2.2&#60;node&#62;标签</h3><p>&#60;node&#62;是节点标签，用来启动某个ROS节点，其中包含了如下几个主要的属性。<br>(1)pkg：表示节点所在的功能包名称，使用方式如pkg = “tf_lidar_task”；<br>(2)type：表示节点的可执行文件名称，使用方式如type = “lidar_broadcaster”；<br>(3)name：表示该节点在ROS系统中运行时的节点名，与节点编程时ros::init(argc, argv, “robot_tf_publisher”)中命名的节点名是同一概念，如果两者不同，launch文件中定义的name将覆盖程序中命名的节点名，可理解为重命名。因为ROS中节点名称是唯一的，name的使用是为了重复利用节点，比如发布广播t1和发布广播t2都使用发布广播节点，但运行时名称不同。使用方式如name = “broadcaster_t1”；<br>(4)output：用于控制某个节点是否将日志信息打印在终端界面上，默认输出到日志文档，使用方式如output = “screen”；<br>(5)respawn：表示在该节点突然停止时，是否会自动重启，默认为false，使用方式如respawn = “true”；<br>(6)required：表示该节点是否必须要启动，当该节点终止时，launch文件中的其他节点也被终止，使用方式如required = “true”；<br>(7)ns：表示namespace（命名空间），为节点内的相对名称添加命名空间前缀，避免命名冲突，使用方式如ns = “foo”；<br>(8)args：表示节点需要的输入参数，类似于之前ROS服务编程中实现整数加法时rosrun命令后面所跟着的参数，使用方式为args = “10 20”；  </p>
+<h3 id="2-3-60-param-62-标签"><a href="#2-3-60-param-62-标签" class="headerlink" title="2.3&#60;param&#62;标签"></a>2.3&#60;param&#62;标签</h3><p>&#60;param&#62;用于设置和修改ROS系统运行中的单个参数，存储在参数服务器中，类似于修改变量，例如可以设置turtlesim海龟界面背景的RGB值。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;param name&#x3D;&quot;output_frame&quot; value&#x3D;&quot;odom&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中，name是参数名，value是参数值。</p>
+<h3 id="2-4-60-rosparam-62-标签"><a href="#2-4-60-rosparam-62-标签" class="headerlink" title="2.4&#60;rosparam&#62;标签"></a>2.4&#60;rosparam&#62;标签</h3><p>&#60;rosparam&#62;用于加载参数文件中的多个参数，可以将参数文件中的所有参数都保存到参数服务器中。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;rosparam file&#x3D;&quot;params.yaml&quot; command&#x3D;&quot;load&quot; ns&#x3D;&quot;local_costmap&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中，command属性可以设置为加载command=”load”，或设置为卸载command=”delete”。</p>
+<h3 id="2-5-60-arg-62-标签"><a href="#2-5-60-arg-62-标签" class="headerlink" title="2.5&#60;arg&#62;标签"></a>2.5&#60;arg&#62;标签</h3><p>&#60;arg&#62;与&#60;param&gt;、&#60;rosparam&gt;虽然都用于参数设置，但<arg>的区别在于它表示launch文件内部的局部变量，存储在launch文件中并且仅限于launch文件中使用。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; value&#x3D;&quot;arg-value&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; value&#x3D;&quot;$(arg arg-name)&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中name是参数名，value是参数值。另外还可以为参数设置默认值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; default&#x3D;&quot;1&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-6-60-remap-62-标签"><a href="#2-6-60-remap-62-标签" class="headerlink" title="2.6&#60;remap&#62;标签"></a>2.6&#60;remap&#62;标签</h3><p>&#60;remap&gt;表示重映射ROS计算图资源的命名，可近似理解为重命名，使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;remap from&#x3D;&quot;&#x2F;turtlebot&#x2F;cmd_vel&quot;to&quot;&#x2F;cmd_vel&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中from为原命名，to为映射之后的命名。</p>
+<h3 id="2-7-60-include-62-标签"><a href="#2-7-60-include-62-标签" class="headerlink" title="2.7&#60;include&#62;标签"></a>2.7&#60;include&#62;标签</h3><p>&#60;include&#62;用于包含其他launch文件，类似于C语言中的头文件包含。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;include file&#x3D;&quot;$(dirname)&#x2F;turtle.launch&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中file是包含的其他launch文件路径。<br>更多资料可参考：<a href="http://wiki.ros.org/roslaunch/XML" target="_blank" rel="noopener">http://wiki.ros.org/roslaunch/XML</a></p>
+<h2 id="3-launch文件使用"><a href="#3-launch文件使用" class="headerlink" title="3.launch文件使用"></a>3.launch文件使用</h2><h3 id="3-1创建launch文件"><a href="#3-1创建launch文件" class="headerlink" title="3.1创建launch文件"></a>3.1创建launch文件</h3><p>以TF变换的功能包为例，在tf_lidar_task工作空间中创建一个空文件夹，命名为launch。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch1.jpg" class=""><br>在launch文件夹中创建一个空文件，命名为tf_lidar.launch。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch2.jpg" class=""></p>
+<h3 id="3-2编译launch文件"><a href="#3-2编译launch文件" class="headerlink" title="3.2编译launch文件"></a>3.2编译launch文件</h3><p>在/ROS_ws文件夹路径下打开一个新的终端，输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure><br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch3.jpg" class=""></p>
+<h3 id="3-3启动launch文件"><a href="#3-3启动launch文件" class="headerlink" title="3.3启动launch文件"></a>3.3启动launch文件</h3><p>在/ROS_ws路径下配置环境，再输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roslaunch tf_lidar_task tf_lidar.launch</span><br></pre></td></tr></table></figure><br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch4.jpg" class=""></p>
+<h3 id="3-4节点通信可视化"><a href="#3-4节点通信可视化" class="headerlink" title="3.4节点通信可视化"></a>3.4节点通信可视化</h3><p>打开一个新的终端，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rqt_graph</span><br></pre></td></tr></table></figure><br>可以看到广播器已经开始发布TF变换关系到监听者节点，并且节点名也按照launch文件中重新命名。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch5.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="next" title="TF坐标系变换的编程实现">
+                <i class="fa fa-chevron-left"></i> TF坐标系变换的编程实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" rel="prev" title="URDF模型——阿克曼（Ackermann）四轮小车模型">
+                URDF模型——阿克曼（Ackermann）四轮小车模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-launch文件功能"><span class="nav-text">1.launch文件功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-launch文件语法"><span class="nav-text">2.launch文件语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-60-launch-62-标签"><span class="nav-text">2.1&lt;launch&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-60-node-62-标签"><span class="nav-text">2.2&lt;node&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-60-param-62-标签"><span class="nav-text">2.3&lt;param&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-60-rosparam-62-标签"><span class="nav-text">2.4&lt;rosparam&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-60-arg-62-标签"><span class="nav-text">2.5&lt;arg&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-60-remap-62-标签"><span class="nav-text">2.6&lt;remap&gt;标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-60-include-62-标签"><span class="nav-text">2.7&lt;include&gt;标签</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-launch文件使用"><span class="nav-text">3.launch文件使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1创建launch文件"><span class="nav-text">3.1创建launch文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2编译launch文件"><span class="nav-text">3.2编译launch文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3启动launch文件"><span class="nav-text">3.3启动launch文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4节点通信可视化"><span class="nav-text">3.4节点通信可视化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

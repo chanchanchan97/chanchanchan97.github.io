@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.ros_controlros_control就是ROS为用户提供的应用与机器人之间的中间件，包含一系列控制器接口、传动装置接口、硬件接口、控制器工具箱等等，可以帮助机器人应用快速落地，提高开发效率。上图是ros_control的总体框架，可以看到对于不同类型的控制器（底盘、机械臂等），ros_control可以提供多种类型的控制器，但是这些控制器的接口各不相同，为了提高代码的复用率，ros_c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ros_control和arbotix_ros简介">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.ros_controlros_control就是ROS为用户提供的应用与机器人之间的中间件，包含一系列控制器接口、传动装置接口、硬件接口、控制器工具箱等等，可以帮助机器人应用快速落地，提高开发效率。上图是ros_control的总体框架，可以看到对于不同类型的控制器（底盘、机械臂等），ros_control可以提供多种类型的控制器，但是这些控制器的接口各不相同，为了提高代码的复用率，ros_c">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix6.jpg">
+<meta property="article:published_time" content="2020-04-15T14:24:57.023Z">
+<meta property="article:modified_time" content="2020-04-15T14:24:57.143Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;04&#x2F;15&#x2F;ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B&#x2F;arbotix1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/04/15/ros_control和arbotix_ros简介/"/>
+
+
+
+
+
+  <title>ros_control和arbotix_ros简介 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ros_control和arbotix_ros简介</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-15T22:24:57+08:00">
+                2020-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-ros-control"><a href="#1-ros-control" class="headerlink" title="1.ros_control"></a>1.ros_control</h2><p>ros_control就是ROS为用户提供的应用与机器人之间的中间件，包含一系列控制器接口、传动装置接口、硬件接口、控制器工具箱等等，可以帮助机器人应用快速落地，提高开发效率。<br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix1.jpg" class=""><br>上图是ros_control的总体框架，可以看到对于不同类型的控制器（底盘、机械臂等），ros_control可以提供多种类型的控制器，但是这些控制器的接口各不相同，为了提高代码的复用率，ros_control还提供一个硬件的抽象层。<br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix2.jpg" class=""><br>硬件抽象层负责机器人硬件资源的管理，而controller从抽象层请求资源即可，并不直接接触硬件。<br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix3.jpg" class=""><br>上图是ros_control的数据流图，可以更加清晰的看到每个层次包含的功能：<br>（1）Controller Manager：每个机器人可能有多个controller，所以这里有一个控制器管理器的概念，提供一种通用的接口来管理不同的controller。controller manager的输入就是ROS上层应用的输出。<br>（2）Controller：controller可以完成每个joint的控制，请求下层的硬件资源，并且提供了PID控制器，读取硬件资源接口中的状态，在发布控制命令。<br>（3）Hardware Rescource：为上下两层提供硬件资源的接口。<br>（4）RobotHW：硬件抽象层和硬件直接打交道，通过write和read方法来完成硬件的操作，这一层也包含关节限位、力矩转换、状态转换等功能。<br>（5）Real Robot：实际的机器人上也需要有自己的嵌入式控制器，接收到命令后需要反映到执行器上，比如接收到位置1的命令后，那就需要让执行器快速、稳定的到达位置1。  </p>
+<h3 id="Controller-Manager"><a href="#Controller-Manager" class="headerlink" title="Controller Manager"></a>Controller Manager</h3><p>controller manager提供了一种控制多个controller的机制，可以加载、开始运行、停止运行、卸载不同的controller，并且提供了多种工具来完成这些操作。<br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix4.jpg" class=""></p>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><p>ros_controllers这个功能包提供了已有的一些controllers，比较常用的是如下几个：<br>（1）effort_controllers - 直接控制关节的力/扭矩<br>●joint_effort_controller<br>●joint_position_controller<br>●joint_velocity_controller<br>（2）position_controllers - 一次设置一个／多个关节位置<br>●joint_position_controller<br>（3）velocity_controllers - 一次设置一个／多个关节速度<br>●joint_velocity_controller<br>（4）joint_state_controller - 读取所有关节位置<br>●joint_state_controller<br>更多controller可参考：<a href="http://wiki.ros.org/ros_controllers" target="_blank" rel="noopener">http://wiki.ros.org/ros_controllers</a><br>当然，我们也可以根据自己的需求，创建需要的controller，然后通过controller来管理自己创建的controller，可以参考<a href="https://github.com/ros-controls/ros_control/wiki/controller_interface" target="_blank" rel="noopener">https://github.com/ros-controls/ros_control/wiki/controller_interface</a><br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix5.jpg" class=""></p>
+<h3 id="Hardware-Interface"><a href="#Hardware-Interface" class="headerlink" title="Hardware Interface"></a>Hardware Interface</h3><p>Hardware Interface是controller和RobotHw沟通的接口，基本上和controllers的种类是对应的。ROS提供了如下的hardwareInterface接口供选择：<br>（1）Joint Command Interfaces<br>●Effort Joint Interface<br>●Velocity Joint Interface<br>●Position Joint Interface<br>（2）Joint State Interfaces<br>（3）Actuator State Interfaces<br>（4）Actuator Command Interfaces<br>●Effort Actuator Interface<br>●Velocity Actuator Interface<br>●Position Actuator Interface<br>（5）Force-torque sensor Interface<br>（6）IMU sensor Interface<br>hardware_interface作为ros_control 组件最重要的一部分，做了以下抽象：<br>●将能动的部分(类似于机器人关节)抽象为joint，joint类型有旋转，平动，固定等等，详见urdf，joint有三个属性，pose，velocity，effort，位置和速度好理解，effort不同的joint类型有不同的含义，一般是力矩，力（语义比较混乱在各个不同派系的开源代码中）。执行器模型抽象为actuator，与joint不一样的部分是actuator的属性值需要一定变换才能对应到joint，可以理解为电机减速，或者机构传动。<br>●根据不同的控制方式或者不同的传感器暴露出相应的数据接口，一般移动机器人底盘是速度闭环，而机械臂上又是位置闭环，根据这些控制方式的不同分出了不同的控制接口，暴露给上层的controller。<br>●作为机器人的硬件资源与上层的直接接口，可以被运行时产生与删除，结合机器人本身的通讯组件这样实际上实现了一种对机器人硬件资源的低层次管理。<br>而hardware_interface具体实现方式是存储对应状态变量的指针，用字符串表示不同的joint与Actuator资源。robothw基类是硬件通讯库与hardware_interface交互的部分。硬件通讯库具体的读写过程都在read与 write两个虚方法中实现，更新的数据放在robothw类的成员变量中，这些存储着joint与actuator状态与命令的空间被hardware_interface索引，传给controller_manager，通过controller_manager的接口将数据接给controller，所以ros_control内部不存在进程间通讯。<br>同样的，hardware_interface也可以自己创建需要的接口，可以参考：<a href="https://github.com/ros-controls/ros_control/wiki/hardware_interface" target="_blank" rel="noopener">https://github.com/ros-controls/ros_control/wiki/hardware_interface</a></p>
+<h3 id="Transmissions"><a href="#Transmissions" class="headerlink" title="Transmissions"></a>Transmissions</h3><p>Transmissions就是机器人的传动系统，机器人每个需要运动的关节都需要配置相应的Transmission，可以通过代码完成<a href="https://github.com/ros-controls/ros_control/wiki/transmission_interface，但大部分情况下，都会在URDF文件中直接添加（http://ros.org/wiki/urdf/XML/Transmission）" target="_blank" rel="noopener">https://github.com/ros-controls/ros_control/wiki/transmission_interface，但大部分情况下，都会在URDF文件中直接添加（http://ros.org/wiki/urdf/XML/Transmission）</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;transmission name&#x3D;&quot;simple_trans&quot;&gt;</span><br><span class="line">	&lt;type&gt;transmission_interface&#x2F;SimpleTransmission&lt;&#x2F;type&gt;</span><br><span class="line">	&lt;joint name&#x3D;&quot;foo_joint&quot;&gt;</span><br><span class="line">		&lt;hardwareInterface&gt;EffortJointInterface&lt;&#x2F;hardwareInterface&gt;</span><br><span class="line">	&lt;&#x2F;joint&gt;</span><br><span class="line">	&lt;actuator name&#x3D;&quot;foo_motor&quot;&gt;</span><br><span class="line">		&lt;mechanicalReduction&gt;50&lt;&#x2F;mechanicalReduction&gt;</span><br><span class="line">		&lt;hardwareInterface&gt;EffortJointInterface&lt;&#x2F;hardwareInterface&gt;</span><br><span class="line">	&lt;&#x2F;actuator&gt;</span><br><span class="line">&lt;&#x2F;transmission&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Joint-Limits"><a href="#Joint-Limits" class="headerlink" title="Joint Limits"></a>Joint Limits</h3><p>Joint Limits是硬件抽象层中的一块，维护一个关节限位的数据结构，这些限位数据可以从机器人的URDF文件中加载，也可以ROS的参数服务器上加载（先用YAML配置文件导入ROS parameter server），这些限位数据不仅包含关节速度、位置、加速度、加加速度、力矩等方面的限位，还包含安全作用的位置软限位、速度边界（k_v）和位置边界（k_p）等等。<br>我们来看一个URDF中设置Joint Limits的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;joint name&#x3D;&quot;$foo_joint&quot; type&#x3D;&quot;revolute&quot;&gt;</span><br><span class="line">&lt;!-- other joint description elements --&gt;</span><br><span class="line">&lt;!-- Joint limits --&gt;</span><br><span class="line">&lt;limit lower&#x3D;&quot;0.0&quot; upper&#x3D;&quot;1.0&quot; effort&#x3D;&quot;10.0&quot; velocity&#x3D;&quot;5.0&quot; &#x2F;&gt;</span><br><span class="line">&lt;!-- Soft limits --&gt;</span><br><span class="line">&lt;safety_controller k_position&#x3D;&quot;100&quot; k_velocity&#x3D;&quot;10&quot; soft_lower_limit&#x3D;&quot;0.1&quot; soft_upper_limit&#x3D;&quot;0.9&quot; &#x2F;&gt; </span><br><span class="line">&lt;&#x2F;joint&gt;</span><br></pre></td></tr></table></figure><br>还有一些参数需要通过YAML配置文件先加载到参数服务器中，YAML文件的格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	joint_limits:</span><br><span class="line">foo_joint:</span><br><span class="line">	has_position_limits: true</span><br><span class="line">	min_position: 0.0</span><br><span class="line">	max_position: 1.0</span><br><span class="line">	has_velocity_limits: true</span><br><span class="line">	max_velocity: 2.0</span><br><span class="line">	has_acceleration_limits: true</span><br><span class="line">	max_acceleration: 5.0</span><br><span class="line">	has_jerk_limits: true</span><br><span class="line">	max_jerk: 100.0</span><br><span class="line">	has_effort_limits: true</span><br><span class="line">	max_effort: 5.0</span><br><span class="line">	bar_joint:</span><br><span class="line">	has_position_limits: false # Continuous joint</span><br><span class="line">	has_velocity_limits: true</span><br><span class="line">	max_velocity: 4.0</span><br></pre></td></tr></table></figure><br>另外，我们还可以在代码中使用joint_limits_interface来加载和设置关节的限位参数，可以参考：<a href="https://github.com/ros-controls/ros_control/wiki/joint_limits_interface" target="_blank" rel="noopener">https://github.com/ros-controls/ros_control/wiki/joint_limits_interface</a></p>
+<h2 id="2-arbotix-ros"><a href="#2-arbotix-ros" class="headerlink" title="2.arbotix_ros"></a>2.arbotix_ros</h2><p>arbotix控制器是一款比较受欢迎的舵机驱动器，用于驱动BIOLOID和DYNAMIXEL舵机。<br><img src="/2020/04/15/ros_control%E5%92%8Carbotix_ros%E7%AE%80%E4%BB%8B/arbotix6.jpg" class=""><br>arbotix_ros是arbotix控制器的ROS软件包。利用arbotix_ros可以很方便通过ROS来控制小车运动。</p>
+<h3 id="2-1arbotix在ROS中的使用"><a href="#2-1arbotix在ROS中的使用" class="headerlink" title="2.1arbotix在ROS中的使用"></a>2.1arbotix在ROS中的使用</h3><p>在launch文件中添加arbotix插件，加载arbotix节点以及控制器配置文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;node name&#x3D;&quot;arbotix&quot; pkg&#x3D;&quot;arbotix_python&quot; type&#x3D;&quot;arbotix_driver&quot; output&#x3D;&quot;screen&quot;&gt;  </span><br><span class="line">       &lt;rosparam file&#x3D;&quot;$(find smartcar_description)&#x2F;config&#x2F;smartcar_arbotix.yaml&quot; command&#x3D;&quot;load&quot; &#x2F;&gt;  </span><br><span class="line">       &lt;param name&#x3D;&quot;sim&quot; value&#x3D;&quot;true&quot;&#x2F;&gt;  </span><br><span class="line">   &lt;&#x2F;node&gt;</span><br></pre></td></tr></table></figure><br>关于arbotix_python可参考：<a href="http://wiki.ros.org/arbotix_python" target="_blank" rel="noopener">http://wiki.ros.org/arbotix_python</a><br>在config文件夹目录下创建一个.yaml文件，用于配置小车的控制器base_controller。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">controllers: &#123;</span><br><span class="line">  base_controller: &#123;</span><br><span class="line">      type: diff_controller, </span><br><span class="line">      base_frame_id: base_footprint, </span><br><span class="line">      base_width: 0.16, </span><br><span class="line">      ticks_meter: 4100, </span><br><span class="line">      Kp: 12, </span><br><span class="line">      Kd: 12, </span><br><span class="line">      Ki: 0, </span><br><span class="line">      Ko: 50, </span><br><span class="line">      accel_limit: 1.0 </span><br><span class="line">&#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure><br>说明：<br>●type表示控制器类型，diff_controller是两轮差速的控制器。<br>●base_frame_id表示参考的坐标系。<br>●base_width在这里表示左右两个轮子的间距，单位米。<br>●ticks_meter表示编码器精度，单位是tick/米。<br>●Kp、Kd和Ki分别表示PID的三个参数，即比例、微分和积分。<br>●Ko表示PID的缩放比例参数。<br>●accel_limit表示加速度的限位。<br>详情可参考：<a href="http://wiki.ros.org/arbotix_python/diff_controller" target="_blank" rel="noopener">http://wiki.ros.org/arbotix_python/diff_controller</a>  </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" rel="next" title="xacro模型——阿克曼（Ackermann）四轮小车模型">
+                <i class="fa fa-chevron-left"></i> xacro模型——阿克曼（Ackermann）四轮小车模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" rel="prev" title="Gazebo仿真——阿克曼（Ackermann）四轮小车模型">
+                Gazebo仿真——阿克曼（Ackermann）四轮小车模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ros-control"><span class="nav-text">1.ros_control</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller-Manager"><span class="nav-text">Controller Manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller"><span class="nav-text">Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hardware-Interface"><span class="nav-text">Hardware Interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transmissions"><span class="nav-text">Transmissions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Joint-Limits"><span class="nav-text">Joint Limits</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-arbotix-ros"><span class="nav-text">2.arbotix_ros</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1arbotix在ROS中的使用"><span class="nav-text">2.1arbotix在ROS中的使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

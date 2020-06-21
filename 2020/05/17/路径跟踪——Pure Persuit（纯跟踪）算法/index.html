@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.算法简介相关链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;48117381 1.1单车模型(Bicycle Model) 单车模型实际上是对阿克曼转向几何的一个简化，使用单车模型需做如下假设：（1）不考虑车辆在Z轴方向的运动，只考虑XY水平面的运动；（2）左右侧车轮转角一致，这样可将左右侧轮胎合并为一个轮胎，以便于搭建单车模型；（3）车辆行驶速度变化缓慢，忽略前后轴载荷的转移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="路径跟踪——Pure Persuit（纯跟踪）算法">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.算法简介相关链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;48117381 1.1单车模型(Bicycle Model) 单车模型实际上是对阿克曼转向几何的一个简化，使用单车模型需做如下假设：（1）不考虑车辆在Z轴方向的运动，只考虑XY水平面的运动；（2）左右侧车轮转角一致，这样可将左右侧轮胎合并为一个轮胎，以便于搭建单车模型；（3）车辆行驶速度变化缓慢，忽略前后轴载荷的转移">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit8.jpg">
+<meta property="article:published_time" content="2020-05-17T15:56:30.439Z">
+<meta property="article:modified_time" content="2020-05-18T12:24:40.475Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95&#x2F;persuit1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/05/17/路径跟踪——Pure Persuit（纯跟踪）算法/"/>
+
+
+
+
+
+  <title>路径跟踪——Pure Persuit（纯跟踪）算法 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">路径跟踪——Pure Persuit（纯跟踪）算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-17T23:56:30+08:00">
+                2020-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-算法简介"><a href="#1-算法简介" class="headerlink" title="1.算法简介"></a>1.算法简介</h2><p>相关链接：<a href="https://zhuanlan.zhihu.com/p/48117381" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/48117381</a></p>
+<h3 id="1-1单车模型-Bicycle-Model"><a href="#1-1单车模型-Bicycle-Model" class="headerlink" title="1.1单车模型(Bicycle Model)"></a>1.1单车模型(Bicycle Model)</h3><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit1.jpg" class="">
+<p>单车模型实际上是对阿克曼转向几何的一个简化，使用单车模型需做如下假设：<br>（1）不考虑车辆在Z轴方向的运动，只考虑XY水平面的运动；<br>（2）左右侧车轮转角一致，这样可将左右侧轮胎合并为一个轮胎，以便于搭建单车模型；<br>（3）车辆行驶速度变化缓慢，忽略前后轴载荷的转移；<br>（4）车身及悬架系统是刚性的。<br>采用单车模型的一大好处就在于它简化了前轮转向角与后轴将遵循的曲率之间的几何关系，其关系如下式所示：<br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit2.jpg" class=""><br>其中δ表示前轮的转角，L为轴距，R则为在给定的转向角下后轴遵循着的圆的半径。<br>从自行车模型出发，纯跟踪算法以车后轴为切点，车辆纵向车身为切线，通过控制前轮转角，使车辆可以沿着一条经过目标路点（goal point）的圆弧行驶，如下图所示：<br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit3.jpg" class=""><br>图中（gx,gy）是我们下一个要追踪的路点，它位于我们已经规划好的全局路径上，现在需要控制车辆的后轴经过该路点，ld表示车辆当前位置（即后轴位置）到目标路点的距离，α表示目前车身姿态和目标路点的夹角，那么根据正弦定理我们可以推导出如下转换式：<br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit4.jpg" class=""><br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit5.jpg" class=""><br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit6.jpg" class=""><br>因为道路的曲率<script type="math/tex">{κ}=\frac{1}{R}</script>，上式也可以表示为：<br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit7.jpg" class=""><br>则由式子<script type="math/tex">tan(δ)=\frac{L}{R}</script>，可得<br><img src="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/persuit8.jpg" class=""></p>
+<h2 id="2-源码解析"><a href="#2-源码解析" class="headerlink" title="2.源码解析"></a>2.源码解析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self):</span><br><span class="line">	rospy.init_node(&#39;pure_persuit&#39;, log_level&#x3D;rospy.DEBUG)</span><br><span class="line"></span><br><span class="line">	rospy.Subscriber(&#39;&#x2F;rear_pose&#39;, PoseStamped, self.pose_cb, queue_size &#x3D; 1)</span><br><span class="line">	rospy.Subscriber(&#39;&#x2F;velocity&#39;, TwistStamped, self.vel_cb, queue_size &#x3D; 1)</span><br><span class="line">	rospy.Subscriber(&#39;&#x2F;final_waypoints&#39;, Lane, self.lane_cb, queue_size &#x3D; 1)</span><br><span class="line"></span><br><span class="line">	self.left_vel_pub &#x3D;rospy.Publisher(&#39;&#x2F;rear_left_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">	self.right_vel_pub &#x3D; rospy.Publisher(&#39;&#x2F;rear_right_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">	self.left_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;left_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">	self.right_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;right_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">	</span><br><span class="line">	self.currentPose &#x3D; None</span><br><span class="line">	self.currentVelocity &#x3D; None</span><br><span class="line">	self.currentWaypoints &#x3D; None</span><br><span class="line"></span><br><span class="line">	self.loop()</span><br></pre></td></tr></table></figure>
+<p>说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">self.left_vel_pub &#x3D;rospy.Publisher(&#39;&#x2F;rear_left_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.right_vel_pub &#x3D; rospy.Publisher(&#39;&#x2F;rear_right_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.left_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;left_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.right_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;right_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br></pre></td></tr></table></figure><br>上面这三段函数创建了三个ROS话题订阅者，分别向ROS系统订阅/rear_pose、/velocity和/final_waypoints三种话题消息，即小车后轮轴中心点坐标、小车速度和局部路径点信息，而这三种话题消息对应的回调函数分别为pose_cb、vel_cb和lane_cb。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">self.left_vel_pub &#x3D;rospy.Publisher(&#39;&#x2F;rear_left_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.right_vel_pub &#x3D; rospy.Publisher(&#39;&#x2F;rear_right_velocity_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.left_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;left_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br><span class="line">self.right_steer_pub &#x3D; rospy.Publisher(&#39;&#x2F;right_bridge_position_controller&#x2F;command&#39;, Float64, queue_size &#x3D; 10)</span><br></pre></td></tr></table></figure><br>上面这四段函数创建了四个ROS话题发布者，分别发布/rear_left_velocity_controller/command、/rear_right_velocity_controller/command、/left_bridge_position_controller/command和/right_bridge_position_controller/command四种话题消息，即小车后轮和前轮的速度指令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def loop(self):</span><br><span class="line">	rate &#x3D; rospy.Rate(20)</span><br><span class="line">	rospy.logwarn(&quot;pure persuit starts&quot;)</span><br><span class="line">	while not rospy.is_shutdown():</span><br><span class="line">		if self.currentPose and self.currentVelocity and self.currentWaypoints:</span><br><span class="line">			self.calculateTwistCommand()</span><br><span class="line">		rate.sleep()</span><br></pre></td></tr></table></figure><br>说明：<br>●rate = rospy.Rate(20)设置该函数的循环频率为20Hz。<br>●while not rospy.is_shutdown():表示若ROS未被关闭，则进行以下操作。<br>●if self.currentPose and self.currentVelocity and self.currentWaypoints:表示若self.currentPose、self.currentVelocity和self.currentWaypoints均为非空时，则进行以下操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def pose_cb(self,data):</span><br><span class="line">	self.currentPose &#x3D; data</span><br><span class="line"></span><br><span class="line">def vel_cb(self,data):</span><br><span class="line">	self.currentVelocity &#x3D; data</span><br><span class="line"></span><br><span class="line">def lane_cb(self,data):</span><br><span class="line">	self.currentWaypoints &#x3D; data</span><br></pre></td></tr></table></figure><br>说明：<br>●这三个回调函数分别将/rear_pose、/velocity和/final_waypoints的话题消息内容提取出来，赋给self.currentPose、self.currentVelocity和self.currentWaypoints。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">def ackermann_steering_control(self, velocity, radian):</span><br><span class="line">	global left_angle, left_speed, right_angle, right_speed 	</span><br><span class="line">	if radian &gt; 0:</span><br><span class="line">		inside_radius &#x3D; L &#x2F; math.tan(radian) - T &#x2F; 2</span><br><span class="line">		outside_radius &#x3D; L &#x2F; math.tan(radian) + T &#x2F; 2</span><br><span class="line">	else:</span><br><span class="line">		outside_radius &#x3D; L &#x2F; math.tan(radian) - T &#x2F; 2</span><br><span class="line">		inside_radius &#x3D; L &#x2F; math.tan(radian) + T &#x2F; 2</span><br><span class="line"></span><br><span class="line">	outside_speed &#x3D; velocity * ( 1 + T * math.tan(abs(radian)) &#x2F; ( 2 * L ) )</span><br><span class="line">	inside_speed &#x3D; velocity * ( 1 - T * math.tan(abs(radian)) &#x2F; ( 2 * L ) )</span><br><span class="line"></span><br><span class="line">	inside_angle &#x3D; math.atan( L &#x2F; inside_radius )</span><br><span class="line">	outside_angle &#x3D; math.atan( L &#x2F; outside_radius )</span><br><span class="line"></span><br><span class="line">	if radian &gt; 0:</span><br><span class="line">		left_angle &#x3D; outside_angle</span><br><span class="line">		left_speed &#x3D; outside_speed</span><br><span class="line">		right_angle &#x3D; inside_angle</span><br><span class="line">		right_speed &#x3D; inside_speed</span><br><span class="line">	else:</span><br><span class="line">		right_angle &#x3D; outside_angle</span><br><span class="line">		right_speed &#x3D; outside_speed</span><br><span class="line">		left_angle &#x3D; inside_angle</span><br><span class="line">		left_speed &#x3D; inside_speed</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数以小车的期望转角（弧度）和期望速度为输入，分别根据阿克曼转向模型控制小车两个前轮的转角和两个后轮的转速。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def calculateTwistCommand(self):</span><br><span class="line">	lad &#x3D; 0.0 #look ahead distance accumulator</span><br><span class="line">	targetIndex &#x3D; len(self.currentWaypoints.waypoints) - 1</span><br><span class="line">	for i in range(len(self.currentWaypoints.waypoints)):</span><br><span class="line">		if((i+1) &lt; len(self.currentWaypoints.waypoints)):</span><br><span class="line">			this_x &#x3D; self.currentWaypoints.waypoints[i].pose.pose.position.x</span><br><span class="line">			this_y &#x3D; self.currentWaypoints.waypoints[i].pose.pose.position.y</span><br><span class="line">			next_x &#x3D; self.currentWaypoints.waypoints[i+1].pose.pose.position.x</span><br><span class="line">			next_y &#x3D; self.currentWaypoints.waypoints[i+1].pose.pose.position.y</span><br><span class="line">			lad &#x3D; lad + math.hypot(next_x - this_x, next_y - this_y)</span><br><span class="line">			if(lad &gt; HORIZON):</span><br><span class="line">				targetIndex &#x3D; i+1</span><br><span class="line">				break</span><br><span class="line"></span><br><span class="line">	targetWaypoint &#x3D; self.currentWaypoints.waypoints[targetIndex]</span><br><span class="line"></span><br><span class="line">	targetSpeed &#x3D; self.currentWaypoints.waypoints[0].twist.twist.linear.x</span><br></pre></td></tr></table></figure><br>说明：<br>●lad = 0.0设置的是前瞻距离。<br>●targetIndex = len(self.currentWaypoints.waypoints) – 1的作用是获取局部路径的长度（局部路径点的数量），并设置列表的大小，其中len(self.currentWaypoints.waypoints)的值就等于waypoints_updater.py中设置的LOOKAHEAD_WPS。<br>●for i in range(len(self.currentWaypoints.waypoints)):此处是遍历整个局部路径点列表。<br>●this_x和this_y表示当前最近的局部路径点横、纵坐标，next_x和next_y表示下一个路径点的横、纵坐标。计算当前路径点与下一个路径点的距离，并累加到前瞻距离lad。当前瞻距离lad达到阈值HORIZON时，将该点设置为目标路径点，即targetWaypoint。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">targetX &#x3D; targetWaypoint.pose.pose.position.x</span><br><span class="line">targetY &#x3D; targetWaypoint.pose.pose.position.y		</span><br><span class="line">currentX &#x3D; self.currentPose.pose.position.x</span><br><span class="line">currentY &#x3D; self.currentPose.pose.position.y</span><br><span class="line">#get vehicle yaw angle</span><br><span class="line">quanternion &#x3D; (self.currentPose.pose.orientation.x, self.currentPose.pose.orientation.y, self.currentPose.pose.orientation.z, self.currentPose.pose.orientation.w)</span><br><span class="line">euler &#x3D; tf.transformations.euler_from_quaternion(quanternion)</span><br><span class="line">yaw &#x3D; euler[2]</span><br><span class="line">#get angle difference</span><br><span class="line">alpha &#x3D; math.atan2(targetY - currentY, targetX - currentX) - yaw</span><br><span class="line">l &#x3D; math.sqrt(math.pow(currentX - targetX, 2) + math.pow(currentY - targetY, 2))</span><br><span class="line">if(l &gt; 0.5):</span><br><span class="line">	theta &#x3D; math.atan(2 * 0.16 * math.sin(alpha) &#x2F; l)</span><br><span class="line">	self.ackermann_steering_control(targetSpeed, -theta)</span><br><span class="line">	# #get twist command</span><br><span class="line">	left_steer &#x3D; Float64()</span><br><span class="line">	right_steer &#x3D; Float64()</span><br><span class="line">	left_vel &#x3D; Float64()</span><br><span class="line">	right_vel &#x3D; Float64()</span><br><span class="line">	left_steer.data &#x3D; left_angle</span><br><span class="line">	right_steer.data &#x3D; right_angle</span><br><span class="line">	left_vel.data &#x3D; left_speed</span><br><span class="line">	right_vel.data &#x3D; right_speed </span><br><span class="line">else:</span><br><span class="line">	left_steer &#x3D; Float64()</span><br><span class="line">	right_steer &#x3D; Float64()</span><br><span class="line">	left_vel &#x3D; Float64()</span><br><span class="line">	right_vel &#x3D; Float64()</span><br><span class="line">	left_steer.data &#x3D; 0</span><br><span class="line">	right_steer.data &#x3D; 0</span><br><span class="line">	left_vel.data &#x3D; 0</span><br><span class="line">	right_vel.data &#x3D; 0</span><br><span class="line">	</span><br><span class="line">self.left_vel_pub.publish(left_vel)</span><br><span class="line">self.right_vel_pub.publish(right_vel)</span><br><span class="line">self.left_steer_pub.publish(left_steer)</span><br><span class="line">self.right_steer_pub.publish(right_steer)</span><br></pre></td></tr></table></figure><br>说明：<br>●targetX和targetY表示目标路径点的横、纵坐标，currentX和currentY表示小车当前的坐标点横、纵坐标。<br>●euler = tf.transformations.euler_from_quaternion(quanternion)的作用是将小车当前的姿态信息由四元数格式转换到欧拉角的格式，即以roll、pitch和yaw轴偏向角的形式存储在变量euler中。<br>●alpha = math.atan2(targetY - currentY, targetX - currentX) – yaw的作用是计算小车当前的yaw角与目标点之间的角度偏差。<br>●l = math.sqrt(math.pow(currentX - targetX, 2) + math.pow(currentY - targetY, 2))用于计算小车当前位置点与目标路径点的距离。<br>●当l &lt; 0.5，即小车快要到达全局路径的终点时，直接将小车速度设置为0。反之，则通过Pure Persuit算法得到前轮转向角度，再将该角度作为Alkermann算法的输入，从而实现对小车横向和纵向控制，使其能够沿着全局路径行驶。</p>
+<h2 id="3-效果演示"><a href="#3-效果演示" class="headerlink" title="3.效果演示"></a>3.效果演示</h2><video width="850" height="478" controls>
+<source src="gazebo_persuit_V2.0.mp4">
+</video>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/" rel="next" title="全局路径与局部路径">
+                <i class="fa fa-chevron-left"></i> 全局路径与局部路径
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="关于Haar特征分类器和AdaBoost算法的学习笔记">
+                关于Haar特征分类器和AdaBoost算法的学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-算法简介"><span class="nav-text">1.算法简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1单车模型-Bicycle-Model"><span class="nav-text">1.1单车模型(Bicycle Model)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-源码解析"><span class="nav-text">2.源码解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-效果演示"><span class="nav-text">3.效果演示</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

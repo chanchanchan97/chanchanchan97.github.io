@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.全局路径的读取waypoint_loader.py的作用是读取.csv文件中的路径点信息，并发布消息waypoints和base_path，其中waypoints包含了路径点的位置信息、小车的期望速度和表明小车是前进还是后退的状态位，base_path包含了实现Rviz可视化的路径点坐标。1234567def new_waypoint_loader(self, path):       if">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全局路径与局部路径">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.全局路径的读取waypoint_loader.py的作用是读取.csv文件中的路径点信息，并发布消息waypoints和base_path，其中waypoints包含了路径点的位置信息、小车的期望速度和表明小车是前进还是后退的状态位，base_path包含了实现Rviz可视化的路径点坐标。1234567def new_waypoint_loader(self, path):       if">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path6.jpg">
+<meta property="article:published_time" content="2020-05-17T08:52:05.138Z">
+<meta property="article:modified_time" content="2020-05-17T14:41:25.489Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;05&#x2F;17&#x2F;%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84&#x2F;path1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/05/17/全局路径与局部路径/"/>
+
+
+
+
+
+  <title>全局路径与局部路径 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">全局路径与局部路径</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-17T16:52:05+08:00">
+                2020-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-全局路径的读取"><a href="#1-全局路径的读取" class="headerlink" title="1.全局路径的读取"></a>1.全局路径的读取</h2><p>waypoint_loader.py的作用是读取.csv文件中的路径点信息，并发布消息waypoints和base_path，其中waypoints包含了路径点的位置信息、小车的期望速度和表明小车是前进还是后退的状态位，base_path包含了实现Rviz可视化的路径点坐标。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def new_waypoint_loader(self, path):</span><br><span class="line">       if os.path.isfile(path):</span><br><span class="line">           waypoints, base_path &#x3D; self.load_waypoints(path)</span><br><span class="line">           self.publish(waypoints, base_path)</span><br><span class="line">           rospy.loginfo(&#39;Waypoint Loded&#39;)</span><br><span class="line">       else:</span><br><span class="line">           rospy.logerr(&#39;%s is not a file&#39;, path)</span><br></pre></td></tr></table></figure><br>说明：<br>●os.path.isfile(path)用于判断某一对象是否为文件，其中path必须为绝对路径。<br>●self.load_waypoints(path)用于加载.csv文件，并以包含路径信息的消息作为返回值。<br>●self.publish(waypoints, base_path)用于发布话题消息。<br>●rospy.loginfo(‘Waypoint Loded’)用于输出INFO日志信息。<br>●rospy.logerr(‘%s is not a file’, path)当判断该对象不为文件时，输出ERROR日志信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">def load_waypoints(self, fname):</span><br><span class="line">       waypoints &#x3D; []</span><br><span class="line">       base_path &#x3D; Path()</span><br><span class="line">       base_path.header.frame_id &#x3D; &#39;world&#39;</span><br><span class="line">       with open(fname) as wfile:</span><br><span class="line">           reader &#x3D; csv.DictReader(wfile, CSV_HEADER)</span><br><span class="line">           for wp in reader:</span><br><span class="line">               p &#x3D; Waypoint()</span><br><span class="line">               p.pose.pose.position.x &#x3D; float(wp[&#39;x&#39;])</span><br><span class="line">               p.pose.pose.position.y &#x3D; float(wp[&#39;y&#39;])</span><br><span class="line">               q &#x3D; self.quaternion_from_yaw(float(wp[&#39;yaw&#39;]))</span><br><span class="line">               p.pose.pose.orientation &#x3D; Quaternion(*q)</span><br><span class="line">               p.twist.twist.linear.x &#x3D; float(self.velocity)</span><br><span class="line">               p.forward &#x3D; True</span><br><span class="line">               waypoints.append(p)</span><br><span class="line"></span><br><span class="line">               path_element &#x3D; PoseStamped()</span><br><span class="line">               path_element.pose.position.x &#x3D; p.pose.pose.position.x</span><br><span class="line">               path_element.pose.position.y &#x3D; p.pose.pose.position.y</span><br><span class="line">               base_path.poses.append(path_element)</span><br><span class="line"></span><br><span class="line">               </span><br><span class="line">       waypoints &#x3D; self.decelerate(waypoints)</span><br><span class="line">       return waypoints,base_path</span><br></pre></td></tr></table></figure><br>说明：<br>●waypoints = []创建了一个空列表，命名为waypoint。<br>●base_path = Path()和base_path.header.frame_id = ‘world’定义了一个Path类的对象base_path，并以world作为frame id。<br>●with open(fname) as wfile的作用是打开文件（保证在文件出错后能够正常关闭文件），其中fname在此处是文件的绝对路径。<br>●reader = csv.DictReader(wfile, CSV_HEADER)以CSV_HEADER的构造格式，即‘x’、‘y’和‘yaw’格式读取文件内容。<br>●for wp in reader:在此处遍历文件中的每一行。<br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path1.jpg" class=""><br>●p = Waypoint()定义了一个Waypoint类的对象，其中Waypoint类在styx_msgs文件夹的Waypoint.msg中进行了自定义，包含了geometry_msgs/PoseStamped pose、geometry_msgs/TwistStamped twist和bool forward，分别表示小车在环境中的x、y坐标、小车的期望速度以及表明小车是前进还是后退的标志位。<br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path2.jpg" class=""><br>●p.pose.pose.position.x = float(wp[‘x’])和p.pose.pose.position.y = float(wp[‘y’])用于将文件中的x、y所对应的数据填充到相应的消息内容中。<br>●q = self.quaternion_from_yaw(float(wp[‘yaw’]))即调用tf.transformations.quaternion_from_euler(0., 0., yaw)该函数，用于将 (0., 0., yaw)欧拉角转换成四元数quaternion。<br>●p.pose.pose.orientation = Quaternion(&#42;q)该操作相当于p.pose.pose.orientation = Quaternion(q[0], q[1], q[2], q[3])，用于将元祖扩展成参数列表，并将四元数数据填充到相应的消息内容中。<br>●p.twist.twist.linear.x = float(self.velocity)用于将期望的线速度值填充到相应的消息内容中。<br>●waypoints.append(p)用于将Waypoint类的对象p，即路径信息添加到列表waypoints中。<br>●path_element = PoseStamped()定义了一个PoseStamped类的对象，用于在Rviz中可视化路径。<br>●waypoints = self.decelerate(waypoints)根据小车当前位置与终点位置来控制小车速度，并保证在终点位置速度为零。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def decelerate(self, waypoints):</span><br><span class="line">       last &#x3D; waypoints[-1]</span><br><span class="line">       last.twist.twist.linear.x &#x3D; 0.</span><br><span class="line">       for wp in waypoints[:-1][::-1]:</span><br><span class="line">           dist &#x3D; self.distance(wp.pose.pose.position, last.pose.pose.position)</span><br><span class="line">           vel &#x3D; math.sqrt(2 * MAX_DECEL * dist)</span><br><span class="line">           if vel &lt; 1.:</span><br><span class="line">               vel &#x3D; 0.</span><br><span class="line">           wp.twist.twist.linear.x &#x3D; min(vel, wp.twist.twist.linear.x)</span><br><span class="line">       return waypoints</span><br></pre></td></tr></table></figure><br>说明：<br>●last = waypoints[-1]用于将waypoints列表中的最后一个值，即路径的终点信息赋给变量last。<br>●for wp in waypoints[:-1][::-1]:用于遍历waypoints列表中的所有值。<br>●dist = self.distance(wp.pose.pose.position, last.pose.pose.position)用于计算当前坐标点与终点坐标的距离。<br>●vel = math.sqrt(2 &#42; MAX_DECEL &#42; dist)根据小车当前位置距离终点的路程dist、人为设定的减速度MAX_DECEL和到达终点时的速度（速度为零）来计算得到小车当前的期望速度vel，其中所运用到的是高中物理公式Vt^2 - V0^2 = 2as。<br>●wp.twist.twist.linear.x = min(vel, wp.twist.twist.linear.x)表示在距离终点较远的位置，按照wp.twist.twist.linear.x的默认期望速度行驶，而在距离终点较近的位置，按照自定义的减速度开始减速行驶。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def distance(self, p1, p2):</span><br><span class="line">       x, y, z &#x3D; p1.x - p2.x, p1.y - p2.y, p1.z - p2.z</span><br><span class="line">       return math.sqrt(x*x + y*y + z*z)</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数用于计算两个坐标点之间的距离。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def quaternion_from_yaw(self, yaw):</span><br><span class="line">       return tf.transformations.quaternion_from_euler(0., 0., yaw)</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数用于将欧拉角转换成四元数形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def kmph2mps(self, velocity_kmph):</span><br><span class="line">       return (velocity_kmph * 1000.) &#x2F; (60. * 60.)</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数用于将单位为km/h的速度值转换成以m/s为单位。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def publish(self, waypoints, base_path):</span><br><span class="line">       lane &#x3D; Lane()</span><br><span class="line">       lane.header.frame_id &#x3D; &#39;&#x2F;world&#39;</span><br><span class="line">       lane.header.stamp &#x3D; rospy.Time(0)</span><br><span class="line">       lane.waypoints &#x3D; waypoints</span><br><span class="line">       self.pub.publish(lane)</span><br><span class="line">       self.pub_path.publish(base_path)</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数用于发布话题消息waypoints和base_path。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self):</span><br><span class="line">       rospy.init_node(&#39;waypoint_loader&#39;, log_level&#x3D;rospy.DEBUG)</span><br><span class="line"></span><br><span class="line">       self.pub &#x3D; rospy.Publisher(&#39;&#x2F;base_waypoints&#39;, Lane, queue_size&#x3D;1, latch&#x3D;True)</span><br><span class="line">       self.pub_path &#x3D; rospy.Publisher(&#39;&#x2F;base_path&#39;, Path, queue_size&#x3D;1, latch&#x3D;True)</span><br><span class="line"></span><br><span class="line">       self.velocity &#x3D; self.kmph2mps(rospy.get_param(&#39;~velocity&#39;))</span><br><span class="line">       self.new_waypoint_loader(rospy.get_param(&#39;~path&#39;))</span><br><span class="line">       rospy.spin()</span><br></pre></td></tr></table></figure><br>说明：<br>●rospy.init_node(‘waypoint_loader’, log_level=rospy.DEBUG)用于初始化ROS节点，在节点完全初始化之前，消息不会出现在/rosout话题上，因此可能看不到初始消息。要想在/rosout上看到logdebug消息，可以将log_level参数传递给rospy.init_node()。<br>●self.pub = rospy.Publisher(‘/base_waypoints’, Lane, queue_size=1, latch=True)和self.pub_path = rospy.Publisher(‘/base_path’, Path, queue_size=1, latch=True)分别用于创建以/base_waypoints和/base_path为话题消息的发布者。其中latch=True将保存最后发布的消息并将其发送给连接的任何将来的订户，这对于诸如地图等缓慢变化的数据或静态数据很有用。<br>●self.velocity = self.kmph2mps(rospy.get_param(‘~velocity’))用于加载参数velocity的值，并转换成以m/s为单位。<br>●self.new_waypoint_loader(rospy.get_param(‘~path’))用于加载参数path所对应的文件路径，并发布相关的话题消息。</p>
+<h2 id="2-局部路径的更新"><a href="#2-局部路径的更新" class="headerlink" title="2.局部路径的更新"></a>2.局部路径的更新</h2><p>waypoint_updater.py的作用是通过KD-tree查询距离小车最近的路径点，以该点为起始点设置局部路径，并在Rviz可视化工具中显示局部路径。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self):</span><br><span class="line">       rospy.init_node(&#39;waypoint_updater&#39;)</span><br><span class="line"></span><br><span class="line">       rospy.Subscriber(&#39;&#x2F;smart&#x2F;rear_pose&#39;, PoseStamped, self.pose_cb)</span><br><span class="line">       rospy.Subscriber(&#39;&#x2F;base_waypoints&#39;, Lane, self.waypoints_cb)</span><br><span class="line"></span><br><span class="line">       self.final_waypoints_pub &#x3D; rospy.Publisher(&#39;final_waypoints&#39;, Lane, queue_size&#x3D;1)</span><br><span class="line">       self.final_path_pub &#x3D; rospy.Publisher(&#39;final_path&#39;, Path, queue_size&#x3D;1)</span><br><span class="line"></span><br><span class="line">       # TODO: Add other member variables you need below</span><br><span class="line">       self.base_waypoints &#x3D; None</span><br><span class="line">       self.waypoints_2d &#x3D; None</span><br><span class="line">       self.waypoint_tree &#x3D; None</span><br><span class="line">       self.pose &#x3D; None</span><br><span class="line"></span><br><span class="line">       # rospy.spin()</span><br><span class="line">       rate &#x3D; rospy.Rate(20)</span><br><span class="line">       while not rospy.is_shutdown():</span><br><span class="line">           if self.pose and self.base_waypoints and self.waypoint_tree:</span><br><span class="line">               # Get closest waypoint</span><br><span class="line">               closest_waypoint_idx &#x3D; self.get_closest_waypoint_idx()</span><br><span class="line">               self.publish_waypoints(closest_waypoint_idx)</span><br><span class="line">           rate.sleep()</span><br></pre></td></tr></table></figure><br>说明：<br>●rospy.init_node(‘waypoint_updater’)用于初始化ROS节点。<br>●rospy.Subscriber(‘/smart/rear_pose’, PoseStamped, self.pose_cb)和rospy.Subscriber(‘/base_waypoints’, Lane, self.waypoints_cb)分别用于创建以/smart/rear_pose和/base_waypoints为话题消息的订阅者，其中/smart/rear_pose话题消息内容为小车后轮中心点的坐标，/base_waypoints 话题消息内容为全局路径点坐标及小车期望速度等，pose_cb和waypoints_cb分别为/smart/rear_pose和/base_waypoints的消息回调函数。<br>●self.final_waypoints_pub = rospy.Publisher(‘final_waypoints’, Lane, queue_size=1)和self.final_path_pub = rospy.Publisher(‘final_path’, Path, queue_size=1)分别用于创建以final_waypoints和final_path为话题消息的发布者。<br>●rate = rospy.Rate(20)用于设置ROS节点的更新频率为20Hz。<br>●while not rospy.is_shutdown():表示在ROS节点未关闭的条件下，执行下面的操作。<br>●if self.pose and self.base_waypoints and self.waypoint_tree:表示在pose、base_waypoints和waypoint_tree话题消息内容非空的条件下，执行下面的操作。<br>●closest_waypoint_idx = self.get_closest_waypoint_idx()的作用是返回一个距离当前小车位置最近的路径点的横坐标x。<br>●self.publish_waypoints(closest_waypoint_idx)用于发布话题消息closest_waypoint_idx。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def pose_cb(self, msg):</span><br><span class="line">       self.pose &#x3D; msg</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数为/smart/rear_pose话题消息的回调函数，作用是将该话题消息内容赋给self.pose。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def waypoints_cb(self, waypoints):</span><br><span class="line">       self.base_waypoints &#x3D; waypoints</span><br><span class="line">       if not self.waypoints_2d:</span><br><span class="line">           self.waypoints_2d &#x3D; [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints.waypoints]</span><br><span class="line">           self.waypoint_tree &#x3D; KDTree(self.waypoints_2d)</span><br></pre></td></tr></table></figure><br>说明：<br>●该函数为/base_waypoints话题消息的回调函数。<br>●self.waypoints_2d = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints.waypoints]将waypoints话题消息中的x、y轴坐标提取到一个二维列表self.waypoints_2d中。二维列表self.waypoints_2d的内容如下：<br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path3.jpg" class=""><br>●self.waypoint_tree = KDTree(self.waypoints_2d)的作用是构建一个二维的KD-tree。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def get_closest_waypoint_idx(self):</span><br><span class="line">       x &#x3D; self.pose.pose.position.x</span><br><span class="line">       y &#x3D; self.pose.pose.position.y</span><br><span class="line"></span><br><span class="line">       closest_idx &#x3D; self.waypoint_tree.query([x,y],1)[1]</span><br><span class="line"></span><br><span class="line">       return closest_idx</span><br></pre></td></tr></table></figure><br>说明：<br>●closest_idx = self.waypoint_tree.query([x,y],1)[1]的作用是在KD-tree中查询距离当前小车位置最近的一个路径点的横坐标x。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def publish_waypoints(self, closest_idx):</span><br><span class="line">   	# fill in final waypoints to publish</span><br><span class="line">       lane &#x3D; Lane()</span><br><span class="line">       lane.header &#x3D; self.base_waypoints.header</span><br><span class="line">       lane.waypoints &#x3D; self.base_waypoints.waypoints[closest_idx:closest_idx + LOOKAHEAD_WPS]</span><br><span class="line"></span><br><span class="line">       # fill in path for visulization in Rviz</span><br><span class="line">       path &#x3D; Path()</span><br><span class="line">       path.header.frame_id &#x3D; &#39;&#x2F;world&#39;</span><br><span class="line">       for p in lane.waypoints:</span><br><span class="line">        path_element &#x3D; PoseStamped()</span><br><span class="line">        path_element.pose.position.x &#x3D; p.pose.pose.position.x</span><br><span class="line">        path_element.pose.position.y &#x3D; p.pose.pose.position.y</span><br><span class="line">        path.poses.append(path_element)</span><br><span class="line"></span><br><span class="line">       self.final_waypoints_pub.publish(lane)</span><br><span class="line">       self.final_path_pub.publish(path)</span><br></pre></td></tr></table></figure><br>说明：<br>●lane.waypoints = self.base_waypoints.waypoints[closest_idx:closest_idx + LOOKAHEAD_WPS]的作用是将距离小车最近的路径点以及之后的LOOKAHEAD_WPS个路径点信息填充到final_waypoints话题消息中，其中LOOKAHEAD_WPS是自定义的局部路径点个数。<br>●path.header.frame_id = ‘/world’设置/world为局部路径可视化的参考系坐标。<br>●for p in lane.waypoints:的作用是遍历上述的局部路径点。<br>●path_element.pose.position.x = p.pose.pose.position.x和path_element.pose.position.y = p.pose.pose.position.y是将局部路径点的坐标信息填充到final_path话题信息中，用于在Rviz可视化工具中显示局部路径。<br>●self.final_waypoints_pub.publish(lane)和self.final_path_pub.publish(path)的作用是发布话题消息final_waypoints和final_path。</p>
+<h2 id="3-路径可视化"><a href="#3-路径可视化" class="headerlink" title="3.路径可视化"></a>3.路径可视化</h2><p>打开一个新的终端，输入如下指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun rviz rviz</span><br></pre></td></tr></table></figure><br>在左菜单栏中加入两个Path的可视化插件，分别将Topic设置为/base_path和/final_path，即全局路径和局部路径。显示效果如下图。<br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path4.jpg" class=""><br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path5.jpg" class=""><br>在Gazebo中移动小车模型，由于小车当前位置发生变化，局部路径也因此发生变化，如下图中Rviz所显示。<br><img src="/2020/05/17/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E4%B8%8E%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84/path6.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/26/Gazebo%E4%BB%BF%E7%9C%9F%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" rel="next" title="Gazebo仿真——阿克曼（Ackermann）四轮小车模型">
+                <i class="fa fa-chevron-left"></i> Gazebo仿真——阿克曼（Ackermann）四轮小车模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/17/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Pure%20Persuit%EF%BC%88%E7%BA%AF%E8%B7%9F%E8%B8%AA%EF%BC%89%E7%AE%97%E6%B3%95/" rel="prev" title="路径跟踪——Pure Persuit（纯跟踪）算法">
+                路径跟踪——Pure Persuit（纯跟踪）算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-全局路径的读取"><span class="nav-text">1.全局路径的读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-局部路径的更新"><span class="nav-text">2.局部路径的更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-路径可视化"><span class="nav-text">3.路径可视化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

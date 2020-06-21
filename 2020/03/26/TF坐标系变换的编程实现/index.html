@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为tf_lidar_task，并编译完成。 2.节点编程2.1案例说明广播并监听机器人的坐标变换，已知激光雷达和机器人底盘的坐标关系，求解激光雷达数据在底盘坐标系下的坐标值。 2.2TF坐标系广播器编程在功能包下面的src文件夹目录下创建一个空文件lidar_broadcaster.cpp，并打开所创建的文件，输入以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF坐标系变换的编程实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.创建功能包在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为tf_lidar_task，并编译完成。 2.节点编程2.1案例说明广播并监听机器人的坐标变换，已知激光雷达和机器人底盘的坐标关系，求解激光雷达数据在底盘坐标系下的坐标值。 2.2TF坐标系广播器编程在功能包下面的src文件夹目录下创建一个空文件lidar_broadcaster.cpp，并打开所创建的文件，输入以">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf12.jpg">
+<meta property="article:published_time" content="2020-03-26T14:56:25.787Z">
+<meta property="article:modified_time" content="2020-03-26T15:36:34.844Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;03&#x2F;26&#x2F;TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0&#x2F;tf1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/03/26/TF坐标系变换的编程实现/"/>
+
+
+
+
+
+  <title>TF坐标系变换的编程实现 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF坐标系变换的编程实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-26T22:56:25+08:00">
+                2020-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-创建功能包"><a href="#1-创建功能包" class="headerlink" title="1.创建功能包"></a>1.创建功能包</h2><p>在ROS工作空间ROS_ws的src文件夹目录下创建一个功能包，命名为tf_lidar_task，并编译完成。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf1.jpg" class=""></p>
+<h2 id="2-节点编程"><a href="#2-节点编程" class="headerlink" title="2.节点编程"></a>2.节点编程</h2><h3 id="2-1案例说明"><a href="#2-1案例说明" class="headerlink" title="2.1案例说明"></a>2.1案例说明</h3><p>广播并监听机器人的坐标变换，已知激光雷达和机器人底盘的坐标关系，求解激光雷达数据在底盘坐标系下的坐标值。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf2.jpg" class=""></p>
+<h3 id="2-2TF坐标系广播器编程"><a href="#2-2TF坐标系广播器编程" class="headerlink" title="2.2TF坐标系广播器编程"></a>2.2TF坐标系广播器编程</h3><p>在功能包下面的src文件夹目录下创建一个空文件lidar_broadcaster.cpp，并打开所创建的文件，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;ros&#x2F;ros.h&gt;</span><br><span class="line">#include &lt;tf&#x2F;transform_broadcaster.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv)</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F;初始化ROS节点</span><br><span class="line">	ros::init(argc, argv, &quot;robot_tf_publisher&quot;);</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F;创建节点句柄</span><br><span class="line">	ros::NodeHandle n;</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F;设置TF广播频率为100Hz</span><br><span class="line">	ros::Rate r(100);</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F;创建tf::TransformBroadcaster类的对象</span><br><span class="line">	tf::TransformBroadcaster broadcaster;</span><br><span class="line"></span><br><span class="line">	while(n.ok())</span><br><span class="line">	&#123;</span><br><span class="line">		&#x2F;&#x2F;广播TF坐标系变换关系到ROS系统中			</span><br><span class="line">		broadcaster.sendTransform( tf::StampedTransform( tf::Transform(tf::Quaternion(0, 0, 0, 1),  tf::Vector3(0.1, 0.0, 0.2)), ros::Time::now(), &quot;base_link&quot;, &quot;base_laser&quot;));</span><br><span class="line">   	</span><br><span class="line">		r.sleep();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆头文件ros/ros.h包含了标准ROS类的声明，在每一个ROS程序中都需要包含它。<br>◆头文件tf/transform_broadcaster.h用来完成TF树的广播，之后会使用到tf::TransformBroadcaster类的实例。<br>◆main函数中一开始都是类似的，初始化ROS节点，创建节点句柄，从而启动ROS节点。<br>◆ros::Rate r(100);的作用是设置TF坐标系广播频率为100Hz。<br>◆tf::TransformBroadcaster broadcaster;的作用是创建一个tf::TransformBroadcaster类的对象，用来广播坐标系base_link -&gt; base_laser的变换关系。<br>◆broadcaster.sendTransform(tf::StampedTransform())的作用是通过tf::TransformBroadcaster类调用sendTransform()函数，向系统中广播参考系之间的坐标变换关系，其中所广播的变换关系的数据类型是tf::StampedTransform，它包含了四个参数。<br>(1)第一个参数是存储坐标系之间变换关系的变量，此处tf::Transform是tf::StampedTransform的父类，它包含了两个参数。第一个参数表示坐标的旋转变换，通过tf::Quaternion四元数来存储旋转变换的参数，我们用到的两个参考系之间没有发生旋转变换，因此倾斜角、滚动角和偏航角都是0。第二个参数表示坐标的位移变换，这里我们将base_link作为父节点，base_laser作为子节点，从base_link节点到base_laser节点的变换关系为(x: 0.1m, y: 0.0m, z: 0.2m)，将位移量填入到Vector3向量中。<br>(2)第二个参数是广播TF变换关系的时间戳，这里使用ros::Time::now()表示当前时间。<br>(3)第三个参数是传递的父节点坐标系的名称，即base_link。<br>(4)第四个参数是传递的子节点坐标系的名称，即base_laser。<br>tf::StampedTransform及tf::Transform类的定义：<br><a href="http://docs.ros.org/jade/api/tf/html/c++/classtf_1_1StampedTransform.html" target="_blank" rel="noopener">http://docs.ros.org/jade/api/tf/html/c++/classtf_1_1StampedTransform.html</a><br><a href="http://docs.ros.org/jade/api/tf/html/c++/classtf_1_1Transform.html" target="_blank" rel="noopener">http://docs.ros.org/jade/api/tf/html/c++/classtf_1_1Transform.html</a><br>◆r.sleep();的作用是为了延时，保证以100Hz的频率广播TF变换关系。<br>附相关资料：<a href="http://wiki.ros.org/navigation/Tutorials/RobotSetup/TF" target="_blank" rel="noopener">http://wiki.ros.org/navigation/Tutorials/RobotSetup/TF</a></p>
+<h3 id="2-3TF坐标系监听者编程"><a href="#2-3TF坐标系监听者编程" class="headerlink" title="2.3TF坐标系监听者编程"></a>2.3TF坐标系监听者编程</h3><p>在功能包下面的src文件夹目录下创建一个空文件lidar_listener.cpp，并打开所创建的文件，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;ros&#x2F;ros.h&gt;</span><br><span class="line">#include &lt;geometry_msgs&#x2F;PointStamped.h&gt;</span><br><span class="line">#include &lt;tf&#x2F;transform_listener.h&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;当接收到TF消息时，自动调用该回调函数</span><br><span class="line">void transformPoint(const tf::TransformListener&amp; listener)</span><br><span class="line">&#123;</span><br><span class="line">	geometry_msgs::PointStamped laser_point;</span><br><span class="line">	laser_point.header.frame_id &#x3D; &quot;base_laser&quot;;</span><br><span class="line"></span><br><span class="line">	laser_point.header.stamp &#x3D; ros::Time();</span><br><span class="line"></span><br><span class="line">	laser_point.point.x &#x3D; 1.0;</span><br><span class="line">	laser_point.point.y &#x3D; 0.2;</span><br><span class="line">	laser_point.point.z &#x3D; 0.0;</span><br><span class="line"></span><br><span class="line">	try</span><br><span class="line">	&#123;</span><br><span class="line">		geometry_msgs::PointStamped base_point;</span><br><span class="line">		listener.transformPoint(&quot;base_link&quot;, laser_point, base_point);</span><br><span class="line"></span><br><span class="line">		ROS_INFO(&quot;base_laser: (%.2f, %.2f. %.2f) -----&gt; base_link: (%.2f, %.2f, %.2f) at time %.2f&quot;, laser_point.point.x, laser_point.point.y, laser_point.point.z, base_point.point.x, base_point.point.y, base_point.point.z, base_point.header.stamp.toSec());</span><br><span class="line">	&#125;</span><br><span class="line">	catch(tf::TransformException&amp; ex)</span><br><span class="line">	&#123;</span><br><span class="line">		ROS_ERROR(&quot;Received an exception trying to transform a point from \&quot;base_laser\&quot; to \&quot;base_link\&quot;: %s&quot;, ex.what());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv)</span><br><span class="line">&#123;</span><br><span class="line">	ros::init(argc, argv, &quot;robot_tf_listener&quot;);</span><br><span class="line">	ros::NodeHandle n;</span><br><span class="line"></span><br><span class="line">	tf::TransformListener listener(ros::Duration(10));</span><br><span class="line"></span><br><span class="line">	ros::Timer timer &#x3D; n.createTimer(ros::Duration(1.0), boost::bind(&amp;transformPoint, boost::ref(listener)));</span><br><span class="line"></span><br><span class="line">	ros::spin();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>说明：<br>◆头文件ros/ros.h包含了标准ROS类的声明，在每一个ROS程序中都需要包含它。<br>◆头文件geometry_msgs/PointStamped.h包含了坐标系和时间戳等信息，之后会使用geometry_msgs::PointStamped类创建一个虚拟点。<br>◆头文件tf/transform_listener.h用于创建TF变换的监听者，之后会使用到tf::TransformListener类的对象，该对象会自动订阅ROS中的TF消息，并且管理所有的变换关系数据。<br>◆transformPoint(const tf::TransformListener&amp; listener)该回调函数每当接收到TF消息时，都会被自动调用。在回调函数中，我们需要完成数据从坐标系base_laser到base_link的坐标变换。<br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">geometry_msgs::PointStamped laser_point;</span><br><span class="line">laser_point.header.frame_id &#x3D; &quot;base_laser&quot;;</span><br><span class="line"></span><br><span class="line">laser_point.header.stamp &#x3D; ros::Time();</span><br><span class="line"></span><br><span class="line">laser_point.point.x &#x3D; 1.0;</span><br><span class="line">laser_point.point.y &#x3D; 0.2;</span><br><span class="line">laser_point.point.z &#x3D; 0.0;</span><br></pre></td></tr></table></figure><br>这里创建了一个geometry_msgs::PointStamped类型的虚拟点，该类型包含标准的header和point两种消息结构，因此可以在消息中添加发布数据的时间戳、参考系的ID以及该点的坐标。其中ros::Time()表示使用缓冲中最新的TF数据，这里不使用ros::Time::now()是因为每个监听器都有一个缓冲区，存储来自不同TF广播的所有坐标变换。当广播器发送TF变换时，数据进入缓冲区需要一段时间（通常是几毫秒）。因此如果在当前时刻就请求TF变换数据，缓冲区中还提取不到当前发布的变换，您应该等待一段时间，直到数据到达。<br>PointStamped的消息定义：<a href="http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html" target="_blank" rel="noopener">http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html</a><br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">try</span><br><span class="line">&#123;</span><br><span class="line">	geometry_msgs::PointStamped base_point;</span><br><span class="line">	listener.transformPoint(&quot;base_link&quot;, laser_point, base_point);</span><br><span class="line"></span><br><span class="line">	ROS_INFO(&quot;base_laser: (%.2f, %.2f. %.2f) -----&gt; base_link: (%.2f, %.2f, %.2f) at time %.2f&quot;, laser_point.point.x, laser_point.point.y, laser_point.point.z, base_point.point.x, base_point.point.y, base_point.point.z, base_point.header.stamp.toSec());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>这里使用tf::TransformListener类的对象中的transformPoint()函数，将虚拟点的坐标数据从base_laser参考系转换到base_link参考系下，该函数包含三个参数。<br>(1)第一个参数是需要转换到的参考系ID，即base_link。<br>(2)第二个参数是需要转换的原始数据，即上面创建的虚拟点的信息。<br>(3)第三个参数是存储TF变换完成后的数据的变量。<br>该函数执行完毕后，base_point中就包含了变换完成后的点坐标了，最后通过ROS_INFO()将坐标信息打印在ROS终端界面。<br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">catch(tf::TransformException&amp; ex)</span><br><span class="line">&#123;</span><br><span class="line">	ROS_ERROR(&quot;Received an exception trying to transform a point from \&quot;base_laser\&quot; to \&quot;base_link\&quot;: %s&quot;, ex.what());</span><br><span class="line"> 	&#125;</span><br></pre></td></tr></table></figure><br>如果由于某种原因导致base_lase -&gt; base_link的转换不可用（tf_broadcaster未运行等），则在执行transformPoint()时就会出现错误。为了确保能够正常处理，我们将捕获异常并为用户打印错误信息。ex.what()是tf::TransformException类的一个方法，它返回一个指向与异常相关的内容的C字符串的指针。此处必须用try-catch语句，否则会报错。<br>◆main函数中一开始都是类似的，初始化ROS节点，创建节点句柄，从而启动ROS节点。<br>◆tf::TransformListener listener(ros::Duration(10))的作用是通过tf::TransformListener创建一个TF变换的监听者，形参中的ros::Duration()函数表示所存储的TF变换数据的时间长度，TF功能包最大可以存储10s的数据，10s之后就会将之前的消息丢弃掉，这里将数据存储的时间长度设置为10s。<br>tf::TransformListener类的定义：<br><a href="http://docs.ros.org/diamondback/api/tf/html/c++/classtf_1_1TransformListener.html#a7e41bd5e244f92709e22bffa2860605d" target="_blank" rel="noopener">http://docs.ros.org/diamondback/api/tf/html/c++/classtf_1_1TransformListener.html#a7e41bd5e244f92709e22bffa2860605d</a><br>◆ros::Timer timer = n.createTimer(ros::Duration(1.0), boost::bind(&amp;transformPoint, boost::ref(listener))); 此处创建了一个timer对象，通过ros::Duration()函数设置回调函数transformPoint()的执行频率为1Hz，通过boost::bind()函数将回调函数transformPoint()的参数与listener对象绑定，而当某些函数对象或值参数很大，拷贝代价很高，或者无法拷贝时，boost::bind()的使用就会受到限制，因此使用boost::ref()引用传递对象。<br>◆ros::spin();的作用是让程序进入自循环的挂起状态，从而让程序以最好的效率监听TF变换并调用回调函数。</p>
+<h2 id="3-配置与编译"><a href="#3-配置与编译" class="headerlink" title="3.配置与编译"></a>3.配置与编译</h2><h3 id="3-1在CMaKeLists-txt中添加编译选项"><a href="#3-1在CMaKeLists-txt中添加编译选项" class="headerlink" title="3.1在CMaKeLists.txt中添加编译选项"></a>3.1在CMaKeLists.txt中添加编译选项</h3><p>将如下位置中CATLIN_DEPENDS前面的“#”去掉，使能相关的依赖项。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf3.jpg" class=""><br>在如下位置进行配置，add_executable(lidar_broadcaster src/lidar_broadcaster.cpp)的作用是将src文件夹下的lidar_broadcaster.cpp文件编译成名为lidar_broadcaster的可执行文件。target_link_libraries(lidar_broadcaster ${catkin_LIBRARIES})的作用是将lidar_broadcaster可执行文件与ROS相关的库链接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">add_executable(lidar_broadcaster src&#x2F;lidar_broadcaster.cpp)</span><br><span class="line">add_executable(lidar_listener src&#x2F;lidar_listener.cpp)</span><br><span class="line"></span><br><span class="line">target_link_libraries(lidar_broadcaster $&#123;catkin_LIBRARIES&#125;)</span><br><span class="line">target_link_libraries(lidar_listener $&#123;catkin_LIBRARIES&#125;)</span><br></pre></td></tr></table></figure><br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf4.jpg" class=""></p>
+<h3 id="3-2编译文件"><a href="#3-2编译文件" class="headerlink" title="3.2编译文件"></a>3.2编译文件</h3><p>在/ROS_ws文件夹路径下打开一个新的终端，输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure><br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf5.jpg" class=""><br>编译完成后，输入以下代码运行主节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roscore</span><br></pre></td></tr></table></figure><br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf6.jpg" class=""><br>打开一个新的终端，配置环境变量后，输入以下代码运行TF广播器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun tf_lidar_task lidar_listener</span><br></pre></td></tr></table></figure><br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf7.jpg" class=""><br>打开一个新的终端，配置环境变量后，输入以下代码运行TF监听者。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun tf_lidar_task lidar_broadcaster</span><br></pre></td></tr></table></figure><br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf8.jpg" class=""><br>若想停止运行，关闭终端，使用快捷键Ctrl+c即可。</p>
+<h2 id="4-话题可视化"><a href="#4-话题可视化" class="headerlink" title="4.话题可视化"></a>4.话题可视化</h2><p>在src文件夹路径下打开一个新的终端，输入以下代码。<br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun tf view_frames</span><br></pre></td></tr></table></figure><br>由此可以生成一个名为frames的pdf文件，直观地看到TF变换时的坐标系关系。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf9.jpg" class=""><br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun rqt_tf_tree rqt_tf_tree</span><br></pre></td></tr></table></figure><br>该命令是动态的查询当前的tf tree,当前的任何变化都能当即看到，例如何时断开何时连接，捕捉到这些然后通过rqt插件显示出来。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf10.jpg" class=""><br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rostopic echo &#x2F;tf</span><br></pre></td></tr></table></figure><br>该命令的作用是以TransformStamped消息类型的数组显示所有父子frame的位姿转换关系。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf11.jpg" class=""><br>◆<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun tf tf_echo base_laser base_link</span><br></pre></td></tr></table></figure><br>该命令的作用是查看任意两个frame之间的变换关系，终端将会持续的显示当前源坐标系和目标坐标系的位姿变换关系。<br><img src="/2020/03/26/TF%E5%9D%90%E6%A0%87%E7%B3%BB%E5%8F%98%E6%8D%A2%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/tf12.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/" rel="next" title="ROS动作服务器与客户端的内部交互（进阶）">
+                <i class="fa fa-chevron-left"></i> ROS动作服务器与客户端的内部交互（进阶）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="prev" title="launch启动文件的使用">
+                launch启动文件的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建功能包"><span class="nav-text">1.创建功能包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-节点编程"><span class="nav-text">2.节点编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1案例说明"><span class="nav-text">2.1案例说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2TF坐标系广播器编程"><span class="nav-text">2.2TF坐标系广播器编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3TF坐标系监听者编程"><span class="nav-text">2.3TF坐标系监听者编程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-配置与编译"><span class="nav-text">3.配置与编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1在CMaKeLists-txt中添加编译选项"><span class="nav-text">3.1在CMaKeLists.txt中添加编译选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2编译文件"><span class="nav-text">3.2编译文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-话题可视化"><span class="nav-text">4.话题可视化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.创建工作空间1.1Ctrl + Alt + T打开一个新终端  1.2输入以下代码1$ mkdir -p ~&#x2F;ROS_ws&#x2F;src 说明：mkdir是Linux命令，用于建立子目录。参数-p确保目录名称存在，不存在的就建一个。这条语句的作用是在&#x2F;home&#x2F;用户名&#x2F;下创建一个ROS工作空间，即文件夹ROS_ws。同时在工作空间ROS_ws下创建一个文件夹src。你也可以将工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS工作空间及功能包的创建">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.创建工作空间1.1Ctrl + Alt + T打开一个新终端  1.2输入以下代码1$ mkdir -p ~&#x2F;ROS_ws&#x2F;src 说明：mkdir是Linux命令，用于建立子目录。参数-p确保目录名称存在，不存在的就建一个。这条语句的作用是在&#x2F;home&#x2F;用户名&#x2F;下创建一个ROS工作空间，即文件夹ROS_ws。同时在工作空间ROS_ws下创建一个文件夹src。你也可以将工作">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package1.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package2.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package3.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package4.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package5.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package6.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package7.JPG.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package8.JPG.jpg">
+<meta property="article:published_time" content="2019-12-26T12:58:48.733Z">
+<meta property="article:modified_time" content="2019-12-30T13:13:17.001Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;26&#x2F;ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA&#x2F;package1.JPG.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2019/12/26/ROS工作空间及功能包的创建/"/>
+
+
+
+
+
+  <title>ROS工作空间及功能包的创建 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS工作空间及功能包的创建</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-26T20:58:48+08:00">
+                2019-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-创建工作空间"><a href="#1-创建工作空间" class="headerlink" title="1.创建工作空间"></a>1.创建工作空间</h1><h2 id="1-1Ctrl-Alt-T打开一个新终端"><a href="#1-1Ctrl-Alt-T打开一个新终端" class="headerlink" title="1.1Ctrl + Alt + T打开一个新终端"></a>1.1Ctrl + Alt + T打开一个新终端</h2><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package1.JPG.jpg" class=""> 
+<h2 id="1-2输入以下代码"><a href="#1-2输入以下代码" class="headerlink" title="1.2输入以下代码"></a>1.2输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p ~&#x2F;ROS_ws&#x2F;src</span><br></pre></td></tr></table></figure>
+<p>说明：<br>mkdir是Linux命令，用于建立子目录。参数-p确保目录名称存在，不存在的就建一个。<br>这条语句的作用是在/home/用户名/下创建一个ROS工作空间，即文件夹ROS_ws。同时在工作空间ROS_ws下创建一个文件夹src。<br>你也可以将工作空间ROS_ws换成其他名字xxx，那么下面的所有命令中的ROS_ws都要对应换成xxx。<br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package2.JPG.jpg" class=""> </p>
+<h2 id="1-3输入以下代码"><a href="#1-3输入以下代码" class="headerlink" title="1.3输入以下代码"></a>1.3输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~&#x2F;ROS_ws&#x2F;src</span><br></pre></td></tr></table></figure>
+<p>说明：<br>进入工作空间ROS_ws下的文件夹src。<br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package3.JPG.jpg" class=""> </p>
+<h2 id="1-4输入以下代码"><a href="#1-4输入以下代码" class="headerlink" title="1.4输入以下代码"></a>1.4输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_init_workspace</span><br></pre></td></tr></table></figure>
+<p>说明：<br>对当前文件夹进行初始化，使它变成ROS的工作空间，同时src目录下会多出一个 CMakeLists.txt 文件。</p>
+<h2 id="1-5输入以下代码"><a href="#1-5输入以下代码" class="headerlink" title="1.5输入以下代码"></a>1.5输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~&#x2F;ROS_ws</span><br></pre></td></tr></table></figure>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ..</span><br></pre></td></tr></table></figure><br>说明：<br>返回到上一级目录，即ROS_ws文件夹。</p>
+<h2 id="1-6输入以下代码"><a href="#1-6输入以下代码" class="headerlink" title="1.6输入以下代码"></a>1.6输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make install</span><br></pre></td></tr></table></figure>
+<p>说明：<br>对当前工作空间进行编译，编译完成后，工作空间ROS_ws中会再生成三个子目录：build、devel和install。</p>
+<h1 id="2-创建功能包"><a href="#2-创建功能包" class="headerlink" title="2.创建功能包"></a>2.创建功能包</h1><h2 id="2-1输入以下代码"><a href="#2-1输入以下代码" class="headerlink" title="2.1输入以下代码"></a>2.1输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_create_pkg test_pkg std_msgs roscpp rospy</span><br></pre></td></tr></table></figure>
+<p>说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_create_pkg &lt;功能包名称&gt; [依赖的功能包1] [依赖的功能包2]...</span><br></pre></td></tr></table></figure><br>这条语句的作用是创建功能包，代码语句的格式可参考上面。<br>test_pkg是功能包的名称，std_msgs、roscpp、rospy则是我们需要依赖的其他功能包。当我们使用C++或Python编写程序时，我们就需要依赖相关的库roscpp、rospy。我们在之后的例程中将运用到int、bool等消息类型，因此需要依赖相关的库std_msgs。</p>
+<h2 id="2-2输入以下代码"><a href="#2-2输入以下代码" class="headerlink" title="2.2输入以下代码"></a>2.2输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~&#x2F;ROS_ws</span><br></pre></td></tr></table></figure>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ..</span><br></pre></td></tr></table></figure><br>说明：<br>返回到ROS_ws文件夹目录下。</p>
+<h2 id="2-3输入以下代码"><a href="#2-3输入以下代码" class="headerlink" title="2.3输入以下代码"></a>2.3输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure>
+<p>说明：<br>对当前工作空间进行编译。</p>
+<h2 id="2-4输入以下代码"><a href="#2-4输入以下代码" class="headerlink" title="2.4输入以下代码"></a>2.4输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source devel&#x2F;setup.bash</span><br></pre></td></tr></table></figure>
+<p>说明：<br>将对应的工作空间的路径加入到环境变量ROS_PACKAGE_PATH中。有些电脑系统环境是zsh，则最后的.bash需要改成.zsh，可以通过如下语句查看当前环境设定的sh类型：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo $SHELL</span><br></pre></td></tr></table></figure><br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package4.JPG.jpg" class=""><br>如果新开了一个终端命令行，在使用该工作空间前，必须先将该工作空间的路径加入环境变量ROS_PACKAGE_PATH中，否则无法运行功能包。要想避免反复设置环境变量带来的麻烦，可以按照如下步骤配置。</p>
+<h3 id="2-4-1"><a href="#2-4-1" class="headerlink" title="2.4.1"></a>2.4.1</h3><p>进入主文件夹目录。<br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package5.JPG.jpg" class=""></p>
+<h3 id="2-4-2"><a href="#2-4-2" class="headerlink" title="2.4.2"></a>2.4.2</h3><p>使用快捷键Ctrl + H，显示文件夹中的隐藏文件。<br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package6.JPG.jpg" class=""></p>
+<h3 id="2-4-3"><a href="#2-4-3" class="headerlink" title="2.4.3"></a>2.4.3</h3><p>打开.bash文件，并拉到最后一行，添加如下语句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source &#x2F;home&#x2F;用户名&#x2F;ROS_ws&#x2F;devel&#x2F;setup.bash</span><br></pre></td></tr></table></figure><br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package7.JPG.jpg" class=""></p>
+<h2 id="2-5输入以下代码"><a href="#2-5输入以下代码" class="headerlink" title="2.5输入以下代码"></a>2.5输入以下代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo $ROS_PACKAGE_PATH</span><br></pre></td></tr></table></figure>
+<p>说明：<br>ROS_PACKAGE_PATH是ROS本身的环境变量，它会根据这个环境变量查找所有功能包的路径。如果打印出以下信息，说明你的工作环境设置好了。<br><img src="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/package8.JPG.jpg" class=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/25/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B/" rel="next" title="机器人操作系统（ROS）简介">
+                <i class="fa fa-chevron-left"></i> 机器人操作系统（ROS）简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/29/ROS%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E7%9A%84%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" rel="prev" title="ROS话题通信的编程实现">
+                ROS话题通信的编程实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-创建工作空间"><span class="nav-text">1.创建工作空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1Ctrl-Alt-T打开一个新终端"><span class="nav-text">1.1Ctrl + Alt + T打开一个新终端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2输入以下代码"><span class="nav-text">1.2输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3输入以下代码"><span class="nav-text">1.3输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4输入以下代码"><span class="nav-text">1.4输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5输入以下代码"><span class="nav-text">1.5输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6输入以下代码"><span class="nav-text">1.6输入以下代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-创建功能包"><span class="nav-text">2.创建功能包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1输入以下代码"><span class="nav-text">2.1输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2输入以下代码"><span class="nav-text">2.2输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3输入以下代码"><span class="nav-text">2.3输入以下代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4输入以下代码"><span class="nav-text">2.4输入以下代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1"><span class="nav-text">2.4.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2"><span class="nav-text">2.4.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3"><span class="nav-text">2.4.3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5输入以下代码"><span class="nav-text">2.5输入以下代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

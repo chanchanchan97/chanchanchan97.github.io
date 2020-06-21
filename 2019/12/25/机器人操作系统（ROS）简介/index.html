@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.ROS基本概念ROS Wiki对于机器人操作系统（ROS）的解释是：ROS是一个适用于机器人的开源的元操作系统。它提供了操作系统应有的服务，包括硬件抽象，底层设备控制，常用函数的实现，进程间消息传递，以及包管理。它也提供用于获取、编译、编写、和跨计算机运行代码所需的工具和库函数。它的目的是为了提高机器人研发中的软件复用率，简化跨机器人平台创建复杂、鲁棒的机器人行为这一过程的难度与复杂度。上图是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器人操作系统（ROS）简介">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.ROS基本概念ROS Wiki对于机器人操作系统（ROS）的解释是：ROS是一个适用于机器人的开源的元操作系统。它提供了操作系统应有的服务，包括硬件抽象，底层设备控制，常用函数的实现，进程间消息传递，以及包管理。它也提供用于获取、编译、编写、和跨计算机运行代码所需的工具和库函数。它的目的是为了提高机器人研发中的软件复用率，简化跨机器人平台创建复杂、鲁棒的机器人行为这一过程的难度与复杂度。上图是">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B&#x2F;ROS1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B&#x2F;ROS2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B&#x2F;ROS3.jpg">
+<meta property="article:published_time" content="2019-12-25T05:20:43.631Z">
+<meta property="article:modified_time" content="2020-01-13T10:47:44.030Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B&#x2F;ROS1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2019/12/25/机器人操作系统（ROS）简介/"/>
+
+
+
+
+
+  <title>机器人操作系统（ROS）简介 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2019/12/25/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器人操作系统（ROS）简介</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-25T13:20:43+08:00">
+                2019-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS机器人操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-ROS基本概念"><a href="#1-ROS基本概念" class="headerlink" title="1.ROS基本概念"></a>1.ROS基本概念</h2><p>ROS Wiki对于机器人操作系统（ROS）的解释是：ROS是一个适用于机器人的开源的元操作系统。它提供了操作系统应有的服务，包括硬件抽象，底层设备控制，常用函数的实现，进程间消息传递，以及包管理。它也提供用于获取、编译、编写、和跨计算机运行代码所需的工具和库函数。它的目的是为了提高机器人研发中的软件复用率，简化跨机器人平台创建复杂、鲁棒的机器人行为这一过程的难度与复杂度。<br><img src="/2019/12/25/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B/ROS1.jpg" class=""><br>上图是ROS官方早期发布的一张图，简单定义了什么是ROS，即ROS是通讯机制、开发工具、应用功能以及生态系统的集合体，其中通信机制可以说是ROS的核心。</p>
+<h2 id="2-ROS架构"><a href="#2-ROS架构" class="headerlink" title="2.ROS架构"></a>2.ROS架构</h2><img src="/2019/12/25/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B/ROS2.jpg" class="">
+<h3 id="2-1OS层"><a href="#2-1OS层" class="headerlink" title="2.1OS层"></a>2.1OS层</h3><p>ROS并非像Windows、Linux等传统意义上的操作系统，无法直接运行在计算机硬件上，因此它需要依赖于Linux系统。</p>
+<h3 id="2-2中间层"><a href="#2-2中间层" class="headerlink" title="2.2中间层"></a>2.2中间层</h3><p>Linux系统本身没有针对机器人开发的中间件，因此ROS在中间层做了大量工作。首先是基于TCP/UDP网络，并在此之上进一步封装而构建的TCPROS/UDPROS通信系统。另外ROS还提供了一种进程内的通信方法——Nodelet，为多进程通信提供了一种更为优化的数据传输方式。在通信机制之上，ROS提供了大量机器人开发的库，以提供给应用层调用。</p>
+<h2 id="2-3应用层"><a href="#2-3应用层" class="headerlink" title="2.3应用层"></a>2.3应用层</h2><p>应用层中ROS需要一个管理者——Master，负责管理整个系统正常运行，为节点间建立连接。</p>
+<h2 id="3-通信机制"><a href="#3-通信机制" class="headerlink" title="3.通信机制"></a>3.通信机制</h2><p>ROS采用的是一种点对点的分布式通信机制，实现模块间点对点的松耦合连接，所有软件功能及工具都建立在这种通信机制上，为用户提供多节点（进程）的通信服务，其中ROS最核心的三种通信机制是话题（Topic）通信机制、服务（Service）通信机制和参数（Parameter）管理机制。</p>
+<h2 id="4-计算图"><a href="#4-计算图" class="headerlink" title="4.计算图"></a>4.计算图</h2><p>ROS系统的功能模块以节点为单位单独运行，可以分布于多个不同或相同的主机中，通过端对端的拓扑结构相连接。<br><img src="/2019/12/25/%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%EF%BC%88ROS%EF%BC%89%E7%AE%80%E4%BB%8B/ROS3.jpg" class=""></p>
+<h3 id="4-1节点（Node）"><a href="#4-1节点（Node）" class="headerlink" title="4.1节点（Node）"></a>4.1节点（Node）</h3><p>节点就是执行具体任务的进程或独立运行的可执行文件，通常一个系统由多个节点组成，节点之间可以通过 ROS 客户端库（如roscpp 、rospy）相互通信。不同节点可使用不同编程语言，可分布式运行在不同的主机。节点在系统中的名称必须是唯一的。</p>
+<h3 id="4-2节点管理器（Master）"><a href="#4-2节点管理器（Master）" class="headerlink" title="4.2节点管理器（Master）"></a>4.2节点管理器（Master）</h3><p>节点管理器在系统中主要起到了一个中介的作用，能够帮助节点相互找到彼此。节点管理器能够为节点提供命名和注册服务，以及跟踪和记录话题/服务通信。同时节点管理器还提供了一个参数服务器（Parameter Server），节点使用此服务器存储和检索运行时的参数。</p>
+<h3 id="4-3消息（Message）"><a href="#4-3消息（Message）" class="headerlink" title="4.3消息（Message）"></a>4.3消息（Message）</h3><p>消息本身是基于发布/订阅模型的话题通信机制而来的，具有一定的类型和数据结构，既包含ROS提供的标准数据类型，也可由用户自定义数据类型。</p>
+<h3 id="4-4话题（Topic）"><a href="#4-4话题（Topic）" class="headerlink" title="4.4话题（Topic）"></a>4.4话题（Topic）</h3><p>话题通信采用的是一种异步通信机制。话题通信基于发布/订阅模型，数据由发布者传输给订阅者。其中节点既可以作为发布者发布消息，也可以作为订阅者订阅消息。同一个话题的发布者和订阅者可以不唯一，另外一个节点也可以发布或订阅多个消息。一般来说，发布者和订阅者并不知道对方的存在。发布者将信息发布在一个全局的工作区内，当订阅者发现该信息是它所订阅的，就可以接收到这个信息。通常用于数据传输。</p>
+<h3 id="4-5服务（Service）"><a href="#4-5服务（Service）" class="headerlink" title="4.5服务（Service）"></a>4.5服务（Service）</h3><p>服务通信采用的是一种同步通信机制。服务通信基于客户端/服务器模型，客户端（Client）发送请求数据（Request），服务器（Server）完成处理后返回应答数据（Response）。与话题不同的是，ROS中只允许有一个节点提供指定命名的服务。通常用于逻辑处理。</p>
+<h3 id="4-6动作（Action）"><a href="#4-6动作（Action）" class="headerlink" title="4.6动作（Action）"></a>4.6动作（Action）</h3><p>动作是基于ROS消息机制实现的一种问答通信机制，基于客户端/服务器模型，服务器可以连续反馈数据给客户端，客户端可以在任务运行过程中中止运行。动作Action的接口主要由goal、cancel、status、feedback和result组成，客户端可以在任务启动前向服务器发布任务目标goal，也可以在任务过程中向服务器发送cancel请求取消任务。服务器向客户端反馈服务器当前的状态，或周期性反馈任务运行的监控数据，而result在任务运行过程中只发布一次，仅在服务器完成动作后反馈一个最终结果。</p>
+<h3 id="4-7消息记录包（Bag）"><a href="#4-7消息记录包（Bag）" class="headerlink" title="4.7消息记录包（Bag）"></a>4.7消息记录包（Bag）</h3><p>消息记录包是一种用于保存和回放 ROS 消息数据的文件格式。它使用.bag格式保存消息、主题、服务和其他ROS数据信息，可以在事件发生后，通过使用可视化工具调用和回放数据，检查在系统中到底发生了什么。记录包文件可以像实时会话一样在ROS中再现情景，在相同时间向主题发送相同的数据。通常用于调试算法。</p>
+<h3 id="4-8参数（Parameter）"><a href="#4-8参数（Parameter）" class="headerlink" title="4.8参数（Parameter）"></a>4.8参数（Parameter）</h3><p>参数服务器能够保存一部分参数作为全局共享字典，系统中的所有节点都可以通过网络访问这些共享字典，存储和检索参数的参数名或参数值，而字典中的数据类型包含了int整型、float浮点型、string字符串等。参数的存储和检索采用的通信机制是更为底层的RPC，而不再是话题或服务。它更适合存储静态、非二进制的配置参数，不适合存储动态配置的数据。</p>
+<h3 id="4-9功能包（Package）"><a href="#4-9功能包（Package）" class="headerlink" title="4.9功能包（Package）"></a>4.9功能包（Package）</h3><p>功能包是ROS软件中的基本单元，包含节点源码、配置文件、数据定义等。</p>
+<h3 id="4-10功能包清单（Package-manifest）"><a href="#4-10功能包清单（Package-manifest）" class="headerlink" title="4.10功能包清单（Package manifest）"></a>4.10功能包清单（Package manifest）</h3><p>功能包清单记录了功能包的基本信息，包含作者信息、许可信息、依赖选项、编译标志等。</p>
+<h3 id="4-11元功能包（Meta-Package）"><a href="#4-11元功能包（Meta-Package）" class="headerlink" title="4.11元功能包（Meta Package）"></a>4.11元功能包（Meta Package）</h3><p>元功能包是一种特殊的功能包，它只包含元功能包清单文件。它的作用是将多个具有相同功能的功能包整合成一个逻辑上独立的功能包，类似于功能包集合。</p>
+<h2 id="5-开源社区"><a href="#5-开源社区" class="headerlink" title="5.开源社区"></a>5.开源社区</h2><p>ROS开源社区级主要关于ROS资源，能够通过独立的网络社区分享软件和知识。这些资源包括：<br>发行版（Distribution）—— ROS发行版是可以独立安装的，带有版本号的一系列功能包集。ROS发行版像Linux发行版一样发挥类似的作用。这使得ROS软件安装更加容易，而且能够通过一个软件集合来维持一致的版本。<br>软件源(Repositorie)—— ROS依赖于共享开源代码与软件源的网站或主机服务，在这里不同的机构能够发布分享各自的机器人软件和程序。<br>ROS Wiki—— ROS Wiki是用于记录有关ROS系统信息的主要论坛。任何人都可以注册账户和贡献自己的文件，提供更正和更新，编写教程以及其他信息。<br>邮件列表(Mailing list)—— ROS用户邮件列表是关于ROS的主要交流渠道，能够交流从ROS软件更新到ROS软件使用中的各种疑问或信息。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/19/%E7%AC%AC%E5%8D%81%E4%B8%89%E5%B1%8A%E6%81%A9%E6%99%BA%E6%B5%A6%E6%9D%AF%E5%85%A8%E5%9B%BD%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B%E4%BF%A1%E6%A0%87%E5%AF%B9%E6%8A%97%E7%BB%84%E6%AF%94%E8%B5%9B%E6%80%BB%E7%BB%93/" rel="next" title="第十三届“恩智浦”杯全国大学生智能汽车竞赛-信标对抗组比赛总结">
+                <i class="fa fa-chevron-left"></i> 第十三届“恩智浦”杯全国大学生智能汽车竞赛-信标对抗组比赛总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/26/ROS%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E5%8F%8A%E5%8A%9F%E8%83%BD%E5%8C%85%E7%9A%84%E5%88%9B%E5%BB%BA/" rel="prev" title="ROS工作空间及功能包的创建">
+                ROS工作空间及功能包的创建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ROS基本概念"><span class="nav-text">1.ROS基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ROS架构"><span class="nav-text">2.ROS架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1OS层"><span class="nav-text">2.1OS层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2中间层"><span class="nav-text">2.2中间层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3应用层"><span class="nav-text">2.3应用层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-通信机制"><span class="nav-text">3.通信机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-计算图"><span class="nav-text">4.计算图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1节点（Node）"><span class="nav-text">4.1节点（Node）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2节点管理器（Master）"><span class="nav-text">4.2节点管理器（Master）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3消息（Message）"><span class="nav-text">4.3消息（Message）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4话题（Topic）"><span class="nav-text">4.4话题（Topic）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5服务（Service）"><span class="nav-text">4.5服务（Service）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6动作（Action）"><span class="nav-text">4.6动作（Action）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7消息记录包（Bag）"><span class="nav-text">4.7消息记录包（Bag）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-8参数（Parameter）"><span class="nav-text">4.8参数（Parameter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-9功能包（Package）"><span class="nav-text">4.9功能包（Package）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-10功能包清单（Package-manifest）"><span class="nav-text">4.10功能包清单（Package manifest）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-11元功能包（Meta-Package）"><span class="nav-text">4.11元功能包（Meta Package）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-开源社区"><span class="nav-text">5.开源社区</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
