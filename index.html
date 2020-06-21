@@ -238,6 +238,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/" itemprop="url">Haar特征级联分类器的训练与检测</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-21T16:41:26+08:00">
+                2020-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考文献：<br>(1) <a href="https://blog.csdn.net/zhuangxiaobin/article/details/25476833" target="_blank" rel="noopener">https://blog.csdn.net/zhuangxiaobin/article/details/25476833</a></p>
+<h2 id="1-样本的创建"><a href="#1-样本的创建" class="headerlink" title="1.样本的创建"></a>1.样本的创建</h2><p>训练样本分为正样本和负样本。正样本是指待检目标样本(例如车辆，行人，人脸等)，负本指其它任意图片。所有的样本图片都被归一化为同样的尺寸大小(例如，20x20，24x24或33x33)。负样本可以来自于任意的图片，但这些图片不能包含目标特征。</p>
+<h3 id="1-1准备正样本图片集"><a href="#1-1准备正样本图片集" class="headerlink" title="1.1准备正样本图片集"></a>1.1准备正样本图片集</h3><p>进入路径为tools\temp\positive\rawdata的文件夹中，然后在里面放入含有正样本的图片。正样本数目要足够大，一般要是1000以上。<br>注：图片要用BMP格式，如果图片不是BMP格式的话，可以在文件夹中创建一个空的文本文件，在文本文件中输入ren &#42;.jpg &#42;.bmp，并将该文本文件改成.bat后缀的批处理文件，双击该批处理文件即可将文件夹中.JPG格式的图片批量转换成.BMP格式。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train1.jpg" class=""></p>
+<h3 id="1-2截取目标区域"><a href="#1-2截取目标区域" class="headerlink" title="1.2截取目标区域"></a>1.2截取目标区域</h3><p>双击\tools\temp\positive下的objectmarker.exe可执行文件，开始截图目标区域。<br>使用方法可见readme文件，每次截好一次都要按一次空格键保存区域，多目标的图片可以继续截图并按空格键保存，若这张图片截取完成则按下回车键可以跳到下一张图片。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train2.jpg" class=""><br>这个截图的过程不能中断，不然就无法产生相应的文件了，所以在样本太多的情况下，可以先分组，大约100张图片放进rawdata文件夹中，这样子如果有什么意外的话，损失也就100张图的时间而已，最后只需要把几个文件的内容合成一个大文件，并且把所有相关的图片放进rawdata文件夹中，最终的效果是一样的。截图完成后会在路径\tools\temp\positive下生成info.txt文件。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train3.jpg" class=""><br>info.txt文件内容说明：<br>rawdata/1000986.BMP 1 0 1 127 93<br>①rawdata/1000986.BMP表示文件的相对路径；<br>②第2位的1表示图片中截取的区域数量，此处仅包含一个目标；<br>③第3和第4位的0 1表示截取的矩形框的起点坐标；<br>④第5和第6位的127 93表示截取的矩形框的宽和高；<br>注：第2位的数字若为2，即截取的目标数量为2个，则后面相应的矩形框起点坐标和矩形框尺寸也应该有2个，否则会在之后生成正样本的描述文件时报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info.txt(1) : parse errorDone. Created 0 samples</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-3创建正样本描述文件vec文件"><a href="#1-3创建正样本描述文件vec文件" class="headerlink" title="1.3创建正样本描述文件vec文件"></a>1.3创建正样本描述文件vec文件</h3><p>打开\tools下的samples_creation.bat文件，可见到如下指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd temp</span><br><span class="line">createsamples.exe -info positive&#x2F;info.txt -vec data&#x2F;vector.vec -num 4346 -w 24 -h 24</span><br><span class="line">rem positive&#x2F;positive_bmp_list.txt - file containing list of positive bmp files along with the rectagle coordinates from objectmarker.exe</span><br><span class="line">rem -vec data&#x2F;vector.vec - file created by the createsamples tool</span><br><span class="line">rem all the other paramteres are described in the literature (links in the how_to.txt)</span><br><span class="line">pause</span><br></pre></td></tr></table></figure><br>其中我们需要根据实际情况修改的参数是-num、-w和-h。<br>①-num表示正样本的数量；<br>②-w和-h表示图片压缩后的大小；<br>运行samples_creation.bat文件后，会在\tools\temp\data下面生成vector.vec文件，这个就是向量描述文件了。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train4.jpg" class=""></p>
+<h3 id="1-4准备负样本图片集"><a href="#1-4准备负样本图片集" class="headerlink" title="1.4准备负样本图片集"></a>1.4准备负样本图片集</h3><p>进入路径为\tools\temp\negative的文件夹中，然后在里面放入负样本图片。一般来说，负样本要比正样本数目多很多。为什么呢？因为负样本表示的是随机情况，只要有大量随机样本的情况下，才可以充分表示与正样本相反的情况，大约2-5倍。但也不能太多，不然的话花费的时间太长，分类效果可能反而不好，因为比例偏移太严重。<br>注：负样本图片也需要采用.BMP格式。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train5.jpg" class=""></p>
+<h3 id="1-5创建负样本描述文件"><a href="#1-5创建负样本描述文件" class="headerlink" title="1.5创建负样本描述文件"></a>1.5创建负样本描述文件</h3><p>运行\tools\temp\negative下的create_list.bat文件，可以自动生成描述文件。如果没有找到这个create_list.bat批处理文件，可以自行在该目录下创建一个.bat文件，内容就一句话：dir /b *.BMP &gt;infofile.txt，然后保存。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train6.jpg" class=""></p>
+<h2 id="2-训练分类器"><a href="#2-训练分类器" class="headerlink" title="2.训练分类器"></a>2.训练分类器</h2><h3 id="2-1训练器的配置"><a href="#2-1训练器的配置" class="headerlink" title="2.1训练器的配置"></a>2.1训练器的配置</h3><p>打开\tools下的haarTraining.bat文件，首先对训练器进行配置。<br>①－data&#60;dir_name&#62;：存放训练好的分类器的路径；<br>②－vec&#60;vec_file_name&#62;：正样本描述文件路径；<br>③－bg&#60;background_file_name&#62;：负样本描述文件路径；<br>④－npos&#60;number_of_positive_samples&#62;：在每个阶段用于训练的正样本数目；<br>⑤－nneg&#60;number_of_negative_samples&#62;：在每个阶段用于训练的负样本数目。程序会自动切割负样本图片，使其和正样本大小一致，这个参数一般设置为正样本数目的1~3倍；<br>⑥－nstages&#60;number_of_stages&#62;：训练的分类器级数，一般选择15~20。每一级的训练目的是为了得到一个强分类器；<br>⑦－nsplits&#60;number_of_splits&#62;：一个弱分类器中分裂的子节点数目或特征个数。如果1，则只有一个简单的stump classifier被使用。如果是2或者更多，则带有number_of_splits 个内部节点的CART分类器被使用；<br>⑧－mem&#60;memory_in_MB&#62;：训练时的可用内存，单位为MB。内存越大则训练的速度越快；<br>⑨－sym（default）和－nonsym：后面不用跟其他参数，指定训练的目标对象是否垂直对称。垂直对称提高目标的训练速度。<br>⑩－minhitrate&#60;min_hit_rate&#62;：每一级分类器需要的最小的命中率（正检率），默认为0.995。针对每一个正样本累加这级强分类器的所有弱分类器的权重，然后对所有正样本得到的累加权重按从小到大排序，因为minhitrate决定至少要分对minhitrate&#42;npos个正样本，所以取第（1.0-minhitrate）&#42;npos正样本的权重为这级强分类器的阈值，通过这个阈值将大于这个阈值的分为正类，否则分为负类。所以minhitrate这个值决定每个阶段分类器的正样本的正检率，总的正检率为min_hit_rate 的number_of_stages 次方；<br>⑪－maxfalsealarm&#60;max_false_alarm_rate&#62;：每一级分类器的最大错误报警率（误检率），默认为0.5，总的误检率为max_false_alarm_rate 的number_of_stages 次方。前面通过minhitrate参数与弱分类器的权重累加和，得到了该强分类器的阈值后，通过这个阈值来分类负样本，负样本的分错个数不能超过numneg&#42;maxfalsealarm，如果超过则继续训练本级强分类器，增加新弱分类器直到阈值将负样本分错个数小于numneg&#42;maxfalsealarm为止就跳出循环，则本级强分类器训练成功；<br>⑫－weighttrimming&#60;weight_trimming&#62;：权重调整系数weightfraction。在每级强分类器的训练中每训练一个弱分类器前将所有样本中，包括正样本与负样本，按权重从小到大排列将权重最低的weightfraction &#42; (npos+nneg)的样本去除掉，因为权重很小说明这个样本总能被正确分类了，删除这些已经能正确分类的样本，让训练更多集中于还不能正确分类的样本上，提高训练效率。默认为0.95；<br>⑬－eqw：如果有-eqw则equalweights值为1，否则默认为0。1表示所有样本的初始化权重相等，0表示不等；<br>⑭－mode&#60;BASIC,CORE,ALL&#62;：BASIC仅使用垂直特征（适用于人脸等），CORE仅使用45度旋转特征，ALL使用Haar特征集的种类既有垂直又有45度角旋转的；<br>⑮－w&#60;sample_width&#62;：样本图片的宽度（以像素为单位）；<br>⑯－h&#60;sample_height&#62;：样本图片的高度（以像素为单位）；<br>⑰－bt&#60;DAB,RAB,LB,GAB&#62;：Discrete AdaBoost、Real AdaBoost、LogitBoost和Gentle AdaBoost分别代表4个应用的boost算法的种类，默认为GAB；<br>⑱－err&#60;misclass,gini,entropy,least sum of squares&#62;：分别代表四种在训练弱分类器时的计算阈值方法，默认为misclass；<br>⑲－maxtreesplits&#60;maximum_number_of_nodes_in_tree&#62;：树节点数的最大值，默认为0；<br>⑳－minpos&#60;min_positive&#62;：训练过程中，节点可使用的正样本数目。正样本根据节点被分类。通常来说，minpos不小于npos/nsplits。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train7.jpg" class=""></p>
+<h3 id="2-2运行训练器"><a href="#2-2运行训练器" class="headerlink" title="2.2运行训练器"></a>2.2运行训练器</h3><p>①BACKGROUND PROCESSING TIME：负样本切割时间，单位是秒，一般会占用很长时间；<br>②N：训练的弱分类器序号；<br>③%SMP：由weightfraction决定，表示通过剔除小权值的样本后与总体样本数的比值；<br>④ST. THR：弱分类器的阈值；<br>⑤HR：该阈值下本级强分类器的正检率；<br>⑥FA：该阈值下本级强分类器的误检率，只有当每一级训练的FA低于定义的最大误检率maxfalsealarm才会进入下一级的训练；<br>⑦EXP. ERR：经验错误率；<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train8.jpg" class=""><br>训练过程会在\tools\temp\data\cascade中产生相应级数的文件，训练花费的时间跟电脑配置和训练数据的大小有关。如果训练过程中断也没关系，再次启动训练可以继续训练下去的。<br>训练完成后，将\temp\data\cascade下的N（这里N=18）个弱分类器文件夹拷贝到cascade2xml\data下，运行\tools\cascade2xml下的convert.bat文件就可以生成.xml分类器文件了，默认在同级目录下生成output.xml。</p>
+<h2 id="3-目标检测"><a href="#3-目标检测" class="headerlink" title="3.目标检测"></a>3.目标检测</h2><p>如下是launch文件的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;launch&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;robot_vision&quot; name&#x3D;&quot;vehicle_detector&quot; type&#x3D;&quot;vehicle_detector.py&quot; output&#x3D;&quot;screen&quot;&gt;</span><br><span class="line">       	&lt;rosparam&gt;</span><br><span class="line">           	haar_scaleFactor: 1.2</span><br><span class="line">           	haar_minNeighbors: 2</span><br><span class="line">           	haar_minSize: 20</span><br><span class="line">          	haar_maxSize: 55</span><br><span class="line">       	&lt;&#x2F;rosparam&gt;</span><br><span class="line">       	&lt;param name&#x3D;&quot;cascade_vehicle&quot; value&#x3D;&quot;$(find robot_vision)&#x2F;data&#x2F;haar_detectors&#x2F;output.xml&quot; &#x2F;&gt;</span><br><span class="line">       	&lt;param name&#x3D;&quot;video_vehicle&quot; value&#x3D;&quot;$(find robot_vision)&#x2F;data&#x2F;video&#x2F;video2.mp4&quot; &#x2F;&gt;</span><br><span class="line">   	&lt;&#x2F;node&gt;</span><br><span class="line">&lt;&#x2F;launch&gt;</span><br></pre></td></tr></table></figure><br>参数说明：<br>①haar_scaleFactor：检测窗口的缩放比例，一般为1.1或1.2；<br>②haar_minNeighbors：构成检测目标的相邻矩形的最小个数(默认为－1)。如果组成检测目标的小矩形的个数和小于min_neighbors-1 都会被排除。如果min_neighbors 为 0, 则函数不做任何操作就返回所有的被检候选矩形框，这种设定值一般用在用户自定义对检测结果的组合程序上；<br>③haar_minSize：检测窗口的最小尺寸，默认情况下被设为分类器训练时采用的样本尺寸（即24x24）；<br>④haar_maxSize：检测窗口的最大尺寸；<br>⑤cascade_vehicle：训练好的分类器.xml文件路径；<br>⑥video_vehicle：需要进行目标识别的视频文件路径。<br>如下是vehicle_detector.py文件内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import rospy</span><br><span class="line">import cv2</span><br><span class="line">import numpy as np</span><br><span class="line">from sensor_msgs.msg import Image, RegionOfInterest</span><br><span class="line">from cv_bridge import CvBridge, CvBridgeError</span><br><span class="line"></span><br><span class="line">class vehicleDetector:</span><br><span class="line">   	def __init__(self):</span><br><span class="line">       	# 创建cv_bridge</span><br><span class="line">       	self.bridge &#x3D; CvBridge()</span><br><span class="line">       	self.image_pub &#x3D; rospy.Publisher(&quot;cv_bridge_image&quot;, Image, queue_size&#x3D;1)</span><br><span class="line">       </span><br><span class="line">       	video &#x3D; rospy.get_param(&quot;~video_vehicle&quot;, &quot;&quot;)</span><br><span class="line">       	cascade_vehicle &#x3D; rospy.get_param(&quot;~cascade_vehicle&quot;, &quot;&quot;)</span><br><span class="line">       </span><br><span class="line">       	# 使用级联表初始化haar特征检测器</span><br><span class="line">       	self.cascade_vehicle &#x3D; cv2.CascadeClassifier(cascade_vehicle)</span><br><span class="line">       </span><br><span class="line">       	# 设置级联表的参数，优化目标识别，可以在launch文件中重新配置</span><br><span class="line">       	self.haar_scaleFactor  &#x3D; rospy.get_param(&quot;~haar_scaleFactor&quot;, 1.2)</span><br><span class="line">      	self.haar_minNeighbors &#x3D; rospy.get_param(&quot;~haar_minNeighbors&quot;, 2)</span><br><span class="line">       	self.haar_minSize      &#x3D; rospy.get_param(&quot;~haar_minSize&quot;, 40)</span><br><span class="line">       	self.haar_maxSize      &#x3D; rospy.get_param(&quot;~haar_maxSize&quot;, 60)</span><br><span class="line">       	self.color &#x3D; (50, 255, 50)</span><br><span class="line">       </span><br><span class="line">       	cap &#x3D; cv2.VideoCapture(video)</span><br><span class="line">       </span><br><span class="line">	 	# 获取视频图像</span><br><span class="line">       	while(cap.isOpened()):</span><br><span class="line">           	ret, cv_image &#x3D; cap.read()</span><br><span class="line">           	cv_image_compressed &#x3D; cv2.resize(cv_image, (1280,720))</span><br><span class="line">           	frame &#x3D; cv_image_compressed</span><br><span class="line">		</span><br><span class="line">           	if ret&#x3D;&#x3D;True:</span><br><span class="line">               	# 创建灰度图像</span><br><span class="line">               	grey_image &#x3D; cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">               	# 创建平衡直方图，减少光线影响</span><br><span class="line">               	grey_image &#x3D; cv2.equalizeHist(grey_image)</span><br><span class="line"></span><br><span class="line">               	vehicle_result &#x3D; self.detect_vehicle(grey_image)</span><br><span class="line">       		</span><br><span class="line">               	# 将识别到的车辆框出来</span><br><span class="line">               	if len(vehicle_result)&gt;0:</span><br><span class="line">                   	for vehicle in vehicle_result:</span><br><span class="line">                       	x, y, w, h &#x3D; vehicle</span><br><span class="line">                       	cv2.rectangle(cv_image_compressed, (x, y), (x+w, y+h), self.color, 2)</span><br><span class="line"></span><br><span class="line">               	cv2.imshow(&#39;frame&#39;,cv_image_compressed)</span><br><span class="line">               	if cv2.waitKey(25) &amp; 0xFF &#x3D;&#x3D; ord(&#39;q&#39;):</span><br><span class="line">                   	break</span><br><span class="line">           	else:</span><br><span class="line">               	break</span><br><span class="line"></span><br><span class="line">   	def detect_vehicle(self, input_image):</span><br><span class="line">       	# 匹配车辆模型</span><br><span class="line">       	if self.cascade_vehicle:</span><br><span class="line">           	vehicles &#x3D; self.cascade_vehicle.detectMultiScale(input_image, </span><br><span class="line">                   self.haar_scaleFactor, </span><br><span class="line">                   self.haar_minNeighbors, </span><br><span class="line">                   cv2.CASCADE_SCALE_IMAGE, </span><br><span class="line">                   (self.haar_minSize, self.haar_maxSize))</span><br><span class="line">       </span><br><span class="line">       	return vehicles</span><br><span class="line"></span><br><span class="line">   	def cleanup(self):</span><br><span class="line">       	print &quot;Shutting down vision node.&quot;</span><br><span class="line">       	cv2.destroyAllWindows()</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">   	try:</span><br><span class="line">       	# 初始化ros节点</span><br><span class="line">       	rospy.init_node(&quot;vehicle_detector&quot;)</span><br><span class="line">       	vehicleDetector()</span><br><span class="line">       	rospy.spin()</span><br><span class="line">   	except KeyboardInterrupt:</span><br><span class="line">       	print &quot;Shutting down face detector node.&quot;</span><br><span class="line">       	cv2.destroyAllWindows()</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1598,169 +1749,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="chan's Bloggerrrrr">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/" itemprop="url">ROS动作服务器与客户端的内部交互（进阶）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-24T22:52:40+08:00">
-                2020-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">ROS机器人操作系统</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文链接：<a href="http://wiki.ros.org/actionlib/DetailedDescription" target="_blank" rel="noopener">http://wiki.ros.org/actionlib/DetailedDescription</a>  </p>
-<h2 id="1．动作服务器"><a href="#1．动作服务器" class="headerlink" title="1．动作服务器"></a>1．动作服务器</h2><p>goal由action客户端发出，一旦action服务器接收到goal，就会创建一个状态机来跟踪goal的状态，如下图。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act1.jpg" class=""></p>
-<h3 id="1-1服务器状态"><a href="#1-1服务器状态" class="headerlink" title="1.1服务器状态"></a>1.1服务器状态</h3><p>◆Pending - 该目标尚未由动作服务器处理；<br>◆Active - 该目标当前正在由操作服务器处理；<br>◆Recalling - 目标尚未处理，并且已从动作客户端收到取消请求，但是动作服务器尚未确认目标已取消；<br>◆Preempting - 正在处理目标，并且已从操作客户端收到取消请求，但是操作服务器尚未确认目标已取消；<br>◆Rejected - 该目标已被动作服务器拒绝，未经处理，也没有动作客户端请求取消；<br>◆Succeeded - 动作服务器成功完成目标；<br>◆Aborted - 该目标已由动作服务器中止，而没有来自动作客户端的外部请求取消；<br>◆Recalled - 在动作服务器开始处理目标之前，该目标已被另一个目标或取消请求而取消；<br>◆Preempted - 目标的处理被另一个目标，或已发送到动作服务器的取消请求取消；</p>
-<h3 id="1-2状态转换命令"><a href="#1-2状态转换命令" class="headerlink" title="1.2状态转换命令"></a>1.2状态转换命令</h3><p>◆setAccepted - 检查目标后，决定开始处理它；<br>◆setRejected - 检查目标之后，决定不对其进行处理，因为它是无效的请求（超出范围，资源不可用，无效等）；<br>◆setSucceeded – 通知目标已成功处理；<br>◆setAborted - 通知该目标在处理过程中遇到错误，必须中止；<br>◆setCanceled - 通知由于取消请求，而不再处理目标；<br>◆CancelRequest - 客户端通知动作服务器希望服务器停止处理目标。</p>
-<h2 id="2．动作客户端"><a href="#2．动作客户端" class="headerlink" title="2．动作客户端"></a>2．动作客户端</h2><p>在actionlib中，我们将服务器状态机视为主状态机，然后将客户端状态机视为试图跟踪服务器状态的辅助状态机，如下图。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act2.jpg" class=""></p>
-<h3 id="2-1服务器触发转换"><a href="#2-1服务器触发转换" class="headerlink" title="2.1服务器触发转换"></a>2.1服务器触发转换</h3><p>◆Reported [State]：由于客户端尝试跟踪服务器的状态，因此大多数状态的转换都是由服务器向动作客户端报告其状态来触发的；<br>◆Receive Result Message：在这种情况下，服务器将result发送给客户端。接收到result预示着跟踪目标的结束。</p>
-<h3 id="2-2客户端触发转换"><a href="#2-2客户端触发转换" class="headerlink" title="2.2客户端触发转换"></a>2.2客户端触发转换</h3><p>◆Cancel Goal：请求服务器停止处理此目标。</p>
-<h3 id="2-3“跳过”状态"><a href="#2-3“跳过”状态" class="headerlink" title="2.3“跳过”状态"></a>2.3“跳过”状态</h3><p>◆给定我们基于ROS的传输层，客户端可能无法从服务器接收所有状态更新。因此，我们必须允许客户端状态机“跳过”服务器触发的状态。<br>示例：如果客户端处于[WAITING FOR GOAL ACK]中，并且从服务器接收到[PREEMPTED]状态更新，则客户端状态可以跳过[ACTIVE]并直接转换为[WAITING FOR RESULT]。<br>◆由于多个动作客户端可以连接到单个动作服务器，因此第二个客户端可以取消第一个客户端发送的目标。因此，如果从服务器接收到[RECALLING]状态，则客户端从[PENDING]转换为[RECALLING]是有效的。</p>
-<h2 id="3-动作接口及传输层"><a href="#3-动作接口及传输层" class="headerlink" title="3.动作接口及传输层"></a>3.动作接口及传输层</h2><p>Action客户端和服务器使用预定义的动作协议(action protocol)相互进行通信。 此动作协议依靠指定的ROS命名空间中的ROS话题来传输消息。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act3.jpg" class=""><br>ROS消息：<br>◆goal – 用于发送新的目标（goal）给服务器。<br>◆cancel – 用于发送取消请求给服务器。<br>◆status – 用于将系统中每个目标（goal）的当前状态通知给客户端。<br>◆feedback - 用于定期向客户端发送目标（goal）的辅助信息。<br>◆result - 用于在目标（goal）完成后向客户发送一次辅助信息。</p>
-<h3 id="3-1数据关联与Goal-ID"><a href="#3-1数据关联与Goal-ID" class="headerlink" title="3.1数据关联与Goal ID"></a>3.1数据关联与Goal ID</h3><p>Goal ID是action message中一个字符串字段，这为动作服务器和客户端提供了一种可靠的方式，可以将通过ROS传输的消息与正在处理的特定goal相关联。 目标ID通常由节点名称，计数器和时间戳组成。<br>注意：goal ID的格式仍然不稳定，因此用户切勿解析goal ID或依赖其格式。</p>
-<h3 id="3-2消息"><a href="#3-2消息" class="headerlink" title="3.2消息"></a>3.2消息</h3><h4 id="3-2-1goal-topic-Sending-Goals"><a href="#3-2-1goal-topic-Sending-Goals" class="headerlink" title="3.2.1goal topic: Sending Goals"></a>3.2.1goal topic: Sending Goals</h4><p>Goal topic使用自动生成的ActionGoal消息（例如：actionlib/TestActionGoal），用于将新目标发送到动作服务器。ActionGoal消息将目标消息打包，并将其与目标ID捆绑在一起。<br>发送目标时，动作客户端通常会生成唯一的goal ID和时间戳，但是客户端也可能会将它们留空，此时动作服务器将会填充它们。<br>◆Empty stamp：一旦动作服务器接收到，时间戳将设置为now()。<br>◆Empty id：一旦动作服务器接收到，ID自动随机创建。不过这个ID由于动作客户端无法知道其对应的goal，所以意义不大。</p>
-<h4 id="3-2-2cancel-topic-Cancelling-Goals"><a href="#3-2-2cancel-topic-Cancelling-Goals" class="headerlink" title="3.2.2cancel topic: Cancelling Goals"></a>3.2.2cancel topic: Cancelling Goals</h4><p>Cancel topic使用actionlib_msgs/GoalID消息，并允许动作客户端将取消请求发送给动作服务器。每个取消请求消息都带有一个时间戳和goal ID，并且如何填充这些消息字段将会影响到要取消的目标，下图是取消请求的处理策略。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act4.jpg" class=""></p>
-<h4 id="3-2-3status-topic-Server-goal-state-updates"><a href="#3-2-3status-topic-Server-goal-state-updates" class="headerlink" title="3.2.3status topic: Server goal state updates"></a>3.2.3status topic: Server goal state updates</h4><p>Status topic使用actionlib_msgs / GoalStatusArray，并提供给动作客户端有关服务器当前正在追踪的每个目标的状态信息。这是由服务器以某个固定速率（通常为10Hz）发送的，并且还可以在任何服务器目标状态转换时异步发送。<br>动作服务器会追踪目标，直到达到终端状态为止。 但是为了提高通信的健壮性，服务器在达到终端状态后，会再次发布此目标的状态几秒钟。</p>
-<h4 id="3-2-4feedback-topic-Asynchronous-goal-information"><a href="#3-2-4feedback-topic-Asynchronous-goal-information" class="headerlink" title="3.2.4feedback topic: Asynchronous goal information"></a>3.2.4feedback topic: Asynchronous goal information</h4><p>Feedback topic使用自动生成的ActionFeedback消息（例如：todo），并为服务器提供了一种在处理目标期间向动作客户端定期发布更新的方法。由于ActionFeedback具有goal ID，因此动作客户端可以决定它是否使用还是丢弃所收到的反馈消息，因此发送反馈完全是可选的。</p>
-<h4 id="3-2-5-result-topic-Goal-information-upon-completion"><a href="#3-2-5-result-topic-Goal-information-upon-completion" class="headerlink" title="3.2.5 result topic: Goal information upon completion"></a>3.2.5 result topic: Goal information upon completion</h4><p>Result topic使用自动生成的ActionResult消息（例如：actionlib/TestActionResult），并为服务器实现者提供了一种在目标完成后向操作客户端发送信息的方法。由于ActionResult具有goal ID，因此动作客户端可以决定它是否使用还是丢弃result消息。尽管reslt可能是空消息，但它是action接口的必需部分，并且必须始终在目标完成后发送，因此必须在转换到终端状态（Rejected, Recalled, Preempted, Aborted, Succeeded）时发送结果。</p>
-<h2 id="4机制"><a href="#4机制" class="headerlink" title="4机制"></a>4机制</h2><h3 id="4-1-Simple-Action-Client"><a href="#4-1-Simple-Action-Client" class="headerlink" title="4.1 Simple Action Client"></a>4.1 Simple Action Client</h3><p>通常，高层次的应用工程师和管理人员仅仅关心的是，目标是否正在处理或目标是否完成，他们很少关心所有中间状态。Simple action client将原始的客户端状态机分为三个状态：Pending，Active和Done。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act5.jpg" class=""></p>
-<h4 id="4-1-1客户端状态歧义"><a href="#4-1-1客户端状态歧义" class="headerlink" title="4.1.1客户端状态歧义"></a>4.1.1客户端状态歧义</h4><p>仅客户端状态不足以确定Simple client状态，但是，这可以通过查看客户端状态转换轻松解决。如果客户端状态转换未在任何Simple client状态之间交叉，则不会更新Simple client状态。<br>示例：如果客户端从RECALLING转换为WAITING FOR RESULT，则简单客户端状态仍将保持PENDING状态。</p>
-<h4 id="4-1-2多目标策略"><a href="#4-1-2多目标策略" class="headerlink" title="4.1.2多目标策略"></a>4.1.2多目标策略</h4><p>为简单起见，Simple Action Client一次仅跟踪一个目标。当用户通过Simple client发送目标时，它会禁用与先前目标相关的所有回调函数，并且还会停止跟踪其状态，但是它不会取消先前的目标。</p>
-<h4 id="4-1-3线程模型（C-）"><a href="#4-1-3线程模型（C-）" class="headerlink" title="4.1.3线程模型（C++）"></a>4.1.3线程模型（C++）</h4><p>在构造Simple Action Client时，用户可决定是否扩展额外的线程。<br>◆无多余的线程（推荐）<br>动作客户端中的所有订阅者都向全局回调队列注册。从ros::spin()内部调用用户的action回调,因此阻止用户的action回调将阻止为全局回调队列提供服务。<br>◆扩展线程<br>在动作客户端中的所有订阅者都注册有一个回调队列，该队列与全局回调队列分开，并且由扩展的线程进行服务。<br>从所扩展的线程中调用用户的action回调，尽管阻止action回调不会阻止其他ROS消息得到服务，但这仍然不是一个好主意，因为该服务的status，feedback和result消息无法得到服务。<br>扩展额外线程的好处是，用户可以避免在其应用程序中调用ros::spin()。</p>
-<h3 id="4-2Simple-Action-Server"><a href="#4-2Simple-Action-Server" class="headerlink" title="4.2Simple Action Server"></a>4.2Simple Action Server</h3><p>很多动作服务器都遵循类似的模式，一次只能激活一个目标，而每个新目标都将优先于前一个目标。Simple Action Server是基于动作服务器的包装，旨在为执行目标而实施此简化策略。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act6.jpg" class=""><br>在接收到从动作客户端发出的新目标后，Simple Action Server将该目标挂起。如果一个目标已经占用了挂起位置，则Simple Action Server将这个已占用的目标设置为取消，并将其替换为通过网络传入的目标。<br><img src="/2020/03/24/ROS%E5%8A%A8%E4%BD%9C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E5%86%85%E9%83%A8%E4%BA%A4%E4%BA%92%EF%BC%88%E8%BF%9B%E9%98%B6%EF%BC%89/act7.jpg" class=""><br>一旦Simple Action Server接收到一个新目标并将其挂起，就会向Simple Action Server的用户通知有一个新目标可用。如以下目标通知一节所述，此通知以两种方式中的其中一种方式发生。在接收到通知后，用户可以接收使被挂起的目标移动到当前目标的目标，并允许用户修改与新接收的目标相关联的状态机。</p>
-<h4 id="4-2-1目标通知"><a href="#4-2-1目标通知" class="headerlink" title="4.2.1目标通知"></a>4.2.1目标通知</h4><p>用户可以通过两种方式去接收Simple Action Server已接收到新目标的通知。<br>◆回调通知(Callback Notification)：用户在构造中向Simple Action Server注册了一个回调，当新目标被Simple Action Server挂起时，将调用该回调函数。用户可以在回调中接收新目标，或者在准备就绪时通知另一个线程接收目标。<br>◆轮询通知(Polling Notification)：用户明确询问Simple Action Server是否有新的目标可用。Simple Action Server根据从上一次进行新目标查询以来是否有新的目标被挂起，从而对此查询进行回应。</p>
-<h4 id="4-2-2线程模型（C-）"><a href="#4-2-2线程模型（C-）" class="headerlink" title="4.2.2线程模型（C++）"></a>4.2.2线程模型（C++）</h4><p>在构造Simple Action Server时，用户决定是否增加一个额外的线程以允许在目标回调函数中执行长时间运行的动作。<br>◆无多余的线程（推荐）<br>在为接收新目标的回调中进行的任何操作都不应长期运行，用户可以通知另一个线程进行工作，但不应阻塞。用户也可以使用轮询来检查新目标的有效性，并完全可以避免回调。<br>◆扩展线程<br>创建一个独立的线程以允许用户当新目标有效时，能够在接收到的回调函数中执行长时间的运行或被阻止的动作。在此回调中，用户还可以轮询Simple Action Server以检查是否有新目标。<br>Simple Action Server为用户扩展线程的好处是，用户不必处理用于管理另一个线程的开销。但是对于用户而言，重要的是要意识到此线程的存在，以便它们遵循诸如锁定之类的标准线程安全规定。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1811,7 +1799,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

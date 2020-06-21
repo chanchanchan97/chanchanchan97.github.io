@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="参考文献：(1) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zhuangxiaobin&#x2F;article&#x2F;details&#x2F;25476833 1.样本的创建训练样本分为正样本和负样本。正样本是指待检目标样本(例如车辆，行人，人脸等)，负本指其它任意图片。所有的样本图片都被归一化为同样的尺寸大小(例如，20x20，24x24或33x33)。负样本可以来自于任意的图片，但这些图片不能包含目标特征。 1.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Haar特征级联分类器的训练与检测">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="参考文献：(1) https:&#x2F;&#x2F;blog.csdn.net&#x2F;zhuangxiaobin&#x2F;article&#x2F;details&#x2F;25476833 1.样本的创建训练样本分为正样本和负样本。正样本是指待检目标样本(例如车辆，行人，人脸等)，负本指其它任意图片。所有的样本图片都被归一化为同样的尺寸大小(例如，20x20，24x24或33x33)。负样本可以来自于任意的图片，但这些图片不能包含目标特征。 1.">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train8.jpg">
+<meta property="article:published_time" content="2020-06-21T08:41:26.642Z">
+<meta property="article:modified_time" content="2020-06-20T13:34:34.643Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2020&#x2F;06&#x2F;21&#x2F;Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B&#x2F;train1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2020/06/21/Haar特征级联分类器的训练与检测/"/>
+
+
+
+
+
+  <title>Haar特征级联分类器的训练与检测 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Haar特征级联分类器的训练与检测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-21T16:41:26+08:00">
+                2020-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机视觉</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考文献：<br>(1) <a href="https://blog.csdn.net/zhuangxiaobin/article/details/25476833" target="_blank" rel="noopener">https://blog.csdn.net/zhuangxiaobin/article/details/25476833</a></p>
+<h2 id="1-样本的创建"><a href="#1-样本的创建" class="headerlink" title="1.样本的创建"></a>1.样本的创建</h2><p>训练样本分为正样本和负样本。正样本是指待检目标样本(例如车辆，行人，人脸等)，负本指其它任意图片。所有的样本图片都被归一化为同样的尺寸大小(例如，20x20，24x24或33x33)。负样本可以来自于任意的图片，但这些图片不能包含目标特征。</p>
+<h3 id="1-1准备正样本图片集"><a href="#1-1准备正样本图片集" class="headerlink" title="1.1准备正样本图片集"></a>1.1准备正样本图片集</h3><p>进入路径为tools\temp\positive\rawdata的文件夹中，然后在里面放入含有正样本的图片。正样本数目要足够大，一般要是1000以上。<br>注：图片要用BMP格式，如果图片不是BMP格式的话，可以在文件夹中创建一个空的文本文件，在文本文件中输入ren &#42;.jpg &#42;.bmp，并将该文本文件改成.bat后缀的批处理文件，双击该批处理文件即可将文件夹中.JPG格式的图片批量转换成.BMP格式。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train1.jpg" class=""></p>
+<h3 id="1-2截取目标区域"><a href="#1-2截取目标区域" class="headerlink" title="1.2截取目标区域"></a>1.2截取目标区域</h3><p>双击\tools\temp\positive下的objectmarker.exe可执行文件，开始截图目标区域。<br>使用方法可见readme文件，每次截好一次都要按一次空格键保存区域，多目标的图片可以继续截图并按空格键保存，若这张图片截取完成则按下回车键可以跳到下一张图片。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train2.jpg" class=""><br>这个截图的过程不能中断，不然就无法产生相应的文件了，所以在样本太多的情况下，可以先分组，大约100张图片放进rawdata文件夹中，这样子如果有什么意外的话，损失也就100张图的时间而已，最后只需要把几个文件的内容合成一个大文件，并且把所有相关的图片放进rawdata文件夹中，最终的效果是一样的。截图完成后会在路径\tools\temp\positive下生成info.txt文件。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train3.jpg" class=""><br>info.txt文件内容说明：<br>rawdata/1000986.BMP 1 0 1 127 93<br>①rawdata/1000986.BMP表示文件的相对路径；<br>②第2位的1表示图片中截取的区域数量，此处仅包含一个目标；<br>③第3和第4位的0 1表示截取的矩形框的起点坐标；<br>④第5和第6位的127 93表示截取的矩形框的宽和高；<br>注：第2位的数字若为2，即截取的目标数量为2个，则后面相应的矩形框起点坐标和矩形框尺寸也应该有2个，否则会在之后生成正样本的描述文件时报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info.txt(1) : parse errorDone. Created 0 samples</span><br></pre></td></tr></table></figure></p>
+<h3 id="1-3创建正样本描述文件vec文件"><a href="#1-3创建正样本描述文件vec文件" class="headerlink" title="1.3创建正样本描述文件vec文件"></a>1.3创建正样本描述文件vec文件</h3><p>打开\tools下的samples_creation.bat文件，可见到如下指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd temp</span><br><span class="line">createsamples.exe -info positive&#x2F;info.txt -vec data&#x2F;vector.vec -num 4346 -w 24 -h 24</span><br><span class="line">rem positive&#x2F;positive_bmp_list.txt - file containing list of positive bmp files along with the rectagle coordinates from objectmarker.exe</span><br><span class="line">rem -vec data&#x2F;vector.vec - file created by the createsamples tool</span><br><span class="line">rem all the other paramteres are described in the literature (links in the how_to.txt)</span><br><span class="line">pause</span><br></pre></td></tr></table></figure><br>其中我们需要根据实际情况修改的参数是-num、-w和-h。<br>①-num表示正样本的数量；<br>②-w和-h表示图片压缩后的大小；<br>运行samples_creation.bat文件后，会在\tools\temp\data下面生成vector.vec文件，这个就是向量描述文件了。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train4.jpg" class=""></p>
+<h3 id="1-4准备负样本图片集"><a href="#1-4准备负样本图片集" class="headerlink" title="1.4准备负样本图片集"></a>1.4准备负样本图片集</h3><p>进入路径为\tools\temp\negative的文件夹中，然后在里面放入负样本图片。一般来说，负样本要比正样本数目多很多。为什么呢？因为负样本表示的是随机情况，只要有大量随机样本的情况下，才可以充分表示与正样本相反的情况，大约2-5倍。但也不能太多，不然的话花费的时间太长，分类效果可能反而不好，因为比例偏移太严重。<br>注：负样本图片也需要采用.BMP格式。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train5.jpg" class=""></p>
+<h3 id="1-5创建负样本描述文件"><a href="#1-5创建负样本描述文件" class="headerlink" title="1.5创建负样本描述文件"></a>1.5创建负样本描述文件</h3><p>运行\tools\temp\negative下的create_list.bat文件，可以自动生成描述文件。如果没有找到这个create_list.bat批处理文件，可以自行在该目录下创建一个.bat文件，内容就一句话：dir /b *.BMP &gt;infofile.txt，然后保存。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train6.jpg" class=""></p>
+<h2 id="2-训练分类器"><a href="#2-训练分类器" class="headerlink" title="2.训练分类器"></a>2.训练分类器</h2><h3 id="2-1训练器的配置"><a href="#2-1训练器的配置" class="headerlink" title="2.1训练器的配置"></a>2.1训练器的配置</h3><p>打开\tools下的haarTraining.bat文件，首先对训练器进行配置。<br>①－data&#60;dir_name&#62;：存放训练好的分类器的路径；<br>②－vec&#60;vec_file_name&#62;：正样本描述文件路径；<br>③－bg&#60;background_file_name&#62;：负样本描述文件路径；<br>④－npos&#60;number_of_positive_samples&#62;：在每个阶段用于训练的正样本数目；<br>⑤－nneg&#60;number_of_negative_samples&#62;：在每个阶段用于训练的负样本数目。程序会自动切割负样本图片，使其和正样本大小一致，这个参数一般设置为正样本数目的1~3倍；<br>⑥－nstages&#60;number_of_stages&#62;：训练的分类器级数，一般选择15~20。每一级的训练目的是为了得到一个强分类器；<br>⑦－nsplits&#60;number_of_splits&#62;：一个弱分类器中分裂的子节点数目或特征个数。如果1，则只有一个简单的stump classifier被使用。如果是2或者更多，则带有number_of_splits 个内部节点的CART分类器被使用；<br>⑧－mem&#60;memory_in_MB&#62;：训练时的可用内存，单位为MB。内存越大则训练的速度越快；<br>⑨－sym（default）和－nonsym：后面不用跟其他参数，指定训练的目标对象是否垂直对称。垂直对称提高目标的训练速度。<br>⑩－minhitrate&#60;min_hit_rate&#62;：每一级分类器需要的最小的命中率（正检率），默认为0.995。针对每一个正样本累加这级强分类器的所有弱分类器的权重，然后对所有正样本得到的累加权重按从小到大排序，因为minhitrate决定至少要分对minhitrate&#42;npos个正样本，所以取第（1.0-minhitrate）&#42;npos正样本的权重为这级强分类器的阈值，通过这个阈值将大于这个阈值的分为正类，否则分为负类。所以minhitrate这个值决定每个阶段分类器的正样本的正检率，总的正检率为min_hit_rate 的number_of_stages 次方；<br>⑪－maxfalsealarm&#60;max_false_alarm_rate&#62;：每一级分类器的最大错误报警率（误检率），默认为0.5，总的误检率为max_false_alarm_rate 的number_of_stages 次方。前面通过minhitrate参数与弱分类器的权重累加和，得到了该强分类器的阈值后，通过这个阈值来分类负样本，负样本的分错个数不能超过numneg&#42;maxfalsealarm，如果超过则继续训练本级强分类器，增加新弱分类器直到阈值将负样本分错个数小于numneg&#42;maxfalsealarm为止就跳出循环，则本级强分类器训练成功；<br>⑫－weighttrimming&#60;weight_trimming&#62;：权重调整系数weightfraction。在每级强分类器的训练中每训练一个弱分类器前将所有样本中，包括正样本与负样本，按权重从小到大排列将权重最低的weightfraction &#42; (npos+nneg)的样本去除掉，因为权重很小说明这个样本总能被正确分类了，删除这些已经能正确分类的样本，让训练更多集中于还不能正确分类的样本上，提高训练效率。默认为0.95；<br>⑬－eqw：如果有-eqw则equalweights值为1，否则默认为0。1表示所有样本的初始化权重相等，0表示不等；<br>⑭－mode&#60;BASIC,CORE,ALL&#62;：BASIC仅使用垂直特征（适用于人脸等），CORE仅使用45度旋转特征，ALL使用Haar特征集的种类既有垂直又有45度角旋转的；<br>⑮－w&#60;sample_width&#62;：样本图片的宽度（以像素为单位）；<br>⑯－h&#60;sample_height&#62;：样本图片的高度（以像素为单位）；<br>⑰－bt&#60;DAB,RAB,LB,GAB&#62;：Discrete AdaBoost、Real AdaBoost、LogitBoost和Gentle AdaBoost分别代表4个应用的boost算法的种类，默认为GAB；<br>⑱－err&#60;misclass,gini,entropy,least sum of squares&#62;：分别代表四种在训练弱分类器时的计算阈值方法，默认为misclass；<br>⑲－maxtreesplits&#60;maximum_number_of_nodes_in_tree&#62;：树节点数的最大值，默认为0；<br>⑳－minpos&#60;min_positive&#62;：训练过程中，节点可使用的正样本数目。正样本根据节点被分类。通常来说，minpos不小于npos/nsplits。<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train7.jpg" class=""></p>
+<h3 id="2-2运行训练器"><a href="#2-2运行训练器" class="headerlink" title="2.2运行训练器"></a>2.2运行训练器</h3><p>①BACKGROUND PROCESSING TIME：负样本切割时间，单位是秒，一般会占用很长时间；<br>②N：训练的弱分类器序号；<br>③%SMP：由weightfraction决定，表示通过剔除小权值的样本后与总体样本数的比值；<br>④ST. THR：弱分类器的阈值；<br>⑤HR：该阈值下本级强分类器的正检率；<br>⑥FA：该阈值下本级强分类器的误检率，只有当每一级训练的FA低于定义的最大误检率maxfalsealarm才会进入下一级的训练；<br>⑦EXP. ERR：经验错误率；<br><img src="/2020/06/21/Haar%E7%89%B9%E5%BE%81%E7%BA%A7%E8%81%94%E5%88%86%E7%B1%BB%E5%99%A8%E7%9A%84%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%A3%80%E6%B5%8B/train8.jpg" class=""><br>训练过程会在\tools\temp\data\cascade中产生相应级数的文件，训练花费的时间跟电脑配置和训练数据的大小有关。如果训练过程中断也没关系，再次启动训练可以继续训练下去的。<br>训练完成后，将\temp\data\cascade下的N（这里N=18）个弱分类器文件夹拷贝到cascade2xml\data下，运行\tools\cascade2xml下的convert.bat文件就可以生成.xml分类器文件了，默认在同级目录下生成output.xml。</p>
+<h2 id="3-目标检测"><a href="#3-目标检测" class="headerlink" title="3.目标检测"></a>3.目标检测</h2><p>如下是launch文件的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;launch&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;robot_vision&quot; name&#x3D;&quot;vehicle_detector&quot; type&#x3D;&quot;vehicle_detector.py&quot; output&#x3D;&quot;screen&quot;&gt;</span><br><span class="line">       	&lt;rosparam&gt;</span><br><span class="line">           	haar_scaleFactor: 1.2</span><br><span class="line">           	haar_minNeighbors: 2</span><br><span class="line">           	haar_minSize: 20</span><br><span class="line">          	haar_maxSize: 55</span><br><span class="line">       	&lt;&#x2F;rosparam&gt;</span><br><span class="line">       	&lt;param name&#x3D;&quot;cascade_vehicle&quot; value&#x3D;&quot;$(find robot_vision)&#x2F;data&#x2F;haar_detectors&#x2F;output.xml&quot; &#x2F;&gt;</span><br><span class="line">       	&lt;param name&#x3D;&quot;video_vehicle&quot; value&#x3D;&quot;$(find robot_vision)&#x2F;data&#x2F;video&#x2F;video2.mp4&quot; &#x2F;&gt;</span><br><span class="line">   	&lt;&#x2F;node&gt;</span><br><span class="line">&lt;&#x2F;launch&gt;</span><br></pre></td></tr></table></figure><br>参数说明：<br>①haar_scaleFactor：检测窗口的缩放比例，一般为1.1或1.2；<br>②haar_minNeighbors：构成检测目标的相邻矩形的最小个数(默认为－1)。如果组成检测目标的小矩形的个数和小于min_neighbors-1 都会被排除。如果min_neighbors 为 0, 则函数不做任何操作就返回所有的被检候选矩形框，这种设定值一般用在用户自定义对检测结果的组合程序上；<br>③haar_minSize：检测窗口的最小尺寸，默认情况下被设为分类器训练时采用的样本尺寸（即24x24）；<br>④haar_maxSize：检测窗口的最大尺寸；<br>⑤cascade_vehicle：训练好的分类器.xml文件路径；<br>⑥video_vehicle：需要进行目标识别的视频文件路径。<br>如下是vehicle_detector.py文件内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import rospy</span><br><span class="line">import cv2</span><br><span class="line">import numpy as np</span><br><span class="line">from sensor_msgs.msg import Image, RegionOfInterest</span><br><span class="line">from cv_bridge import CvBridge, CvBridgeError</span><br><span class="line"></span><br><span class="line">class vehicleDetector:</span><br><span class="line">   	def __init__(self):</span><br><span class="line">       	# 创建cv_bridge</span><br><span class="line">       	self.bridge &#x3D; CvBridge()</span><br><span class="line">       	self.image_pub &#x3D; rospy.Publisher(&quot;cv_bridge_image&quot;, Image, queue_size&#x3D;1)</span><br><span class="line">       </span><br><span class="line">       	video &#x3D; rospy.get_param(&quot;~video_vehicle&quot;, &quot;&quot;)</span><br><span class="line">       	cascade_vehicle &#x3D; rospy.get_param(&quot;~cascade_vehicle&quot;, &quot;&quot;)</span><br><span class="line">       </span><br><span class="line">       	# 使用级联表初始化haar特征检测器</span><br><span class="line">       	self.cascade_vehicle &#x3D; cv2.CascadeClassifier(cascade_vehicle)</span><br><span class="line">       </span><br><span class="line">       	# 设置级联表的参数，优化目标识别，可以在launch文件中重新配置</span><br><span class="line">       	self.haar_scaleFactor  &#x3D; rospy.get_param(&quot;~haar_scaleFactor&quot;, 1.2)</span><br><span class="line">      	self.haar_minNeighbors &#x3D; rospy.get_param(&quot;~haar_minNeighbors&quot;, 2)</span><br><span class="line">       	self.haar_minSize      &#x3D; rospy.get_param(&quot;~haar_minSize&quot;, 40)</span><br><span class="line">       	self.haar_maxSize      &#x3D; rospy.get_param(&quot;~haar_maxSize&quot;, 60)</span><br><span class="line">       	self.color &#x3D; (50, 255, 50)</span><br><span class="line">       </span><br><span class="line">       	cap &#x3D; cv2.VideoCapture(video)</span><br><span class="line">       </span><br><span class="line">	 	# 获取视频图像</span><br><span class="line">       	while(cap.isOpened()):</span><br><span class="line">           	ret, cv_image &#x3D; cap.read()</span><br><span class="line">           	cv_image_compressed &#x3D; cv2.resize(cv_image, (1280,720))</span><br><span class="line">           	frame &#x3D; cv_image_compressed</span><br><span class="line">		</span><br><span class="line">           	if ret&#x3D;&#x3D;True:</span><br><span class="line">               	# 创建灰度图像</span><br><span class="line">               	grey_image &#x3D; cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)</span><br><span class="line"></span><br><span class="line">               	# 创建平衡直方图，减少光线影响</span><br><span class="line">               	grey_image &#x3D; cv2.equalizeHist(grey_image)</span><br><span class="line"></span><br><span class="line">               	vehicle_result &#x3D; self.detect_vehicle(grey_image)</span><br><span class="line">       		</span><br><span class="line">               	# 将识别到的车辆框出来</span><br><span class="line">               	if len(vehicle_result)&gt;0:</span><br><span class="line">                   	for vehicle in vehicle_result:</span><br><span class="line">                       	x, y, w, h &#x3D; vehicle</span><br><span class="line">                       	cv2.rectangle(cv_image_compressed, (x, y), (x+w, y+h), self.color, 2)</span><br><span class="line"></span><br><span class="line">               	cv2.imshow(&#39;frame&#39;,cv_image_compressed)</span><br><span class="line">               	if cv2.waitKey(25) &amp; 0xFF &#x3D;&#x3D; ord(&#39;q&#39;):</span><br><span class="line">                   	break</span><br><span class="line">           	else:</span><br><span class="line">               	break</span><br><span class="line"></span><br><span class="line">   	def detect_vehicle(self, input_image):</span><br><span class="line">       	# 匹配车辆模型</span><br><span class="line">       	if self.cascade_vehicle:</span><br><span class="line">           	vehicles &#x3D; self.cascade_vehicle.detectMultiScale(input_image, </span><br><span class="line">                   self.haar_scaleFactor, </span><br><span class="line">                   self.haar_minNeighbors, </span><br><span class="line">                   cv2.CASCADE_SCALE_IMAGE, </span><br><span class="line">                   (self.haar_minSize, self.haar_maxSize))</span><br><span class="line">       </span><br><span class="line">       	return vehicles</span><br><span class="line"></span><br><span class="line">   	def cleanup(self):</span><br><span class="line">       	print &quot;Shutting down vision node.&quot;</span><br><span class="line">       	cv2.destroyAllWindows()</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">   	try:</span><br><span class="line">       	# 初始化ros节点</span><br><span class="line">       	rospy.init_node(&quot;vehicle_detector&quot;)</span><br><span class="line">       	vehicleDetector()</span><br><span class="line">       	rospy.spin()</span><br><span class="line">   	except KeyboardInterrupt:</span><br><span class="line">       	print &quot;Shutting down face detector node.&quot;</span><br><span class="line">       	cv2.destroyAllWindows()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/11/%E5%85%B3%E4%BA%8EHaar%E7%89%B9%E5%BE%81%E5%88%86%E7%B1%BB%E5%99%A8%E5%92%8CAdaBoost%E7%AE%97%E6%B3%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="关于Haar特征分类器和AdaBoost算法的学习笔记">
+                <i class="fa fa-chevron-left"></i> 关于Haar特征分类器和AdaBoost算法的学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-样本的创建"><span class="nav-text">1.样本的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1准备正样本图片集"><span class="nav-text">1.1准备正样本图片集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2截取目标区域"><span class="nav-text">1.2截取目标区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3创建正样本描述文件vec文件"><span class="nav-text">1.3创建正样本描述文件vec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4准备负样本图片集"><span class="nav-text">1.4准备负样本图片集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5创建负样本描述文件"><span class="nav-text">1.5创建负样本描述文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-训练分类器"><span class="nav-text">2.训练分类器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1训练器的配置"><span class="nav-text">2.1训练器的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2运行训练器"><span class="nav-text">2.2运行训练器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-目标检测"><span class="nav-text">3.目标检测</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
