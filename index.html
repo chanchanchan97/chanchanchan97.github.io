@@ -238,6 +238,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/" itemprop="url">构建CAN通信Simulink模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-21T00:11:30+08:00">
+                2021-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MATLAB-Simulink/" itemprop="url" rel="index">
+                    <span itemprop="name">MATLAB/Simulink</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考网址：<br><a href="https://ww2.mathworks.cn/help/vnt/ug/build-can-communication-simulink-models.html#brzf0ew-4" target="_blank" rel="noopener">https://ww2.mathworks.cn/help/vnt/ug/build-can-communication-simulink-models.html#brzf0ew-4</a></p>
+<h2 id="一、构建模型的报文传输部分"><a href="#一、构建模型的报文传输部分" class="headerlink" title="一、构建模型的报文传输部分"></a>一、构建模型的报文传输部分</h2><h3 id="Step-1-创建新模型"><a href="#Step-1-创建新模型" class="headerlink" title="Step 1. 创建新模型"></a>Step 1. 创建新模型</h3><p>1.要启动 Simulink 并创建新模型，请在 MATLAB命令提示符下输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simulink</span><br></pre></td></tr></table></figure><br>在Simulink Start Page对话框中，点击Blank Model，然后点击Create Model，将打开一个空的Editor窗口。<br>2.在Editor工具条的Simulation选项卡上，点击Save &gt; Save As为新模型指定名称。</p>
+<h3 id="Step-2-打开模型库"><a href="#Step-2-打开模型库" class="headerlink" title="Step 2. 打开模型库"></a>Step 2. 打开模型库</h3><p>1.在模型Editor工具条的Simulation选项卡中，点击Library Browser。<br>2.Simulink Library Browser将打开。其左窗格包含按字母顺序显示的可用模块库的树。展开Vehicle Network Toolbox节点，然后点击CAN Communication。</p>
+<h3 id="Step-3-将Vehicle-Network-Toolbox模块拖到模型中"><a href="#Step-3-将Vehicle-Network-Toolbox模块拖到模型中" class="headerlink" title="Step 3. 将Vehicle Network Toolbox模块拖到模型中"></a>Step 3. 将Vehicle Network Toolbox模块拖到模型中</h3><p>要将模块放入模型中，请点击库中的一个模块并将其拖到编辑器中。对于此示例，模型中需要针对以下每个模块创建一个实例：<br>●CAN Configuration<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can1.jpg" class=""><br>●CAN Pack<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can2.jpg" class=""><br>●CAN Transmit<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can3.jpg" class=""></p>
+<h3 id="Step-4-拖放其他模块以完成模型"><a href="#Step-4-拖放其他模块以完成模型" class="headerlink" title="Step 4. 拖放其他模块以完成模型"></a>Step 4. 拖放其他模块以完成模型</h3><p>此示例使用Constant(Simulink)模块作为数据源。从Simulink &gt; Commonly Used Blocks库中，向模型添加一个Constant(Simulink)模块。<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can4.jpg" class=""></p>
+<h3 id="Step-5-连接模块"><a href="#Step-5-连接模块" class="headerlink" title="Step 5. 连接模块"></a>Step 5. 连接模块</h3><p>在Constant模块和CAN Pack模块输入之间建立连接。将指针移至Constant模块的输出端口附近时，指针将变为十字准线。点击Constant模块输出端口并按住鼠标按键，将指针拖动到CAN Pack模块的输入端口。然后松开按键。<br>以相同的方式，在CAN Pack模块的输出端口与CAN Transmit模块的输入端口之间建立连接。<br>CAN Configuration模块不连接到任何其他模块，此模块配置其CAN通道以用于通信。</p>
+<h3 id="Step-6-指定模块参数值"><a href="#Step-6-指定模块参数值" class="headerlink" title="Step 6. 指定模块参数值"></a>Step 6. 指定模块参数值</h3><p>通过双击模型中的每个模块为模块设置参数。<br>配置CAN Configuration模块。双击CAN Configuration模块以打开其参数对话框。验证或设置以下参数：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can5.jpg" class=""><br>配置CAN Pack模块。双击CAN Pack模块以打开其参数对话框。验证或设置以下参数：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can6.jpg" class=""><br>配置CAN Transmit模块。双击CAN Transmit模块以打开其参数对话框。验证或设置以下参数：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can7.jpg" class=""><br>配置Constant模块。双击Constant模块以打开其参数对话框。<br>在Main选项卡上，进行如下设置：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can8.jpg" class=""><br>在Signal Attributes选项卡上，进行如下设置：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can9.jpg" class=""><br>经过配置的模型如下图所示：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can10.jpg" class=""></p>
+<h2 id="二、构建模型的报文接收部分"><a href="#二、构建模型的报文接收部分" class="headerlink" title="二、构建模型的报文接收部分"></a>二、构建模型的报文接收部分</h2><h3 id="Step-7-将Vehicle-Network-Toolbox模块拖到模型中"><a href="#Step-7-将Vehicle-Network-Toolbox模块拖到模型中" class="headerlink" title="Step 7. 将Vehicle Network Toolbox模块拖到模型中"></a>Step 7. 将Vehicle Network Toolbox模块拖到模型中</h3><p>对于示例的这一部分，首先为Vehicle Network Toolbox CAN Communication模块库中的以下每个模块创建一个实例：<br>●CAN Configuration<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can11.jpg" class=""><br>●CAN Receive<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can12.jpg" class=""></p>
+<h3 id="Step-8-拖放其他模块以完成模型"><a href="#Step-8-拖放其他模块以完成模型" class="headerlink" title="Step 8. 拖放其他模块以完成模型"></a>Step 8. 拖放其他模块以完成模型</h3><p>使用Simulink的Ports &amp; Subsystems模块库中的Function-Call Subsystem模块构建您的CAN Message pack子系统。<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can13.jpg" class=""><br>双击Function-Call Subsystem模块以打开子系统编辑器。双击In1端口标签，将其重命名为CAN Msg。双击Out1端口标签，将其重命名为Data。将CAN Unpack模块从Vehicle Network Toolbox模块库中拖放到此子系统中。如果将该模块放置在输入信号线和输出信号线之间，它们将自动连接。<br>此时Function-Call Subsystem模块的内部应如下图所示。<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can14.jpg" class=""><br>将CAN Unpack放在Function-Call Subsystem内的原因是为了捕获所有可能的报文。</p>
+<h3 id="Step-9-连接模块"><a href="#Step-9-连接模块" class="headerlink" title="Step 9. 连接模块"></a>Step 9. 连接模块</h3><p>将Function-Call Subsystem模块重命名为CAN Unpack Subsystem。将CAN Receive模块的CAN Msg输出端口连接到CAN Unpack Subsyste模块的In1输入端口。将CAN Receive模块的f()输出端口连接到CAN Unpack Subsystem模块的function()输入端口。要直观地显示仿真结果，请将Scope (Simulink)模块从Simulink模块库拖放到您的模型中。将CAN Unpack Subsystem模块的CAN Msg输出端口连接到Scope模块的输入端口。CAN Configuration模块不连接到任何其他模块。该模块用于配置CAN Receive模块所使用的CAN通道以接收CAN报文。</p>
+<h3 id="Step-10-指定模块参数值"><a href="#Step-10-指定模块参数值" class="headerlink" title="Step 10. 指定模块参数值"></a>Step 10. 指定模块参数值</h3><p>配置CAN Configuration1模块。双击CAN Configuration模块以打开其参数对话框。进行如下设置：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can15.jpg" class=""><br>配置CAN Receive模块。双击CAN Receive模块以打开其Parameters对话框。进行如下设置：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can16.jpg" class=""><br>配置CAN Unpack子系统。双击CAN Unpack子系统以打开Function-Call Subsystem编辑器。在模型中，双击CAN Unpack模块以打开其参数对话框。进行如下设置：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can17.jpg" class=""></p>
+<h2 id="三、保存并运行模型"><a href="#三、保存并运行模型" class="headerlink" title="三、保存并运行模型"></a>三、保存并运行模型</h2><h3 id="Step-11-保存模型"><a href="#Step-11-保存模型" class="headerlink" title="Step 11. 保存模型"></a>Step 11. 保存模型</h3><p>在运行仿真之前，点击Save图标或从Editor工具条的Simulation选项卡中选择Save保存模型。</p>
+<h3 id="Step-12-更改配置参数"><a href="#Step-12-更改配置参数" class="headerlink" title="Step 12. 更改配置参数"></a>Step 12. 更改配置参数</h3><p>在模型Editor工具条的Modeling选项卡中，点击Model Settings。将打开Configuration Parameters对话框。<br>在Solver Options部分中，进行如下选择：<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can18.jpg" class=""></p>
+<h3 id="Step-13-运行仿真"><a href="#Step-13-运行仿真" class="headerlink" title="Step 13. 运行仿真"></a>Step 13. 运行仿真</h3><p>要运行仿真，请点击Editor工具条的Simulation或Modeling选项卡中的Run按钮。<br>运行仿真时，CAN Transmit模块将从CAN Pack模块中获取报文。然后它会通过Virtual Channel 1传输该报文。Virtual Channel 2上的CAN Receive模块会接收该报文并将其传递到CAN Unpack Subsystem模块以解包报文。<br>在仿真运行时，模型窗口底部的状态栏会更新仿真的进度。</p>
+<h3 id="Step-14-查看结果"><a href="#Step-14-查看结果" class="headerlink" title="Step 14. 查看结果"></a>Step 14. 查看结果</h3><p>双击Scope模块以在图上查看报文传输。如果您在图上看不到所有数据，请点击Autoscale工具栏按钮，这会自动缩放坐标轴以显示所有存储的仿真数据。<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/can19.jpg" class=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/12/%E8%B7%AF%E5%BE%84%E8%B7%9F%E8%B8%AA%E2%80%94%E2%80%94Stanley%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1606,159 +1762,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="chan's Bloggerrrrr">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/" itemprop="url">launch启动文件的使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-27T21:06:58+08:00">
-                2020-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">ROS机器人操作系统</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-launch文件功能"><a href="#1-launch文件功能" class="headerlink" title="1.launch文件功能"></a>1.launch文件功能</h2><p>之前运行ROS节点都需要先使用roscore命令启动ROS Master，并且单独rosrun命令启动各个ROS节点，而使用launch文件可以大大地简化这些步骤，只需要一个roslaunch命令，就可以同时启动ROS Master和多个节点程序。</p>
-<h2 id="2-launch文件语法"><a href="#2-launch文件语法" class="headerlink" title="2.launch文件语法"></a>2.launch文件语法</h2><h3 id="2-1-60-launch-62-标签"><a href="#2-1-60-launch-62-标签" class="headerlink" title="2.1&#60;launch&#62;标签"></a>2.1&#60;launch&#62;标签</h3><p>&#60;launch&#62;是launch文件的文件标签，是必须要有的。其中&#60;launch&#62;表示文件的起始，&#60;/launch&gt;表示文件的结束。<br>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;launch&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;turtlesim&quot; type&#x3D;&quot;turtlesim_node&quot; name&#x3D;&quot;sim&quot;&#x2F;&gt;</span><br><span class="line">   	&lt;node pkg&#x3D;&quot;turtlesim&quot; type&#x3D;&quot;turtle_teleop_key&quot; name&#x3D;&quot;teleop&quot; output&#x3D;&quot;screen&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;launch&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-2-60-node-62-标签"><a href="#2-2-60-node-62-标签" class="headerlink" title="2.2&#60;node&#62;标签"></a>2.2&#60;node&#62;标签</h3><p>&#60;node&#62;是节点标签，用来启动某个ROS节点，其中包含了如下几个主要的属性。<br>(1)pkg：表示节点所在的功能包名称，使用方式如pkg = “tf_lidar_task”；<br>(2)type：表示节点的可执行文件名称，使用方式如type = “lidar_broadcaster”；<br>(3)name：表示该节点在ROS系统中运行时的节点名，与节点编程时ros::init(argc, argv, “robot_tf_publisher”)中命名的节点名是同一概念，如果两者不同，launch文件中定义的name将覆盖程序中命名的节点名，可理解为重命名。因为ROS中节点名称是唯一的，name的使用是为了重复利用节点，比如发布广播t1和发布广播t2都使用发布广播节点，但运行时名称不同。使用方式如name = “broadcaster_t1”；<br>(4)output：用于控制某个节点是否将日志信息打印在终端界面上，默认输出到日志文档，使用方式如output = “screen”；<br>(5)respawn：表示在该节点突然停止时，是否会自动重启，默认为false，使用方式如respawn = “true”；<br>(6)required：表示该节点是否必须要启动，当该节点终止时，launch文件中的其他节点也被终止，使用方式如required = “true”；<br>(7)ns：表示namespace（命名空间），为节点内的相对名称添加命名空间前缀，避免命名冲突，使用方式如ns = “foo”；<br>(8)args：表示节点需要的输入参数，类似于之前ROS服务编程中实现整数加法时rosrun命令后面所跟着的参数，使用方式为args = “10 20”；  </p>
-<h3 id="2-3-60-param-62-标签"><a href="#2-3-60-param-62-标签" class="headerlink" title="2.3&#60;param&#62;标签"></a>2.3&#60;param&#62;标签</h3><p>&#60;param&#62;用于设置和修改ROS系统运行中的单个参数，存储在参数服务器中，类似于修改变量，例如可以设置turtlesim海龟界面背景的RGB值。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;param name&#x3D;&quot;output_frame&quot; value&#x3D;&quot;odom&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中，name是参数名，value是参数值。</p>
-<h3 id="2-4-60-rosparam-62-标签"><a href="#2-4-60-rosparam-62-标签" class="headerlink" title="2.4&#60;rosparam&#62;标签"></a>2.4&#60;rosparam&#62;标签</h3><p>&#60;rosparam&#62;用于加载参数文件中的多个参数，可以将参数文件中的所有参数都保存到参数服务器中。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;rosparam file&#x3D;&quot;params.yaml&quot; command&#x3D;&quot;load&quot; ns&#x3D;&quot;local_costmap&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中，command属性可以设置为加载command=”load”，或设置为卸载command=”delete”。</p>
-<h3 id="2-5-60-arg-62-标签"><a href="#2-5-60-arg-62-标签" class="headerlink" title="2.5&#60;arg&#62;标签"></a>2.5&#60;arg&#62;标签</h3><p>&#60;arg&#62;与&#60;param&gt;、&#60;rosparam&gt;虽然都用于参数设置，但<arg>的区别在于它表示launch文件内部的局部变量，存储在launch文件中并且仅限于launch文件中使用。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; value&#x3D;&quot;arg-value&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; value&#x3D;&quot;$(arg arg-name)&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中name是参数名，value是参数值。另外还可以为参数设置默认值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;arg-name&quot; default&#x3D;&quot;1&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-6-60-remap-62-标签"><a href="#2-6-60-remap-62-标签" class="headerlink" title="2.6&#60;remap&#62;标签"></a>2.6&#60;remap&#62;标签</h3><p>&#60;remap&gt;表示重映射ROS计算图资源的命名，可近似理解为重命名，使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;remap from&#x3D;&quot;&#x2F;turtlebot&#x2F;cmd_vel&quot;to&quot;&#x2F;cmd_vel&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中from为原命名，to为映射之后的命名。</p>
-<h3 id="2-7-60-include-62-标签"><a href="#2-7-60-include-62-标签" class="headerlink" title="2.7&#60;include&#62;标签"></a>2.7&#60;include&#62;标签</h3><p>&#60;include&#62;用于包含其他launch文件，类似于C语言中的头文件包含。使用方式如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;include file&#x3D;&quot;$(dirname)&#x2F;turtle.launch&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure><br>其中file是包含的其他launch文件路径。<br>更多资料可参考：<a href="http://wiki.ros.org/roslaunch/XML" target="_blank" rel="noopener">http://wiki.ros.org/roslaunch/XML</a></p>
-<h2 id="3-launch文件使用"><a href="#3-launch文件使用" class="headerlink" title="3.launch文件使用"></a>3.launch文件使用</h2><h3 id="3-1创建launch文件"><a href="#3-1创建launch文件" class="headerlink" title="3.1创建launch文件"></a>3.1创建launch文件</h3><p>以TF变换的功能包为例，在tf_lidar_task工作空间中创建一个空文件夹，命名为launch。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch1.jpg" class=""><br>在launch文件夹中创建一个空文件，命名为tf_lidar.launch。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch2.jpg" class=""></p>
-<h3 id="3-2编译launch文件"><a href="#3-2编译launch文件" class="headerlink" title="3.2编译launch文件"></a>3.2编译launch文件</h3><p>在/ROS_ws文件夹路径下打开一个新的终端，输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ catkin_make</span><br></pre></td></tr></table></figure><br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch3.jpg" class=""></p>
-<h3 id="3-3启动launch文件"><a href="#3-3启动launch文件" class="headerlink" title="3.3启动launch文件"></a>3.3启动launch文件</h3><p>在/ROS_ws路径下配置环境，再输入以下代码进行编译。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roslaunch tf_lidar_task tf_lidar.launch</span><br></pre></td></tr></table></figure><br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch4.jpg" class=""></p>
-<h3 id="3-4节点通信可视化"><a href="#3-4节点通信可视化" class="headerlink" title="3.4节点通信可视化"></a>3.4节点通信可视化</h3><p>打开一个新的终端，输入以下代码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rqt_graph</span><br></pre></td></tr></table></figure><br>可以看到广播器已经开始发布TF变换关系到监听者节点，并且节点名也按照launch文件中重新命名。<br><img src="/2020/03/27/launch%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/launch5.jpg" class=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1809,7 +1812,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1820,7 +1823,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
