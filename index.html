@@ -238,6 +238,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/" itemprop="url">一阶RC低通滤波器的数学模型及算法实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-24T18:31:24+08:00">
+                2021-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BB%A4%E6%B3%A2%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">滤波算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-一阶RC低通滤波器的连续域数学模型"><a href="#1-一阶RC低通滤波器的连续域数学模型" class="headerlink" title="1.一阶RC低通滤波器的连续域数学模型"></a>1.一阶RC低通滤波器的连续域数学模型</h2><h3 id="1-1数学模型的推导"><a href="#1-1数学模型的推导" class="headerlink" title="1.1数学模型的推导"></a>1.1数学模型的推导</h3><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC1.jpg" class="">
+<p>上图是RC低通滤波器的电路模型，根据基尔霍夫定律可知：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC2.jpg" class=""><br>即：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC3.jpg" class=""><br>根据电容的特性可知：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC4.jpg" class=""><br>零状态条件下的时域响应可表示为：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC5.jpg" class=""><br>定义时间常数τ=RC，对上述微分方程进行拉氏变换，可得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC6.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC7.jpg" class=""><br>由此可得传递函数：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC8.jpg" class=""><br>即频域数学模型为：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC9.jpg" class=""></p>
+<h3 id="1-2频率特性"><a href="#1-2频率特性" class="headerlink" title="1.2频率特性"></a>1.2频率特性</h3><p>相频特性：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC10.jpg" class=""><br>幅频特性：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC11.jpg" class=""><br>以R=100Ω，C=100nF为例，该低通滤波器的频率特性如下：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC12.jpg" class=""></p>
+<h3 id="1-3物理作用："><a href="#1-3物理作用：" class="headerlink" title="1.3物理作用："></a>1.3物理作用：</h3><p>输入一个阶跃信号，经过时间τ之后，输出大约为阶跃量的63%，滞后作用。<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC13.jpg" class=""></p>
+<h2 id="2-一阶RC低通滤波器的算法推导"><a href="#2-一阶RC低通滤波器的算法推导" class="headerlink" title="2.一阶RC低通滤波器的算法推导"></a>2.一阶RC低通滤波器的算法推导</h2><h3 id="2-1离散化"><a href="#2-1离散化" class="headerlink" title="2.1离散化"></a>2.1离散化</h3><p>采用一阶后向差分法将传递函数G(s)从S域转化到Z域，其中一阶后向差分中S域与Z域的变化关系是：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC14.jpg" class=""><br>其中T是采样周期，带入传递函数G(s)中得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC15.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC16.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC17.jpg" class=""><br>Z反变换求差分方程后可得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC18.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC19.jpg" class=""><br>令<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC20.jpg" class=""><br>可得<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC21.jpg" class=""><br>关于滤波系数A<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC22.jpg" class=""><br>所以<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC23.jpg" class=""><br>代入<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC24.jpg" class=""><br>可以得到滤波系数A与截止频率f的关系：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC25.jpg" class=""></p>
+<h2 id="3-一阶RC低通滤波器的C语言实现"><a href="#3-一阶RC低通滤波器的C语言实现" class="headerlink" title="3.一阶RC低通滤波器的C语言实现"></a>3.一阶RC低通滤波器的C语言实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#define a 0.01               &#x2F;&#x2F; 滤波系数a（0-1） </span><br><span class="line"></span><br><span class="line">static float oldOutData &#x3D; 0; &#x2F;&#x2F;上一次滤波值</span><br><span class="line"></span><br><span class="line">char filter(void)</span><br><span class="line">&#123;</span><br><span class="line">    nowData  &#x3D; get_Data();  &#x2F;&#x2F;本次滤波值</span><br><span class="line">    nowOutData &#x3D; a * nowData  + (1.0f - a) * oldOutData;</span><br><span class="line">    oldOutData &#x3D; nowOutData;</span><br><span class="line">    return nowOutData;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-缺点及改善方法"><a href="#4-缺点及改善方法" class="headerlink" title="4.缺点及改善方法"></a>4.缺点及改善方法</h2><h3 id="4-1缺点"><a href="#4-1缺点" class="headerlink" title="4.1缺点"></a>4.1缺点</h3><p>●仍然存在灵敏度与平稳度之间的矛盾；<br>●小数舍弃带来的误差（单片机很少采用浮点数，小数位要么舍弃，要么四舍五入）。  </p>
+<h3 id="4-2改善方法——动态调整滤波系数"><a href="#4-2改善方法——动态调整滤波系数" class="headerlink" title="4.2改善方法——动态调整滤波系数"></a>4.2改善方法——动态调整滤波系数</h3><h4 id="4-2-1实现功能"><a href="#4-2-1实现功能" class="headerlink" title="4.2.1实现功能"></a>4.2.1实现功能</h4><p>●当数据快速变化时，滤波结果能及时跟进，并且数据的变化越快，灵敏度应该越高（灵敏度优先原则）；<br>●当数据趋于稳定，并在一个范围内振荡时，滤波结果能趋于平稳（平稳度优先原则）；<br>●当数据稳定后，滤波结果能逼近并最终等于采样数据（消除因计算中小数带来的误差）。  </p>
+<h4 id="4-2-2调整前判断"><a href="#4-2-2调整前判断" class="headerlink" title="4.2.2调整前判断"></a>4.2.2调整前判断</h4><p>●数据变化方向是否为同一个方向（如当连续两次的采样值都比其上次滤波结果大时，视为变化方向一致，否则视为不一致）；<br>●数据变化是否较快（主要是判断采样值和上一次滤波结果之间的差值）。  </p>
+<h4 id="4-2-3调整原则"><a href="#4-2-3调整原则" class="headerlink" title="4.2.3调整原则"></a>4.2.3调整原则</h4><p>●当两次数据变化不一致时，说明有抖动，将滤波系数清零，忽略本次新采样值；<br>●当数据持续向一个方向变化时，逐渐提高滤波系数，提供本次采样值得权；<br>●当数据变化较快（差值＞消抖计数加速反应阈值）时，要加速提高滤波系数。  </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1611,157 +1762,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="chan's Bloggerrrrr">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" itemprop="url">URDF模型——阿克曼（Ackermann）四轮小车模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-30T19:50:15+08:00">
-                2020-03-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">ROS机器人操作系统</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Github链接：<a href="https://github.com/chanchanchan97/ROS" target="_blank" rel="noopener">https://github.com/chanchanchan97/ROS</a></p>
-<h2 id="1-模型描述"><a href="#1-模型描述" class="headerlink" title="1.模型描述"></a>1.模型描述</h2><p>本项目的目的是创建一个基于阿克曼转向机构（Ackermann steering）的简易四轮小车模型，该模型采用后轮双驱，而前轮在设计时选择独立转向，之后通过算法对两个前轮单独控制，模拟阿克曼转向模型。车体以简单的立方体来表示，并且在前端创建一个小立方体表示摄像头。</p>
-<h2 id="2-URDF文件"><a href="#2-URDF文件" class="headerlink" title="2.URDF文件"></a>2.URDF文件</h2><p>URDF全称为Unified Robot Description Format（统一机器人描述格式），是一种基于XML规范、用于描述机器人结构的格式。<br>从机构学角度讲，机器人通常被建模为由连杆（link）和关节（joint）组成的结构。连杆（link）是带有质量属性的刚体，而关节（joint）是连接、限制两个刚体相对运动的结构。通过关节将连杆依次连接起来，就构成了一个个运动链（也就是这里所定义的机器人模型）。URDF文件即描述了这样的一系列关节与连杆的相对关系、惯性属性、几何特点和碰撞模型，简单来说包含了机器人模型的运动学与动力学描述、机器人的几何表示、机器人的碰撞模型。</p>
-<h2 id="3-link元素"><a href="#3-link元素" class="headerlink" title="3.link元素"></a>3.link元素</h2><p>link元素描述了具有惯性，视觉特征和碰撞特性的刚体。以小车主体部分为例，创建如下的URDF文件内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;link name&#x3D;&quot;base_link&quot;&gt; </span><br><span class="line">	&lt;inertial&gt;</span><br><span class="line">		&lt;origin xyz&#x3D;&quot;0 0 0.055&quot;&#x2F;&gt;</span><br><span class="line">	  	&lt;mass value&#x3D;&quot;1.0&quot; &#x2F;&gt;</span><br><span class="line">	  	&lt;inertia ixx&#x3D;&quot;$&#123;1*(0.16*0.16+0.02*0.02)&#x2F;12&#125;&quot; ixy&#x3D;&quot;0.0&quot; ixz&#x3D;&quot;0.0&quot; iyy&#x3D;&quot;$&#123;1*(0.25*0.25+0.02*0.02)&#x2F;12&#125;&quot; iyz&#x3D;&quot;0.0&quot; izz&#x3D;&quot;$&#123;1*(0.16*0.16+0.25*0.25)&#x2F;12&#125;&quot;&#x2F;&gt;</span><br><span class="line">	&lt;&#x2F;inertial&gt;</span><br><span class="line">   	&lt;visual&gt;</span><br><span class="line">   		&lt;origin xyz&#x3D;&quot;0 0 0.055&quot; rpy&#x3D;&quot;0 0 0&quot; &#x2F;&gt;</span><br><span class="line">     		&lt;geometry&gt;  </span><br><span class="line">       		&lt;box size&#x3D;&quot;0.25 0.16 0.02&quot;&#x2F;&gt;  </span><br><span class="line">     		&lt;&#x2F;geometry&gt;   </span><br><span class="line">     		&lt;material name&#x3D;&quot;blue&quot;&gt;  </span><br><span class="line">     			&lt;color rgba&#x3D;&quot;0 0 0.8 1&quot;&#x2F;&gt;  </span><br><span class="line">     		&lt;&#x2F;material&gt;  </span><br><span class="line">  		&lt;&#x2F;visual&gt;  </span><br><span class="line">  		&lt;collision&gt;</span><br><span class="line">  			&lt;origin xyz&#x3D;&quot;0 0 0.055&quot; rpy&#x3D;&quot;0 0 0&quot; &#x2F;&gt;</span><br><span class="line">     		&lt;geometry&gt;  </span><br><span class="line">       		&lt;box size&#x3D;&quot;0.25 0.16 0.02&quot; &#x2F;&gt;  </span><br><span class="line">     		&lt;&#x2F;geometry&gt;  </span><br><span class="line">   	&lt;&#x2F;collision&gt;</span><br><span class="line">&lt;&#x2F;link&gt;</span><br></pre></td></tr></table></figure><br><img src="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/urdf1.jpg" class=""></p>
-<h2 id="4-link属性详解"><a href="#4-link属性详解" class="headerlink" title="4.link属性详解"></a>4.link属性详解</h2><p>(1)name（必选）<br>link的名字，可以任意指定，在这里名字为base_link。<br>(2)inertial（可选）<br>◆origin（可选：如果未指定，则默认为identity）<br>这是惯性参考系相对于链路参考系的姿态。惯性参考系的原点需要位于重心处。惯性参考系的轴不需要与惯性的主轴对齐。<br>●xyz（可选：如果未指定，默认为零向量）<br>表示link刚体的重心位置分别在x轴，y轴，z轴方向上的偏移量。<br>●rpy（可选：如果未指定，则默认为identity）<br>以弧度表示固定轴的滚动，俯仰和偏航角度。<br>◆mass<br>链接的质量由此元素的value属性表示。<br>◆inertia<br>3x3转动惯量矩阵，以惯性框架表示。因为转动惯量矩阵是对称的，所以这里使用属性ixx，ixy，ixz，iyy，iyz，izz指定该矩阵的6个以上对角线元素。<br>(3)visual(可选)<br>link的可视属性。此元素指定对象的形状（例如：立方体(box)，圆柱(cylinder)等）以用于可视化目的。<br>注意：同一链接(link)可以存在多个visual标记实例。<br>◆name<br>指定链接(link)几何的一部分的名称。不常用属性。<br>◆origin（可选：如果未指定，则默认为identity）<br>这是惯性参考系相对于链路参考系的姿态。惯性参考系的原点需要位于重心处。惯性参考系的轴不需要与惯性的主轴对齐。<br>●xyz（可选：如果未指定，默认为零向量）<br>表示link刚体的重心位置分别在x轴，y轴，z轴方向上的偏移量，单位米。<br>●rpy（可选：如果未指定，则默认为identity）<br>以弧度表示的固定轴滚动，俯仰和偏航角度。<br>◆geometry（必选）<br>●box（立方体）<br>size属性包含框的三个边长。立方体的原点在它的中心。<br>●cylinder（圆柱）<br>指定半径和长度。圆柱的原点位于其中心。<br>●sphere（球）<br>指定半径。球体的原点位于其中心。<br>●mesh<br>当想添加更为复杂的模型时，可以通过.stl等mesh文件导入模型。<br>◆material（可选）<br>视觉元素的材料。允许在顶层robot元素中指定link对象之外的材质元素。然后，您可以在链接元素中按名称引用材料。<br>●name<br>材料的名称。<br>●color（可选）<br>rgba由四个数字组成的材料颜色，分别表示红色/绿色/蓝色/alpha，每个数字的范围为[0,1]。alpha即色彩空间，也就是透明度/不透明度。<br>●texture（可选）<br>材质的纹理由文件名指定。<br>(4)collision（可选）<br>链接(link)的碰撞属性。请注意，这可能与链接的可视属性不同，例如，通常使用更简单的碰撞模型来减少计算时间。<br>注意：同一链接可以存在多个collision标记实例。<br>它们定义的几何的联合形成了链接的碰撞表示。该属性主要是在模拟时模型会与其他模型发生碰撞，不设置该属性的话会出现两个模型相互穿过的情况，设置该属性后在geometry设定的形状内两个模型会发生碰撞。<br>◆name（可选）<br>指定链接几何的一部分的名称。这对于能够引用链接几何的特定位是有用的。<br>◆origin（可选：如果未指定，则默认为identity）<br>碰撞元素的参考系相对于链接的参考系。<br>●xyz（可选：如果未指定，默认为零向量）<br>表示link刚体的重心位置分别在x轴，y轴，z轴方向上的偏移量，单位米。<br>●rpy（可选：如果未指定，则默认为identity）<br>以弧度表示的固定轴滚动roll，俯仰pitch和偏航yaw角度。<br>◆geometry<br>请参阅上述可视元素中的几何描述。  </p>
-<h2 id="5-joint元素"><a href="#5-joint元素" class="headerlink" title="5.joint元素"></a>5.joint元素</h2><p>joint元素描述了机器人关节的运动学和动力学，并且指定了关节的安全限制。以小车左后轮的关节为例，创建如下的URDF文件内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;joint name&#x3D;&quot;left_back_wheel_joint&quot; type&#x3D;&quot;continuous&quot;&gt;</span><br><span class="line">	&lt;axis xyz&#x3D;&quot;0 0 1&quot;&#x2F;&gt;</span><br><span class="line">	&lt;parent link&#x3D;&quot;base_link&quot;&#x2F;&gt;</span><br><span class="line">	&lt;child link&#x3D;&quot;left_back_wheel&quot;&#x2F;&gt;</span><br><span class="line">	&lt;origin rpy&#x3D;&quot;0 $&#123;M_PI&#x2F;2&#125; $&#123;M_PI&#x2F;2&#125;&quot; xyz&#x3D;&quot;-0.08 0.08 0.025&quot;&#x2F;&gt;</span><br><span class="line">	&lt;dynamics damping&#x3D;&quot;0.0&quot;&#x2F;&gt;</span><br><span class="line">	&lt;limit effort&#x3D;&quot;100&quot; velocity&#x3D;&quot;100&quot;&#x2F;&gt;</span><br><span class="line">	&lt;joint_properties damping&#x3D;&quot;0.0&quot; friction&#x3D;&quot;0.0&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;joint&gt;</span><br></pre></td></tr></table></figure><br><img src="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/urdf2.jpg" class=""></p>
-<h2 id="6-joint属性详解"><a href="#6-joint属性详解" class="headerlink" title="6.joint属性详解"></a>6.joint属性详解</h2><p>(1)name（必选）<br>指定joint的名字（唯一的）<br>(2)type（必选）<br>指定joint的类型，有下列选项:<br>●revolute - 可以绕着一个轴旋转的铰链关节，有最大值和最小值限制。<br>●continuous - 连续型的铰链关节，可以绕一个轴旋转，没有最大值和最小值限制。<br>●prismatic - 滑动关节，可以沿着一个轴滑动，有最大值和最小值限制。<br>●fixed - 这不是一个实际的关节，因为它无法运动，所有的自由度都被锁定。这种类型的关节不需要指定轴、动力学特征、标度和最大值最小值限制。<br>●floating - 这是一个具有6个自由度的关节。<br>●planar - 此关节在一个平面内运动，垂线是运动轴。<br>◆origin（可选：如果未指定，则默认为identity）<br>从parent link到child link的变换，joint位于child link的原点，具体如图所示。<br>●xyz（可选：如果未指定，默认为零向量）<br>表示link刚体的重心位置分别在x轴，y轴，z轴方向上的偏移量，单位米。<br>●rpy（可选：如果未指定，则默认为identity）<br>以弧度表示的固定轴滚动，俯仰和偏航角度。<br>◆parent（必选）<br>parent link的名字是一个强制的属性，是这个link在机器人结构树中的名字。 可以理解为parent是主题，child是固定在主体上的配件。<br>◆child（必选）<br>child link的名字是一个强制的属性，是这个link在机器人结构树中的名字。<br>◆axis（可选: 默认为(1,0,0)）<br>joint的axis轴在joint的坐标系中。这是revolute joint旋转的轴，prismatic joint移动的轴，是planar joint的标准平面。这个轴在joint坐标系中被指定。fixed和floating类型的joint不需要用到这个字段。<br>◆xyz（required）<br>代表轴向量的x,y,z分量，这应该是一个标准化的向量。<br>◆calibration（可选）<br>joint的参考点，用来矫正joint的绝对位置。<br>◆rising（可选）<br>当joint正向运动时，参考点会触发一个上升沿。<br>◆falling（可选）<br>当joint正向运动时，参考点会触发一个下降沿。<br>◆dynamics（可选）<br>该元素用来指定joint的物理性能。它的值被用来描述joint的建模性能，尤其是在仿真的时候。<br>◆damping（可选，默认为0）<br>joint的阻尼值（移动关节为<script type="math/tex">\frac{N⋅s}{m}</script>，旋转关节为<script type="math/tex">\frac{N⋅m⋅s}{rad}</script>）<br>◆friction（可选，默认为0）<br>joint的摩擦力值（移动关节为<script type="math/tex">N</script>，旋转关节为<script type="math/tex">N⋅m</script>）<br>◆limit（只有type为revolute and prismatic时必选）<br>该元素包含以下属性:<br>◆lower（可选，默认为0）<br>指定joint运动范围下界的属性(revolute joint的单位为弧度，prismatic joint的单位为米)，连续型的joint忽略该属性。<br>◆upper（可选，默认为0）<br>指定joint运动范围上界的属性（revolute joint的单位为弧度，prismatic joint的单位为米），连续型的joint忽略该属性。<br>◆effort（必选）<br>该属性指定了joint运行时的最大的力。（|applied effort|&lt;|effort|）。<br>◆velocity（必选）<br>该属性指定了joint运行时的最大的速度。<br>◆mimic（可选）(New with ROS Groovy. See issue)<br>这个标签用于指定已定义的joint来模仿已存在的joint。这个joint的值可以用以下公式计算 value = multiplier * other_joint_value + offset. 有如下可选的属性:<br>●joint (required)<br>需要模仿的joint的名字。<br>◆multiplier（可选）<br>指定上述公式中的乘数因子。<br>◆offset（可选）<br>指定上述公式中的偏移项。默认值为0（revolute joint的单位为弧度，prismatic joint的单位为米）。<br>◆safety_controller（可选）<br>该元素包含下列属性:<br>◆soft_lower_limit（可选，默认为0）<br>该属性指定了joint安全控制边界的下界，是joint安全控制的起始限制点。这个值需要大于上述的limit中的lower值。<br>◆soft_upper_limit（可选，默认为0）<br>该属性指定了joint安全控制边界的上界，是joint安全控制的起始限制点。这个值需要小于上述的limit中的upper值。<br>◆k_position（可选，默认为0）<br>本属性用于说明位置和速度之间的关系。<br>◆k_velocity（必选）<br>本属性用于说明力和速度之间的关系。  </p>
-<h2 id="7-Rviz可视化"><a href="#7-Rviz可视化" class="headerlink" title="7.Rviz可视化"></a>7.Rviz可视化</h2><p>Rviz是ROS官方提供的一款3D可视化工具，几乎我们需要用到的所有机器人相关数据都可以在Rviz中展现，但是不能模拟碰撞、重力等物理现象。  </p>
-<h3 id="7-1创建launch文件"><a href="#7-1创建launch文件" class="headerlink" title="7.1创建launch文件"></a>7.1创建launch文件</h3><p>创建完URDF文件后，可以通过launch文件在Rviz中查看所创建的模型，launch文件具体内容如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;launch&gt;     </span><br><span class="line">	&lt;arg name&#x3D;&quot;model&quot; &#x2F;&gt;      </span><br><span class="line">	&lt;arg name&#x3D;&quot;gui&quot; default&#x3D;&quot;true&quot; &#x2F;&gt;     </span><br><span class="line">	&lt;param name&#x3D;&quot;robot_description&quot; textfile&#x3D;&quot;$(find smartcar_description)&#x2F;urdf&#x2F;urdf&#x2F;smartcar.urdf&quot; &#x2F;&gt;      </span><br><span class="line">	&lt;param name&#x3D;&quot;use_gui&quot; value&#x3D;&quot;$(arg gui)&quot;&#x2F;&gt;     </span><br><span class="line">	&lt;node name&#x3D;&quot;joint_state_publisher&quot; pkg&#x3D;&quot;joint_state_publisher&quot; type&#x3D;&quot;joint_state_publisher&quot; &gt;</span><br><span class="line">	&lt;&#x2F;node&gt;      </span><br><span class="line">	&lt;node name&#x3D;&quot;robot_state_publisher&quot; pkg&#x3D;&quot;robot_state_publisher&quot; type&#x3D;&quot;state_publisher&quot; &#x2F;&gt;      </span><br><span class="line">	&lt;node name&#x3D;&quot;rviz&quot; pkg&#x3D;&quot;rviz&quot; type&#x3D;&quot;rviz&quot; args&#x3D;&quot;-d $(find smartcar_description)&#x2F;config&#x2F;smartcar.rviz&quot; required&#x3D;&quot;true&quot;&#x2F;&gt;  </span><br><span class="line">&lt;&#x2F;launch&gt;</span><br></pre></td></tr></table></figure><br>说明：<br>◆&#60;arg name=”gui” default=”true” /&#62;的作用是使能joint_state_publisher节点的GUI界面，发布各个关节（joint）消息，验证各个关节（joint）功能。<br><img src="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/urdf3.jpg" class=""><br>◆启动joint_state_publisher节点和robot_state_publisher节点，joint_state_publisher发布/joint_states话题消息，robot_state_publisher则接收/joint_states话题消息，发布tf变换关系，并由Rviz显示出来。<br><img src="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/urdf4.jpg" class=""><br>◆args=”-d $(find smartcar_description)/config/smartcar.rviz”表示加载和保存的Rviz配置文件路径。  </p>
-<h3 id="7-2启动Rviz"><a href="#7-2启动Rviz" class="headerlink" title="7.2启动Rviz"></a>7.2启动Rviz</h3><p>打开一个新的终端，输入以下指令，启动Rviz，查看所创建的模型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ roslaunch smartcar_description base_urdf_rviz.launch</span><br></pre></td></tr></table></figure><br>说明：<br>◆若Rviz中没有正确显示模型，首先检查是否添加RobotModel，然后检查Fixed Frame是否为base_link。<br>◆若在左栏中添加TF，可以显示各个link之间的TF关系。<br><img src="/2020/03/30/URDF%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/urdf5.jpg" class=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1812,7 +1812,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1823,7 +1823,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

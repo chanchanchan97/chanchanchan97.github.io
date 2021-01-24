@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1.一阶RC低通滤波器的连续域数学模型1.1数学模型的推导 上图是RC低通滤波器的电路模型，根据基尔霍夫定律可知：即：根据电容的特性可知：零状态条件下的时域响应可表示为：定义时间常数τ&#x3D;RC，对上述微分方程进行拉氏变换，可得：由此可得传递函数：即频域数学模型为： 1.2频率特性相频特性：幅频特性：以R&#x3D;100Ω，C&#x3D;100nF为例，该低通滤波器的频率特性如下： 1.3物理作用：输入一个阶跃信号，经">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一阶RC低通滤波器的数学模型及算法实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="chan&#39;s Bloggerrrrr">
+<meta property="og:description" content="1.一阶RC低通滤波器的连续域数学模型1.1数学模型的推导 上图是RC低通滤波器的电路模型，根据基尔霍夫定律可知：即：根据电容的特性可知：零状态条件下的时域响应可表示为：定义时间常数τ&#x3D;RC，对上述微分方程进行拉氏变换，可得：由此可得传递函数：即频域数学模型为： 1.2频率特性相频特性：幅频特性：以R&#x3D;100Ω，C&#x3D;100nF为例，该低通滤波器的频率特性如下： 1.3物理作用：输入一个阶跃信号，经">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC11.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC12.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC13.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC14.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC15.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC16.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC17.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC18.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC19.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC20.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC21.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC22.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC23.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC24.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC25.jpg">
+<meta property="article:published_time" content="2021-01-24T10:31:24.860Z">
+<meta property="article:modified_time" content="2021-01-24T10:31:25.001Z">
+<meta property="article:author" content="chan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;chanchanchan97.github.io&#x2F;2021&#x2F;01&#x2F;24&#x2F;%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0&#x2F;RC1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chanchanchan97.github.io/2021/01/24/一阶RC低通滤波器的数学模型及算法实现/"/>
+
+
+
+
+
+  <title>一阶RC低通滤波器的数学模型及算法实现 | chan's Bloggerrrrr</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">chan's Bloggerrrrr</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Rome was not built in a day.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一阶RC低通滤波器的数学模型及算法实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-24T18:31:24+08:00">
+                2021-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%BB%A4%E6%B3%A2%E7%AE%97%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">滤波算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-一阶RC低通滤波器的连续域数学模型"><a href="#1-一阶RC低通滤波器的连续域数学模型" class="headerlink" title="1.一阶RC低通滤波器的连续域数学模型"></a>1.一阶RC低通滤波器的连续域数学模型</h2><h3 id="1-1数学模型的推导"><a href="#1-1数学模型的推导" class="headerlink" title="1.1数学模型的推导"></a>1.1数学模型的推导</h3><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC1.jpg" class="">
+<p>上图是RC低通滤波器的电路模型，根据基尔霍夫定律可知：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC2.jpg" class=""><br>即：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC3.jpg" class=""><br>根据电容的特性可知：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC4.jpg" class=""><br>零状态条件下的时域响应可表示为：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC5.jpg" class=""><br>定义时间常数τ=RC，对上述微分方程进行拉氏变换，可得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC6.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC7.jpg" class=""><br>由此可得传递函数：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC8.jpg" class=""><br>即频域数学模型为：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC9.jpg" class=""></p>
+<h3 id="1-2频率特性"><a href="#1-2频率特性" class="headerlink" title="1.2频率特性"></a>1.2频率特性</h3><p>相频特性：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC10.jpg" class=""><br>幅频特性：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC11.jpg" class=""><br>以R=100Ω，C=100nF为例，该低通滤波器的频率特性如下：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC12.jpg" class=""></p>
+<h3 id="1-3物理作用："><a href="#1-3物理作用：" class="headerlink" title="1.3物理作用："></a>1.3物理作用：</h3><p>输入一个阶跃信号，经过时间τ之后，输出大约为阶跃量的63%，滞后作用。<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC13.jpg" class=""></p>
+<h2 id="2-一阶RC低通滤波器的算法推导"><a href="#2-一阶RC低通滤波器的算法推导" class="headerlink" title="2.一阶RC低通滤波器的算法推导"></a>2.一阶RC低通滤波器的算法推导</h2><h3 id="2-1离散化"><a href="#2-1离散化" class="headerlink" title="2.1离散化"></a>2.1离散化</h3><p>采用一阶后向差分法将传递函数G(s)从S域转化到Z域，其中一阶后向差分中S域与Z域的变化关系是：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC14.jpg" class=""><br>其中T是采样周期，带入传递函数G(s)中得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC15.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC16.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC17.jpg" class=""><br>Z反变换求差分方程后可得：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC18.jpg" class=""><br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC19.jpg" class=""><br>令<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC20.jpg" class=""><br>可得<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC21.jpg" class=""><br>关于滤波系数A<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC22.jpg" class=""><br>所以<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC23.jpg" class=""><br>代入<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC24.jpg" class=""><br>可以得到滤波系数A与截止频率f的关系：<br><img src="/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/RC25.jpg" class=""></p>
+<h2 id="3-一阶RC低通滤波器的C语言实现"><a href="#3-一阶RC低通滤波器的C语言实现" class="headerlink" title="3.一阶RC低通滤波器的C语言实现"></a>3.一阶RC低通滤波器的C语言实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#define a 0.01               &#x2F;&#x2F; 滤波系数a（0-1） </span><br><span class="line"></span><br><span class="line">static float oldOutData &#x3D; 0; &#x2F;&#x2F;上一次滤波值</span><br><span class="line"></span><br><span class="line">char filter(void)</span><br><span class="line">&#123;</span><br><span class="line">    nowData  &#x3D; get_Data();  &#x2F;&#x2F;本次滤波值</span><br><span class="line">    nowOutData &#x3D; a * nowData  + (1.0f - a) * oldOutData;</span><br><span class="line">    oldOutData &#x3D; nowOutData;</span><br><span class="line">    return nowOutData;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-缺点及改善方法"><a href="#4-缺点及改善方法" class="headerlink" title="4.缺点及改善方法"></a>4.缺点及改善方法</h2><h3 id="4-1缺点"><a href="#4-1缺点" class="headerlink" title="4.1缺点"></a>4.1缺点</h3><p>●仍然存在灵敏度与平稳度之间的矛盾；<br>●小数舍弃带来的误差（单片机很少采用浮点数，小数位要么舍弃，要么四舍五入）。  </p>
+<h3 id="4-2改善方法——动态调整滤波系数"><a href="#4-2改善方法——动态调整滤波系数" class="headerlink" title="4.2改善方法——动态调整滤波系数"></a>4.2改善方法——动态调整滤波系数</h3><h4 id="4-2-1实现功能"><a href="#4-2-1实现功能" class="headerlink" title="4.2.1实现功能"></a>4.2.1实现功能</h4><p>●当数据快速变化时，滤波结果能及时跟进，并且数据的变化越快，灵敏度应该越高（灵敏度优先原则）；<br>●当数据趋于稳定，并在一个范围内振荡时，滤波结果能趋于平稳（平稳度优先原则）；<br>●当数据稳定后，滤波结果能逼近并最终等于采样数据（消除因计算中小数带来的误差）。  </p>
+<h4 id="4-2-2调整前判断"><a href="#4-2-2调整前判断" class="headerlink" title="4.2.2调整前判断"></a>4.2.2调整前判断</h4><p>●数据变化方向是否为同一个方向（如当连续两次的采样值都比其上次滤波结果大时，视为变化方向一致，否则视为不一致）；<br>●数据变化是否较快（主要是判断采样值和上一次滤波结果之间的差值）。  </p>
+<h4 id="4-2-3调整原则"><a href="#4-2-3调整原则" class="headerlink" title="4.2.3调整原则"></a>4.2.3调整原则</h4><p>●当两次数据变化不一致时，说明有抖动，将滤波系数清零，忽略本次新采样值；<br>●当数据持续向一个方向变化时，逐渐提高滤波系数，提供本次采样值得权；<br>●当数据变化较快（差值＞消抖计数加速反应阈值）时，要加速提高滤波系数。  </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/01/21/%E6%9E%84%E5%BB%BACAN%E9%80%9A%E4%BF%A1Simulink%E6%A8%A1%E5%9E%8B/" rel="next" title="构建CAN通信Simulink模型">
+                <i class="fa fa-chevron-left"></i> 构建CAN通信Simulink模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-一阶RC低通滤波器的连续域数学模型"><span class="nav-text">1.一阶RC低通滤波器的连续域数学模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1数学模型的推导"><span class="nav-text">1.1数学模型的推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2频率特性"><span class="nav-text">1.2频率特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3物理作用："><span class="nav-text">1.3物理作用：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-一阶RC低通滤波器的算法推导"><span class="nav-text">2.一阶RC低通滤波器的算法推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1离散化"><span class="nav-text">2.1离散化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-一阶RC低通滤波器的C语言实现"><span class="nav-text">3.一阶RC低通滤波器的C语言实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-缺点及改善方法"><span class="nav-text">4.缺点及改善方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1缺点"><span class="nav-text">4.1缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2改善方法——动态调整滤波系数"><span class="nav-text">4.2改善方法——动态调整滤波系数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1实现功能"><span class="nav-text">4.2.1实现功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2调整前判断"><span class="nav-text">4.2.2调整前判断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3调整原则"><span class="nav-text">4.2.3调整原则</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
