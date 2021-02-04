@@ -238,6 +238,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/02/04/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E6%B2%B9%E9%97%A8%E4%B8%8E%E5%88%B6%E5%8A%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="chan's Bloggerrrrr">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/02/04/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E6%B2%B9%E9%97%A8%E4%B8%8E%E5%88%B6%E5%8A%A8/" itemprop="url">构建Simulink模型——油门与制动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-02-04T22:01:18+08:00">
+                2021-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MATLAB-Simulink/" itemprop="url" rel="index">
+                    <span itemprop="name">MATLAB/Simulink</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考网址：<br><a href="https://mp.weixin.qq.com/s?__biz=MzA4NTM0Mzg5Nw==&amp;mid=2247484695&amp;idx=1&amp;sn=e0ea4618a12b0f4e2eb4621a5afdc474&amp;scene=19&amp;token=46625227&amp;lang=zh_CN#wechat_redirect" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzA4NTM0Mzg5Nw==&amp;mid=2247484695&amp;idx=1&amp;sn=e0ea4618a12b0f4e2eb4621a5afdc474&amp;scene=19&amp;token=46625227&amp;lang=zh_CN#wechat_redirect</a></p>
+<h2 id="一、Simulink模型简述"><a href="#一、Simulink模型简述" class="headerlink" title="一、Simulink模型简述"></a>一、Simulink模型简述</h2><p>该模型对简化的汽车运动进行仿真。当踩下踏板时，汽车通常处于行进状态。轻踩并松开加速踏板后，汽车先会处于怠速状态，然后停止。基于上述运动模型再对接近传感器建模，该数字传感器用于测量汽车与10米（30英尺）外的障碍物之间的距离。模型根据下列条件来输出传感器的测量值和汽车的位置值：<br>●汽车在到达障碍物时会紧急刹车。<br>●在现实世界中，传感器对距离的测量不够精确，从而导致随机数值误差。<br>●数字传感器以固定时间间隔运行。  </p>
+<h2 id="二、构建模型"><a href="#二、构建模型" class="headerlink" title="二、构建模型"></a>二、构建模型</h2><h3 id="Step-1-创建新模型"><a href="#Step-1-创建新模型" class="headerlink" title="Step 1. 创建新模型"></a>Step 1. 创建新模型</h3><p>1.要启动Simulink并创建新模型，请在MATLAB命令提示符下输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simulink</span><br></pre></td></tr></table></figure><br>在Simulink Start Page对话框中，点击Blank Model，然后点击Create Model，将打开一个空的Editor 窗口。<br>2.在Editor工具条的Simulation选项卡上，点击Save &gt; Save As为新模型指定名称。</p>
+<h3 id="Step-2-拖放模块以完成模型"><a href="#Step-2-拖放模块以完成模型" class="headerlink" title="Step 2. 拖放模块以完成模型"></a>Step 2. 拖放模块以完成模型</h3><p>在该模型中需要针对以下每个模块创建一个实例：<br>●Pulse Generator<br>该模块的作用是为模型生成脉冲信号，模拟轻踩加速踏板后的输出信号。<br><br>●Gain<br>该模块的作用是将输入信号乘以一个因子，计算踩下加速踏板后如何影响汽车的加速度。<br><br>●Integrator, Second Order<br>该模块的作用是对输入信号进行二次积分，根据加速度计算得到汽车的位置。<br><br>●Out1<br>该模型的作用是将汽车位置作为模型的输出。<br></p>
+<h3 id="Step-3-配置模块"><a href="#Step-3-配置模块" class="headerlink" title="Step 3. 配置模块"></a>Step 3. 配置模块</h3><p>通过双击模型中的每个模块为模块设置参数。<br>配置Pulse Generator模块。双击Pulse Generator模块以打开其参数对话框。验证或设置以下参数：<br><br>配置Gain模块。双击Gain模块以打开其参数对话框。验证或设置以下参数：<br><br>配置Integrator, Second Order模块。双击Integrator, Second Order模块以打开其参数对话框。<br>在x选项卡上，进行如下设置(其余选项卡按照默认设置）：<br></p>
+<h3 id="Step-4-连接模块并为信号添加注释"><a href="#Step-4-连接模块并为信号添加注释" class="headerlink" title="Step 4. 连接模块并为信号添加注释"></a>Step 4. 连接模块并为信号添加注释</h3><p>构建完成的模型如下图所示：<br></p>
+<h3 id="Step-5-添加信号查看器"><a href="#Step-5-添加信号查看器" class="headerlink" title="Step 5. 添加信号查看器"></a>Step 5. 添加信号查看器</h3><p>要查看仿真结果，请将第一个输出连接到一个Signal Viewer。<br>通过右键点击信号来访问上下文菜单。选择Create &amp; Connect Viewer &gt; Simulink &gt; Scope。信号上会出现查看器图标，并打开一个示波器窗口。  </p>
+<h3 id="Step-6-运行仿真"><a href="#Step-6-运行仿真" class="headerlink" title="Step 6. 运行仿真"></a>Step 6. 运行仿真</h3><p>1.在模型Editor工具条的Modeling选项卡中，点击Model Settings。将打开Configuration Parameters对话框。<br>在Solver Options部分中，进行如下选择：<br><br>2.点击Editor工具条的Simulation或Modeling选项卡中的Run按钮，运行仿真。<br></p>
+<h2 id="三、优化模型"><a href="#三、优化模型" class="headerlink" title="三、优化模型"></a>三、优化模型</h2><h3 id="Step-7-拖放新模块以完成模型"><a href="#Step-7-拖放新模块以完成模型" class="headerlink" title="Step 7. 拖放新模块以完成模型"></a>Step 7. 拖放新模块以完成模型</h3><p>●Constant<br>该模块的作用是为障碍物的位置设置常量值10。<br><br>●Subtract<br>该模块的作用是将两个输入值相减，求出障碍物位置和车辆位置之间的实际距离。<br><br>●Band-Limited White Noise<br>该模块的作用是产生白噪声，模拟真实传感器测量中常见的误差。<br><br>●Add<br>该模块的作用是将两个输入值相加，从而将白噪声添加进数字传感器采样数据中。<br><br>●Zero-Order Hold<br>该模块的作用是让采集的信号样本数据保持一定时间间隔，模拟离散系统对数字传感器采样。<br></p>
+<h3 id="Step-8-配置新模块"><a href="#Step-8-配置新模块" class="headerlink" title="Step 8. 配置新模块"></a>Step 8. 配置新模块</h3><p>通过双击模型中的每个模块为模块设置参数。<br>配置Constant模块。双击Constant模块以打开其参数对话框。验证或设置以下参数：<br><br>配置Band-Limited White Noise模块。双击Band-Limited White Noise模块以打开其参数对话框。验证或设置以下参数：<br><br>配置Zero-Order Hold模块。双击Zero-Order Hold模块以打开其参数对话框。验证或设置以下参数：<br></p>
+<h3 id="Step-9-连接模块并为信号添加注释"><a href="#Step-9-连接模块并为信号添加注释" class="headerlink" title="Step 9. 连接模块并为信号添加注释"></a>Step 9. 连接模块并为信号添加注释</h3><p>构建完成的模型如下图所示：<br></p>
+<h3 id="Step-10-比较多个信号"><a href="#Step-10-比较多个信号" class="headerlink" title="Step 10. 比较多个信号"></a>Step 10. 比较多个信号</h3><p>将actual distance信号与measured distance信号进行比较。<br>1.创建一个示波器Scope1并将其连接到actual distance信号。<br>2.将measured distance信号添加到同一个查看器中。右键点击信号，然后选择Connect to Viewer &gt; Scope1。确保连接到在上一步中创建的查看器。<br></p>
+<h3 id="Step-11-运行仿真"><a href="#Step-11-运行仿真" class="headerlink" title="Step 11. 运行仿真"></a>Step 11. 运行仿真</h3><p>查看器显示两个信号：Actual Distance（黄色）和Measured Distance（蓝色）。<br></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2021/01/24/%E4%B8%80%E9%98%B6RC%E4%BD%8E%E9%80%9A%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E6%95%B0%E5%AD%A6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -484,7 +638,7 @@
           
             <p>参考网址：<br><a href="https://ww2.mathworks.cn/help/vnt/ug/build-can-communication-simulink-models.html#brzf0ew-4" target="_blank" rel="noopener">https://ww2.mathworks.cn/help/vnt/ug/build-can-communication-simulink-models.html#brzf0ew-4</a></p>
 <h2 id="一、Simulink模型简述"><a href="#一、Simulink模型简述" class="headerlink" title="一、Simulink模型简述"></a>一、Simulink模型简述</h2><p>在该模型中使用MathWorks虚拟CAN通道传输和接收报文。<br>●报文传输部分：使用CAN Configuration模块配置CAN通道，Constant模块向CAN Pack模块提供数据，并使用CAN Transmit模块将数据发送到虚拟CAN通道。<br>●报文接收部分：使用CAN Configuration模块配置CAN通道，CAN Receive模块接收报文，同时使用包含CAN Unpack模块的Function-Call Subsystem模块从CAN Receive模块获取数据，并使用CAN Unpack模块的参数来解包报文数据，最后通过Scope模块显示接收到的数据。</p>
-<h2 id="二、构建模型的报文传输部分"><a href="#二、构建模型的报文传输部分" class="headerlink" title="二、构建模型的报文传输部分"></a>二、构建模型的报文传输部分</h2><h3 id="Step-1-创建新模型"><a href="#Step-1-创建新模型" class="headerlink" title="Step 1. 创建新模型"></a>Step 1. 创建新模型</h3><p>1.要启动 Simulink 并创建新模型，请在 MATLAB命令提示符下输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simulink</span><br></pre></td></tr></table></figure><br>在Simulink Start Page对话框中，点击Blank Model，然后点击Create Model，将打开一个空的Editor窗口。<br>2.在Editor工具条的Simulation选项卡上，点击Save &gt; Save As为新模型指定名称。</p>
+<h2 id="二、构建模型的报文传输部分"><a href="#二、构建模型的报文传输部分" class="headerlink" title="二、构建模型的报文传输部分"></a>二、构建模型的报文传输部分</h2><h3 id="Step-1-创建新模型"><a href="#Step-1-创建新模型" class="headerlink" title="Step 1. 创建新模型"></a>Step 1. 创建新模型</h3><p>1.要启动Simulink并创建新模型，请在MATLAB命令提示符下输入以下内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">simulink</span><br></pre></td></tr></table></figure><br>在Simulink Start Page对话框中，点击Blank Model，然后点击Create Model，将打开一个空的Editor窗口。<br>2.在Editor工具条的Simulation选项卡上，点击Save &gt; Save As为新模型指定名称。</p>
 <h3 id="Step-2-打开模型库"><a href="#Step-2-打开模型库" class="headerlink" title="Step 2. 打开模型库"></a>Step 2. 打开模型库</h3><p>1.在模型Editor工具条的Simulation选项卡中，点击Library Browser。<br>2.Simulink Library Browser将打开。其左窗格包含按字母顺序显示的可用模块库的树。展开Vehicle Network Toolbox节点，然后点击CAN Communication。</p>
 <h3 id="Step-3-将Vehicle-Network-Toolbox模块拖到模型中"><a href="#Step-3-将Vehicle-Network-Toolbox模块拖到模型中" class="headerlink" title="Step 3. 将Vehicle Network Toolbox模块拖到模型中"></a>Step 3. 将Vehicle Network Toolbox模块拖到模型中</h3><p>要将模块放入模型中，请点击库中的一个模块并将其拖到编辑器中。对于此示例，模型中需要针对以下每个模块创建一个实例：<br>●CAN Configuration<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94CAN%E9%80%9A%E4%BF%A1/can1.jpg" class=""><br>●CAN Pack<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94CAN%E9%80%9A%E4%BF%A1/can2.jpg" class=""><br>●CAN Transmit<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94CAN%E9%80%9A%E4%BF%A1/can3.jpg" class=""></p>
 <h3 id="Step-4-拖放其他模块以完成模型"><a href="#Step-4-拖放其他模块以完成模型" class="headerlink" title="Step 4. 拖放其他模块以完成模型"></a>Step 4. 拖放其他模块以完成模型</h3><p>此示例使用Constant(Simulink)模块作为数据源。从Simulink &gt; Commonly Used Blocks库中，向模型添加一个Constant(Simulink)模块。<br><img src="/2021/01/21/%E6%9E%84%E5%BB%BASimulink%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94CAN%E9%80%9A%E4%BF%A1/can4.jpg" class=""></p>
@@ -1604,170 +1758,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chanchanchan97.github.io/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="chan's Bloggerrrrr">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/" itemprop="url">xacro模型——阿克曼（Ackermann）四轮小车模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-01T22:35:58+08:00">
-                2020-04-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ROS%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">ROS机器人操作系统</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Github链接：<a href="https://github.com/chanchanchan97/ROS" target="_blank" rel="noopener">https://github.com/chanchanchan97/ROS</a></p>
-<h2 id="1-模型描述"><a href="#1-模型描述" class="headerlink" title="1.模型描述"></a>1.模型描述</h2><p>本项目的目的是创建一个基于阿克曼转向机构（Ackermann steering）的自动驾驶小车模型，该模型在之前URDF模型的基础上修改了前轮转向轴的形状与位置，修改了前端摄像头的位置和尺寸，并且添加了激光雷达和树莓派的简易模型。</p>
-<h2 id="2-xacro模型与URDF模型的区别"><a href="#2-xacro模型与URDF模型的区别" class="headerlink" title="2.xacro模型与URDF模型的区别"></a>2.xacro模型与URDF模型的区别</h2><h3 id="2-1URDF模型存在的问题"><a href="#2-1URDF模型存在的问题" class="headerlink" title="2.1URDF模型存在的问题"></a>2.1URDF模型存在的问题</h3><p>●模型冗长，重复内容过多；<br>●参数修改麻烦，不便于二次开发；<br>●没有参数计算功能。</p>
-<h3 id="2-2xacro模型的特点"><a href="#2-2xacro模型的特点" class="headerlink" title="2.2xacro模型的特点"></a>2.2xacro模型的特点</h3><p>●精简模型代码<br>（1）创建宏定义<br>（2）文件包含<br>●提供可编程接口<br>（1）常量<br>（2）变量<br>（3）数学计算<br>（4）条件语句  </p>
-<h2 id="3-xacro优化方法"><a href="#3-xacro优化方法" class="headerlink" title="3.xacro优化方法"></a>3.xacro优化方法</h2><h3 id="3-1常量定义"><a href="#3-1常量定义" class="headerlink" title="3.1常量定义"></a>3.1常量定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:property name&#x3D;&quot;M_PI&quot; value&#x3D;&quot;3.14159&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>定义标签：xacro:property后面跟两个参数属性：<br>（1）name所定义的常量名；<br>（2）value常量名对应的常量值。  </p>
-<h3 id="3-2常量使用"><a href="#3-2常量使用" class="headerlink" title="3.2常量使用"></a>3.2常量使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;origin xyz&#x3D;&quot;0 0 0&quot; rpy&#x3D;&quot;$&#123;M_PI&#x2F;2&#125; 0 0&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>定义标签：${ }在括号里使用常量，也可以进行数学运算（所有数学运算都会转换成浮点数进行，以保证运算精度）。</p>
-<h3 id="3-3宏定义"><a href="#3-3宏定义" class="headerlink" title="3.3宏定义"></a>3.3宏定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:macro name&#x3D;&quot;cylinder_inertial_matrix&quot; params&#x3D;&quot;m r h&quot;&gt;</span><br><span class="line">       &lt;inertial&gt;</span><br><span class="line">           &lt;mass value&#x3D;&quot;$&#123;m&#125;&quot; &#x2F;&gt;</span><br><span class="line">           &lt;inertia ixx&#x3D;&quot;$&#123;m*(3*r*r+h*h)&#x2F;12&#125;&quot; ixy &#x3D; &quot;0&quot; ixz &#x3D; &quot;0&quot;</span><br><span class="line">               iyy&#x3D;&quot;$&#123;m*(3*r*r+h*h)&#x2F;12&#125;&quot; iyz &#x3D; &quot;0&quot;</span><br><span class="line">               izz&#x3D;&quot;$&#123;m*r*r&#x2F;2&#125;&quot; &#x2F;&gt; </span><br><span class="line">       &lt;&#x2F;inertial&gt;</span><br><span class="line">   &lt;&#x2F;xacro:macro&gt;</span><br></pre></td></tr></table></figure>
-<p>定义标签：xacro:macro 后面跟两个参数属性：<br>（1）name宏定义的名字类似函数名；<br>（2）params类似函数参数，也可以是字符串。  </p>
-<h3 id="3-4宏调用"><a href="#3-4宏调用" class="headerlink" title="3.4宏调用"></a>3.4宏调用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cylinder_inertial_matrix m&#x3D;&quot;1&quot; r&#x3D;&quot;0.025&quot; h&#x3D;&quot;0.02&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>定义标签：首先调用宏定义的名字，然后为参数赋值。</p>
-<h3 id="3-5文件包含"><a href="#3-5文件包含" class="headerlink" title="3.5文件包含"></a>3.5文件包含</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;xacro:include filename&#x3D;&quot;$(find smartcar_description)&#x2F;urdf&#x2F;xacro&#x2F;smartcar_sim.xacro&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>定义标签：xacro:include $(find+功能包)=包的具体路径</p>
-<h2 id="4-创建xacro文件"><a href="#4-创建xacro文件" class="headerlink" title="4.创建xacro文件"></a>4.创建xacro文件</h2><p>在urdf文件夹下创建一个新的文件夹xacro，并且在xacro文件夹中创建一个.xacro文件。</p>
-<h2 id="5-xacro模型显示"><a href="#5-xacro模型显示" class="headerlink" title="5.xacro模型显示"></a>5.xacro模型显示</h2><h3 id="5-1将xacro文件转化成URDF文件"><a href="#5-1将xacro文件转化成URDF文件" class="headerlink" title="5.1将xacro文件转化成URDF文件"></a>5.1将xacro文件转化成URDF文件</h3><p>在xacro文件夹中打开一个新的终端，输入以下指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosrun xacro xacro.py smartcar.xacro &gt; smartcar.urdf</span><br></pre></td></tr></table></figure><br>此时xacro文件夹下会生成一个.urdf文件。<br><img src="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/xacro1.jpg" class=""></p>
-<h3 id="5-2直接调用xacro文件解析器"><a href="#5-2直接调用xacro文件解析器" class="headerlink" title="5.2直接调用xacro文件解析器"></a>5.2直接调用xacro文件解析器</h3><p>这种方法更为常见，在launch文件中加入如下代码，从而实现.xacro文件的转换。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;arg name&#x3D;&quot;urdf_file&quot; default&#x3D;&quot;$(find xacro)&#x2F;xacro --inorder &#39;$(find smartcar_description)&#x2F;urdf&#x2F;xacro&#x2F;smartcar.xacro&#39;&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;param name&#x3D;&quot;robot_description&quot; command&#x3D;&quot;$(arg urdf_file)&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="5-3启动Rviz"><a href="#5-3启动Rviz" class="headerlink" title="5.3启动Rviz"></a>5.3启动Rviz</h3><p>打开一个新的终端，输入以下指令，启动Rviz，查看所创建的模型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roslaunch smartcar_description smartcar_rviz.launch</span><br></pre></td></tr></table></figure><br><img src="/2020/04/01/xacro%E6%A8%A1%E5%9E%8B%E2%80%94%E2%80%94%E9%98%BF%E5%85%8B%E6%9B%BC%EF%BC%88Ackermann%EF%BC%89%E5%9B%9B%E8%BD%AE%E5%B0%8F%E8%BD%A6%E6%A8%A1%E5%9E%8B/xacro2.jpg" class=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -1813,7 +1808,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
